@@ -10,7 +10,7 @@ router.get("/test", (req, res) => {
 // 댓글목록 불러오기(상세보기란에!)
 router.get("/comments/:postId", async (req, res) => {
   const { postId } = req.params;
-  const commentlist = await Comment.find({ postId: postId }); //포스트 리스트 가져오기(배열)
+  const commentlist = await Comment.find({ postId: postId }); //포스트 리스트 가져오기(배열) ss
   const results = commentlist.map((com) => {
     return {
       commentId: com._id,

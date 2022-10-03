@@ -6,7 +6,7 @@ const postSchema = new mongoose.Schema({ // 포스트 게시글 개조 완료.
     required: true,
     unique: true
   },
-  password: { //숫자 외 문자도 들어갈 수 있으니까. 
+  password: { //숫자 외 문자도 들어갈 수 있으니까. ss 
     type: String,
     required: true
   },

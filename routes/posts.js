@@ -57,7 +57,7 @@ router.get("/posts/:postId", async (req, res) => {   //params를 가져오는 ge
 //게시글 수정하기
 router.put("/posts/:postId", async (req, res) => {
   const { postId } = req.params;
-  const { password, title, content } = req.body; //**이거 바뀌면 안되는구나;
+  const { password, title, content } = req.body; //**이거 바뀌면 안되는구나; ss 
   console.log(title, content)
   const postone = await Post.findOne({ _id: postId });
   if (password === postone.password) {

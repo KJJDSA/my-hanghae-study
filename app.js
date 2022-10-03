@@ -10,7 +10,7 @@ app.get("/", (req, res) => {
   res.send('안녕하세요');
 })
 
-app.use(express.json()); //json 미들웨어. body로 전달될 데이터를 사용할 수 있게 해주는 물건. 
+app.use(express.json()); //json 미들웨어. body로 전달될 데이터를 사용할 수 있게 해주는 물건.  ss
 
 app.use("/api", [postsRouter, commentsRouter]);
 

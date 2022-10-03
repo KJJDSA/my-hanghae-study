@@ -17,7 +17,7 @@ const commentSchema = new mongoose.Schema({ //유저, 패스워드(수정용), �
     type: String,
     required: true
   },
-  createdAt: { //넣을 때 시간대도 넣어줘야.. 근데 여기서 넣어주는거 같은데?
+  createdAt: { //넣을 때 시간대도 넣어줘야.. 근데 여기서 넣어주는거 같은데? dd
     type: Date,
     default: Date.now
   }
