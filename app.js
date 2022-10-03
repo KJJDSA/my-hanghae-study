@@ -1,10 +1,11 @@
 const express = require("express");
 const app = express();
 const port = 3000;
-const connect = require("./schemas/index");
-const postsRouter = require("./routes/posts.js");
-const commentsRouter = require("./routes/comments.js");
-connect();
+const connect = require("./schemas/index"); //require 모듈 불러오기
+const router = require("./routes"); // 안 써도 index 라는 단어를 가진 파일을 디폴트로 가져옴.
+// const postsRouter = require("./routes/posts.js");
+// const commentsRouter = require("./routes/comments.js");
+connect(); // schemas 와 연결. app.use처럼 사용을 해주어야해서
 
 app.get("/", (req, res) => {
   res.send('안녕하세요');
@@ -12,7 +13,8 @@ app.get("/", (req, res) => {
 
 app.use(express.json()); //json 미들웨어. body로 전달될 데이터를 사용할 수 있게 해주는 물건.  ss
 
-app.use("/api", [postsRouter, commentsRouter]);
+// app.use("/api", [postsRouter, commentsRouter]);
+app.use("/api", router);
 
 app.listen(port, () => {
   console.log(`서버가 ${port}번 포트로 열렸습니다.`);

@@ -1,14 +1,9 @@
 const express = require('express'); //express 임포트
 const Post = require("../schemas/post"); // schemas에 있는 goods를 임포트. 
-const CommentTemp = require("../schemas/comment");
 const router = express.Router(); // express 의존함수 router임포트
 
-router.get("/", (req, res) => {
-  res.send('posts 기본 url입니다. ');
-})
-
 // 전체 포스트 가져오기
-router.get("/posts", async (req, res) => {
+router.get("/", async (req, res) => {
   const postlist = await Post.find(); //포스트 리스트 가져오기(배열)
 
   const results = postlist.map((post) => {
@@ -24,7 +19,7 @@ router.get("/posts", async (req, res) => {
 });
 
 // 포스트 만들기
-router.post("/posts", async (req, res) => {
+router.post("/", async (req, res) => {
   const { user, password, title, content } = req.body; //받는건 이름, 비밀번호, 제목과 내용까지.
 
   Post.create({ user, password, title, content });
@@ -32,7 +27,7 @@ router.post("/posts", async (req, res) => {
 });
 
 //상세 포스트 가져오기
-router.get("/posts/:postId", async (req, res) => {   //params를 가져오는 get
+router.get("/:postId", async (req, res) => {   //params를 가져오는 get
   // const postId = req.params.goodsId;              //이렇게 해도되고
   const { postId } = req.params;                     //이렇게 해도 됨(구조분해할당)
   const post = await Post.findOne({ _id: postId });  //포스트 리스트 가져오기(배열)
@@ -55,7 +50,7 @@ router.get("/posts/:postId", async (req, res) => {   //params를 가져오는 ge
 });
 
 //게시글 수정하기
-router.put("/posts/:postId", async (req, res) => {
+router.put("/:postId", async (req, res) => {
   const { postId } = req.params;
   const { password, title, content } = req.body; //**이거 바뀌면 안되는구나; ss 
   console.log(title, content)
@@ -72,7 +67,7 @@ router.put("/posts/:postId", async (req, res) => {
   res.json({ "messege": "게시글을 수정하였습니다." });
 })
 
-router.delete("/posts/:postId", async (req, res) => {
+router.delete("/:postId", async (req, res) => {
   const { postId } = req.params;
   const { password } = req.body; //**이거 바뀌면 안되는구나;
   console.log(password)
