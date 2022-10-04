@@ -22,7 +22,7 @@ router.get("/:postId", async (req, res) => {
 router.post("/:postId", async (req, res) => {
   const { user, password, content } = req.body; //받는건 이름, 비밀번호, 제목과 내용까지.
   const { postId } = req.params;
-  await Comment.create({ postId, user, password, content });
+  await Comment.create({ postId, user, password, content }); //postId 같이 넣어줌 식별자 역할.
   res.json({ "message": "댓글을 생성하였습니다." });
 });
 
@@ -35,7 +35,7 @@ router.put("/:commentId", async (req, res) => {
     await Comment.updateOne({ _id: commentId }, { $set: { content: content } });
   }
   else { return res.json({ messege: "비밀번호가 정확하지 않습니다." }) }
-  res.json({ "messege": "댓글을 수정하였습니다." });
+  res.json({ "messege": "댓글을 수정 하였습니다." });
 })
 
 //댓글 삭제하기

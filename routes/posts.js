@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const { user, password, title, content } = req.body; //받는건 이름, 비밀번호, 제목과 내용까지.
 
-  Post.create({ user, password, title, content });
+  Post.create(req.body); //이게 되네;;;; 
   res.json({ "message": "게시글을 생성하였습니다." });
 });
 
@@ -53,9 +53,8 @@ router.get("/:postId", async (req, res) => {   //params를 가져오는 get
 router.put("/:postId", async (req, res) => {
   const { postId } = req.params;
   const { password, title, content } = req.body; //**이거 바뀌면 안되는구나; ss 
-  console.log(title, content)
-  const postone = await Post.findOne({ _id: postId });
-  if (password === postone.password) {
+  const postone = await Post.findOne({ _id: postId }); // 포스트를 통으로 가져오는데, 비밀번호만 가져오면 되는거였다..
+  if (password === postone.password) { //고작 비밀번호밖에 안씀 == 비효율
     await Post.updateOne({ _id: postId }, {
       $set: {
         title: title,
@@ -63,7 +62,7 @@ router.put("/:postId", async (req, res) => {
       }
     });
   }
-  else { return res.json({ messege: "비밀번호가 정확하지 않습니다." }) }
+  else { return res.json({ messege: "비밀번호가 정확하지 않습니다." }) } //리스폰스는 하나뿐이어야됨.
   res.json({ "messege": "게시글을 수정하였습니다." });
 })
 
