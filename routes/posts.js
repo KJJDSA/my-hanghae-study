@@ -14,8 +14,8 @@ router.get("/", async (req, res) => {
       cratedAt: post.createdAt
     };
   });
-
-  res.json({ data: results });
+  const answer = results.sort((a, b) => a["createdAt"] - b["createdAt"])
+  res.json({ data: answer });
 });
 
 // 포스트 만들기

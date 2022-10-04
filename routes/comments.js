@@ -14,8 +14,8 @@ router.get("/:postId", async (req, res) => {
       cratedAt: com.createdAt
     };
   });
-
-  res.json({ data: results });
+  const answer = results.sort((a, b) => a["createdAt"] - b["createdAt"])
+  res.json({ data: answer });
 });
 
 // 댓글달기

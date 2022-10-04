@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const connect = () => {
   mongoose
-    .connect("mongodb://admin:1234@127.0.0.1/spa_week3?authSource=admin") //아래거로 하면 연결이 안된다. 
+    .connect("mongodb://127.0.0.1/spa_week3") //아래거로 하면 연결이 안된다. 
     // .connect("mongodb://admin:1234@127.0.0.1/spa_week3?authSource=admin")
     // .connect("mongodb://127.0.0.1/spa_week3")
     // .connect("mongodb://localhost:3000/spa_mall")
