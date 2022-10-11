@@ -4,7 +4,7 @@ const { User } = require("./models"); // models 모듈
 const jwt = require("jsonwebtoken")
 const authMiddleware = require("./middlewares/authMiddleware");
 const router = require("./routes");
-const port = 8080
+const port = 3000
 
 const app = express();
 
