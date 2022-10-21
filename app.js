@@ -22,6 +22,10 @@ app.use(cookieParser());
 app.use('/api', routes);
 app.use(cors());
 
+app.get('/', (req, res) => {
+  res.send("hello!")
+})
+
 //가짜 authMiddleware 테스트기
 app.post('/authMiddlewareTest', authMiddleware, (req, res) => {
   const result = req.body
