@@ -22,9 +22,9 @@
 ✨ Backend 기술 스택
 
 - express
-- mysql
 - sequelize
 - jsonwebtoken
+- bcrypt
        
 
 
