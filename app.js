@@ -1,15 +1,15 @@
 const express = require('express');
 const Http = require('http');
 const routes = require('./routes');
-
+require('dotenv').config();
 var cors = require('cors');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.js');
 
-require('dotenv').config();
-const port = process.env.EXPRESS_PORT;
 
+const port = process.env.EXPRESS_PORT;
+console.log(port)
 const cookieParser = require('cookie-parser');
 const authMiddleware = require('./middlewares/authMiddleware');
 const app = express();

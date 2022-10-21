@@ -48,7 +48,7 @@ class Commentscontroller {
       const { comment } = req.body;
       const { userId } = res.locals.user;
       const data = await this.commentsservice.putComment({ commentId, userId, comment })
-      return res.status(201).send("댓글수정실패")
+      return res.status(201).send("댓글수정성공")
     } catch (error) {
       console.log(error.name + ":" + error.message)
       return res.status(error.status || 400).send({
