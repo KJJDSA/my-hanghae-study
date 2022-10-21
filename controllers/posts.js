@@ -20,15 +20,14 @@ class PostsController {
     console.log(req.file, req.body.url); //미들웨어 확인용
     const userId = res.locals.user.userId;
     const { title, content } = req.body;
-    const img = req.body.url; // 이미지 데이터X 주소만 가져옴
+    const img = `/img/${req.file.filename}`; // 이미지 데이터X 주소만 가져옴
     if (!req.headers.authorization) {
       res.status(400);
       return;
     }
-
     const createPostData = await this.postService.createPost(userId, title, content, img);
+
     res.status(201).json({ data: createPostData });
-    //res.json({url: `/img/${req.file.filename}`});
   };
 
   updatePost = async (req, res, next) => {
