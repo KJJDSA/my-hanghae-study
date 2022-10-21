@@ -26,10 +26,3 @@
 - jsonwebtoken
 - bcrypt
        
-
-
-⚡ 기능 소개
-
-1. 게시글, 댓글 CRUD
-
-2. 서버 배포 및 관리
