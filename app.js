@@ -8,12 +8,12 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.json');
 
 require('dotenv').config();
+const port = process.env.EXPRESS_PORT;
 
 const cookieParser = require('cookie-parser');
 const authMiddleware = require('./middlewares/authMiddleware');
 const app = express();
 const http = Http.createServer(app);
-const port = process.env.EXPRESS_PORT || 6060;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
