@@ -6,7 +6,7 @@ module.exports = {
     "title": "4조 MINI SWAGGER~",
     "description": "Estagram & blind 게시판을 만드는 4조의 스웨거입니당"
   },
-  "host": "http://13.124.143.112/",
+  "host": process.env.EC2,
   "basePath": "/",
   "tags": [
     {

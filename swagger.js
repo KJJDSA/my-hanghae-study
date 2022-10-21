@@ -8,7 +8,7 @@ const doc = {
     title: '4조 MINI SWAGGER~',
     description: '4조 MINI SWAGGER데스',
   },
-  host: `localhost:${post}`,
+  host: 'localhost:6060',
   schemes: ['http'],
   consumes: ['application/json'],
   produces: ['application/json'],
