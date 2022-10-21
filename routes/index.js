@@ -6,12 +6,10 @@ const Comments = require('./comments');
 const Login = require('./login');
 const SignUp = require('./signup');
 
-
-
-router.use('/likes/', Likes);
-router.use('/posts/', Posts);
-router.use('/comments/', Comments);
-router.use('/login/', Login);
-router.use('/signup/', SignUp);
+router.use('/likes', Likes);
+router.use('/posts', Posts);
+router.use('/comments', Comments);
+router.use('/login', Login);
+router.use('/signup', SignUp);
 
 module.exports = router;
