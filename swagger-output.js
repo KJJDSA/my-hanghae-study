@@ -1,11 +1,13 @@
-{
+require('dotenv').config();
+const port = process.env.EXPRESS_PORT;
+module.exports = {
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
     "title": "4조 MINI SWAGGER~",
     "description": "Estagram & blind 게시판을 만드는 4조의 스웨거입니당"
   },
-  "host": "localhost: 3000",
+  "host": port,
   "basePath": "/",
   "tags": [
     {
@@ -99,12 +101,12 @@
         "description": "postId를 입력하면 해당 post의 댓글을 확인할 수 있습니다.",
         "parameters": [
           {
-          "name": "postId",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Ok"
