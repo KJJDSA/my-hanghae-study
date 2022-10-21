@@ -7,7 +7,7 @@ module.exports = {
     "title": "4조 MINI SWAGGER~",
     "description": "Estagram & blind 게시판을 만드는 4조의 스웨거입니당"
   },
-  "host": port,
+  "host": `localhost: ${port}`,
   "basePath": "/",
   "tags": [
     {
