@@ -1,5 +1,6 @@
 require('dotenv').config();
 const port = process.env.EXPRESS_PORT;
+const IP = process.env.EC2
 module.exports = {
   "swagger": "2.0",
   "info": {
@@ -7,7 +8,7 @@ module.exports = {
     "title": "4조 MINI SWAGGER~",
     "description": "Estagram & blind 게시판을 만드는 4조의 스웨거입니당"
   },
-  "host": `localhost: ${port}`,
+  "host": `${IP}:${port}`,
   "basePath": "/",
   "tags": [
     {
