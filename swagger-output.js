@@ -10,8 +10,28 @@ module.exports = {
   "basePath": "/",
   "tags": [
     {
-      "name": "User",
-      "description": "Endpoints"
+      "name": "임시API",
+      "description": "테스트를 위해 만든 임시 API"
+    },
+    {
+      "name": "회원 가입API",
+      "description": ""
+    },
+    {
+      "name": "로그인API",
+      "description": ""
+    },
+    {
+      "name": "게시물API",
+      "description": ""
+    },
+    {
+      "name": "댓글API",
+      "description": ""
+    },
+    {
+      "name": "좋아요API",
+      "description": ""
     }
   ],
   "schemes": [
@@ -35,6 +55,7 @@ module.exports = {
     "/authMiddlewareTest": {
       "post": {
         "description": "회원가입과 토큰발급이 필요해 만든 한 임시 API입니다.",
+        "tags": ["임시API"],
         "parameters": [
           {
             "name": "body",
@@ -68,6 +89,7 @@ module.exports = {
     "/postMaker": {
       "post": {
         "description": "comment 기능을 위해서 임시로 만든 API입니다.",
+        "tags": ["임시API"],
         "parameters": [
           {
             "name": "body",
@@ -98,6 +120,7 @@ module.exports = {
     "/api/comments/{postId}": {
       "get": {
         "description": "postId를 입력하면 해당 post의 댓글을 확인할 수 있습니다.",
+        "tags": ["댓글API"],
         "parameters": [
           {
             "name": "postId",
@@ -114,6 +137,7 @@ module.exports = {
       },
       "post": {
         "description": "해당 postId에 댓글을 생성할 수 있는 API입니다. 로그인이 필요합니다.",
+        "tags": ["댓글API"],
         "parameters": [
           {
             "name": "postId",
@@ -147,6 +171,7 @@ module.exports = {
     "/api/comments/{commentId}": {
       "put": {
         "description": "comment의 고유 Id를 입력하면 수정이 가능합니다. 로그인이 필요합니다.",
+        "tags": ["댓글API"],
         "parameters": [
           {
             "name": "commentId",
@@ -178,6 +203,7 @@ module.exports = {
       },
       "delete": {
         "description": "comment의 고유 Id를 입력하면 삭제가 가능합니다. 로그인이 필요합니다.",
+        "tags": ["댓글API"],
         "parameters": [
           {
             "name": "commentId",
