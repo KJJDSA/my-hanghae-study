@@ -22,19 +22,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
     nickname: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     title: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     content: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     imgUrl: {
       type: DataTypes.STRING,
