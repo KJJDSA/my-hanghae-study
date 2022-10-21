@@ -7,8 +7,8 @@ const Login = require('./login');
 const SignUp = require('./signup');
 
 router.use('/likes', Likes);
-router.use('/posts', Posts);
-router.use('/comments', Comments);
+router.use('/star/posts', Posts);
+router.use('/star/comments', Comments);
 router.use('/login', Login);
 router.use('/signup', SignUp);
 

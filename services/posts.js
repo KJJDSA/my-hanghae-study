@@ -13,8 +13,8 @@ class PostService {
     return allPost;
   };
 
-  findPostById = async (postsId) => {
-    const findPost = await this.postRepository.findPostById(postsId);
+  findPostById = async (postId) => {
+    const findPost = await this.postRepository.findPostById(postId);
 
     return findPost;
   };
@@ -25,37 +25,37 @@ class PostService {
     return createPostData;
   };
 
-  updatePost = async (postsId, nickname, title, content) => {
-    await this.postRepository.updatePost(postsId, title, content);
-    const findPost = await this.postRepository.findPostById(postsId);
+  updatePost = async (postId, userId, title, content) => {
+    await this.postRepository.updatePost(postId, title, content);
+    const findPost = await this.postRepository.findPostById(postId);
     if (!findPost) throw new Error("Post doesn't exist");
-    if (findPost.user !== nickname) {
+    if (findPost.userId !== userId) {
       return '권한이 없습니다.';
     }
 
     return findPost;
   };
 
-  deletePost = async (postsId, nickname) => {
-    const findPost = await this.postRepository.findPostById(postsId);
+  deletePost = async (postId, userId) => {
+    const findPost = await this.postRepository.findPostById(postId);
     if (!findPost) throw new Error("Post doesn't exist");
-    if (findPost.user !== nickname) {
+    if (findPost.userId !== userId) {
       return '권한이 없습니다.';
     }
 
-    await this.postRepository.deletePost(postsId);
+    await this.postRepository.deletePost(postId);
 
     return findPost;
   };
 
-  likePost = async (postsId, like, nickname) => {
+  likePost = async (postId, like, userId) => {
     if (like) {
-      await this.postRepository.createLike(postsId, nickname);
-      await this.postRepository.countLike(postsId);
+      await this.postRepository.createLike(postId, userId);
+      await this.postRepository.countLike(postId);
       return '좋등';
     } else {
-      await this.postRepository.deleteLike(postsId, nickname);
-      await this.postRepository.discountLike(postsId);
+      await this.postRepository.deleteLike(postId, userId);
+      await this.postRepository.discountLike(postId);
       return '좋취';
     }
   };

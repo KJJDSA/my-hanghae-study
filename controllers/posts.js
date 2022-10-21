@@ -10,15 +10,15 @@ class PostsController {
   };
 
   getPostById = async (req, res, next) => {
-    const { postsId } = req.params;
-    const post = await this.postService.findPostById(postsId);
+    const { postId } = req.params;
+    const post = await this.postService.findPostById(postId);
 
     res.status(200).json({ data: post });
   };
 
   createPost = async (req, res, next) => {
     console.log(req.file, req.body.url); //미들웨어 확인용
-    const nickname = res.locals.user.nickname;
+    const userId = res.locals.user.userId;
     const { title, content } = req.body;
     const img = req.body.url; // 이미지 데이터X 주소만 가져옴
     if (!req.headers.authorization) {
@@ -26,35 +26,36 @@ class PostsController {
       return;
     }
 
-    const createPostData = await this.postService.createPost(nickname, title, content, img);
+    const createPostData = await this.postService.createPost(userId, title, content, img);
     res.status(201).json({ data: createPostData });
+    //res.json({url: `/img/${req.file.filename}`});
   };
 
   updatePost = async (req, res, next) => {
-    const { postsId } = req.params;
+    const { postId } = req.params;
     const { title, content } = req.body;
-    const nickname = res.locals.user.nickname;
+    const userId = res.locals.user.userId;
 
-    await this.postService.updatePost(postsId, nickname, title, content);
+    await this.postService.updatePost(postId, userId, title, content);
 
     res.status(204);
   };
 
   deletePost = async (req, res, next) => {
-    const { postsId } = req.params;
-    const nickname = res.locals.user.nickname;
+    const { postId } = req.params;
+    const userId = res.locals.user.userId;
 
-    await this.postService.deletePost(postsId, nickname);
+    await this.postService.deletePost(postId, userId);
 
     res.status(204);
   };
 
   likePost = async (req, res, next) => {
-    const { postsId } = req.params;
+    const { postId } = req.params;
     const { like } = req.body;
-    const nickname = res.locals.user.nickname;
+    const userId = res.locals.user.userId;
 
-    const likePost = await this.postService.likePost(postsId, like, nickname);
+    await this.postService.likePost(postId, like, userId);
     res.status(204);
   };
 }

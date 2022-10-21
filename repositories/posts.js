@@ -8,8 +8,8 @@ class PostRepository {
     return posts;
   };
 
-  findPostById = async (postsId) => {
-    const post = await Posts.findByPk(postsId);
+  findPostById = async (postId) => {
+    const post = await Posts.findByPk(postId);
 
     return post;
   };
@@ -27,36 +27,36 @@ class PostRepository {
     return createPostData;
   };
 
-  updatePost = async (postsId, title, content) => {
-    const updatePostData = await Posts.update({ title, content }, { where: { postsId } });
+  updatePost = async (postId, title, content) => {
+    const updatePostData = await Posts.update({ title, content }, { where: { postId } });
 
     return updatePostData;
   };
 
-  deletePost = async (postsId) => {
-    const updatePostData = await Posts.destroy({ where: { postsId } });
+  deletePost = async (postId) => {
+    const updatePostData = await Posts.destroy({ where: { postId } });
 
     return updatePostData;
   };
 
-  createLike = async (postsId, nickname) => {
-    const createLike = await Likes.create({ user: nickname, like: postsId });
+  createLike = async (postId, userId) => {
+    const createLike = await Likes.create({ user: userId, like: postId });
   };
 
-  countLike = async (postsId) => {
-    const countLike = await Posts.increment({ likeSum: 1 }, { where: { postsId: postsId } });
+  countLike = async (postId) => {
+    const countLike = await Posts.increment({ likeSum: 1 }, { where: { postId: postId } });
     return countLike;
   };
 
-  deleteLike = async (postsId, nickname) => {
+  deleteLike = async (postId, userId) => {
     const deleteLike = await Likes.destroy({
-      where: { user: nickname, like: postsId },
+      where: { userId: userId, like: postId },
     });
     return deleteLike;
   };
 
-  discountLike = async (postsId) => {
-    const discountLike = await Posts.decrement({ likeSum: 1 }, { where: { postsId: postsId } });
+  discountLike = async (postId) => {
+    const discountLike = await Posts.decrement({ likeSum: 1 }, { where: { postId: postId } });
     return discountLike;
   };
 }

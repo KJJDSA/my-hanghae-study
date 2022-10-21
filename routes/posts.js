@@ -5,7 +5,7 @@ const multer = require('multer');
 const path = require('path');
 // const fs = require('fs');
 
-const PostsController = require('../controllers/posts.controller');
+const PostsController = require('../controllers/posts');
 const postsController = new PostsController();
 
 const upload = multer({
@@ -21,16 +21,15 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-const upload2 = multer();
+// const upload2 = multer();
 
 router.get('/', postsController.getPosts);
-router.get('/like', authMiddleware, postsController.getLikedPosts);
-router.get('/:postsId', postsController.getPostById);
+router.get('/:postId', postsController.getPostById);
 //이미지를 업로드받고 저장경로를 client에 전달해줌 미들웨어의 정적파일을 제공하는 라우터
-router.post('/', authMiddleware, upload.array('many'), postsController.createPost);
+router.post('/', authMiddleware, upload.array('many'), postsController.createPost); //single, for문?
 // router.post('/img', authMiddleware, upload.array('many'), postsController.uploadImage);
-router.put('/:postsId', authMiddleware, postsController.updatePost);
-router.delete('/:postsId', authMiddleware, postsController.deletePost);
-router.put('/:postsId/like', authMiddleware, postsController.likePost);
+router.put('/:postId', authMiddleware, postsController.updatePost);
+router.delete('/:postId', authMiddleware, postsController.deletePost);
+router.put('/likes/:postId', authMiddleware, postsController.likePost);
 
 module.exports = router;
