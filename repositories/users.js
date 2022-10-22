@@ -4,17 +4,15 @@ const bcrypt = require('bcrypt')
 
 
 //UsersRepository 클래스에 user 모델을 생성자로 넣어줌.
-class UsersRepository {
+class Users {
     constructor() {
         this.User = User;
     }
     
-    //특정 loginId를 가지는 유져가 있는지 확인
+    //회원가입, 특정 loginId를 가지는 유져가 있는지 확인
     findUser = async ({ loginId }) => {
         const user = await this.User.findOne({
-            where: {
-                  loginId  //여기 봐주세욥 loginID랑 nickname이랑 둘다 비교할까요?아니면 로그인 아이디만?
-            },
+            where: { loginId },
         });
         return user;
     };
@@ -49,4 +47,4 @@ class UsersRepository {
 }
 
 
-module.exports = UsersRepository;
+module.exports = Users;

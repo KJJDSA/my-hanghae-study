@@ -1,8 +1,8 @@
-const UsersRepository = require('../repositories/users.repository');
-const bcrypt = require('bcrypt')
+const UsersRepository = require('../repositories/users');
+// const bcrypt = require('bcrypt')
 
 //UserService class를 생성
-class UsersService {
+class Users {
     //UserService class에서 userRepository라는 constructor 생성
     constructor() {
         this.userRepository = new UsersRepository; };
@@ -44,7 +44,7 @@ class UsersService {
         
         if (loginData === null) return loginData;
         
-        //userLogin에 userID까지 넣어줌 => controller로 가서 userId로 token생성할 예정
+        //userLogin에 userID까지 넣어줌 => controller로 가서 userId로 token 생성할 예정
         return {
             loginId: loginData.loginId,
             userId: loginData.userId,
@@ -54,4 +54,4 @@ class UsersService {
     
 }
 
-module.exports = UsersService;
+module.exports = Users;

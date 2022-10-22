@@ -1,8 +1,10 @@
-const UsersService = require('../services/users.service');
+const UsersService = require('../services/users');
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
+const cookie = require('cookie-parser')
+require('dotenv').config();
 
-class UsersController {
+class Users {
     constructor() {
         this.UsersService = new UsersService();
     }
@@ -26,6 +28,7 @@ class UsersController {
             });
             
             res.status(201).json({ data : user });
+            
         } catch ( error ) {
             console.error(error);
             res.status(error.status || 400);
@@ -38,15 +41,14 @@ class UsersController {
         //바디에서 아이디 비번을 가져와서
         const { loginId, password } = req.body;
         const login = await this.UsersService.userLogin( loginId, password );
-        const authorization = req.headers.cookie;
-        
-        
+        const authorization =  req.cookies[process.env.COOKIE_NAME];
+    
         //login이 null이면 가입 정보를 못 찾음.
         if ( login === null ) {
             return res.status(404).send({ errorMessage : "가입 정보를 찾을 수 없습니다" });
         }
         
-        const token = jwt.sign({ userId : login.userId }, process.env.JWT_SECRET_KEY,{ expiresIn: '30m' })
+        const token = jwt.sign({ userId : login.userId }, process.env.JWT_SECRET_KEY,{ expiresIn: '600m' })
         
         //header에 정보가 있으면 "이미 로그인이 되어있습니다." 반환
         if ( authorization ) {
@@ -57,10 +59,10 @@ class UsersController {
         }
         
         //token 값을 userId로 생성
-        res.cookie('token', token)
+        res.cookie(process.env.COOKIE_NAME, `Bearer ${token}`, { expires: expires })   //hh99 , bearer : token값 엄청긴거
         res.send({"message": "로그인 성공"})
         
         };
 }
 
-module.exports = UsersController;
+module.exports = Users;
