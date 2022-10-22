@@ -10,7 +10,7 @@ module.exports = {
   "basePath": "/",
   "tags": [
     {
-      "name": "회원 가입API",
+      "name": "회원가입API",
       "description": ""
     },
     {
@@ -271,7 +271,6 @@ module.exports = {
     "/api/users/": {
       "get": {
         "description": "기본API(아무 기능 없음)",
-        "tags": ["회원가입API"],
         "parameters": [],
         "responses": {
           "200": {
