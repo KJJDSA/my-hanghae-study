@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middlewares/auth-middleware');
+const authMiddleware = require('../middleware/auth-middleware');
 const multer = require('multer');
 const path = require('path');
 const AWS = require('aws-sdk');
+const multerS3 = require('multer-s3');
 
 const PostsController = require('../controllers/posts');
 const postsController = new PostsController();
