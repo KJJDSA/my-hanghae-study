@@ -9,10 +9,9 @@ class PostsController {
       const posts = await this.postService.getPosts();
 
       res.status(200).json({ data: posts });
-
     } catch (error) {
-      console.log(`${error.name}:${error.message}`)
-      res.status(400).json({ Type: error.name, Message: error.message })
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
 
@@ -22,10 +21,9 @@ class PostsController {
       const post = await this.postService.findPostById(postId);
 
       res.status(200).json({ data: post });
-
     } catch (error) {
-      console.log(`${error.name}:${error.message}`)
-      res.status(400).json({ Type: error.name, Message: error.message })
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
 
@@ -39,14 +37,18 @@ class PostsController {
         res.status(400);
         return;
       }
-      const createPostData = await this.postService.createPost({ userId, nickname, title, content, imgUrl }); //imgUrl 잠시 지움
-
+      const createPostData = await this.postService.createPost({
+        userId,
+        nickname,
+        title,
+        content,
+        imgUrl,
+      }); //imgUrl 잠시 지움
+      res.status(200).json({ data: createPostData });
     } catch (error) {
-      console.log(`${error.name}:${error.message}`)
-      res.status(400).json({ Type: error.name, Message: error.message })
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
     }
-
-    res.status(201).json({ data: createPostData });
   };
 
   updatePost = async (req, res, next) => {
@@ -56,10 +58,10 @@ class PostsController {
       const userId = res.locals.user.userId;
 
       await this.postService.updatePost(postId, userId, title, content);
-
+      res.status(200).json({ message: '게시글 수정완료' });
     } catch (error) {
-      console.log(`${error.name}:${error.message}`)
-      res.status(400).json({ Type: error.name, Message: error.message })
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
 
@@ -69,10 +71,10 @@ class PostsController {
       const userId = res.locals.user.userId;
 
       await this.postService.deletePost(postId, userId);
-
+      res.status(200).json({ message: '게시글 삭제 완료' });
     } catch (error) {
-      console.log(`${error.name}:${error.message}`)
-      res.status(400).json({ Type: error.name, Message: error.message })
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
 
@@ -82,12 +84,11 @@ class PostsController {
       const { like } = req.body;
       const userId = res.locals.user.userId;
 
-      await this.postService.likePost(postId, like, userId);
-      res.status(204).json({ message: "GOOD" });
-
+      const likePost = await this.postService.likePost(postId, like, userId);
+      res.status(200).json({ message: likePost });
     } catch (error) {
-      console.log(`${error.name}:${error.message}`)
-      res.status(400).json({ Type: error.name, Message: error.message })
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
 }
