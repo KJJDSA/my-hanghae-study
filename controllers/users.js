@@ -12,7 +12,7 @@ class Users {
     //회원가입
     createUser = async (req, res) => {
         try {
-            const { loginId, nickname, password, profileImgUrl, intro } = req.body;
+            const { loginId, nickname, password, confirm, profileImgUrl, intro } = req.body;
 
             //입력값이 없을때 걸러주는거
             if (!loginId || !nickname || !password) {
@@ -23,6 +23,7 @@ class Users {
                 loginId,
                 nickname,
                 password,
+                confirm,
                 profileImgUrl,
                 intro,
             });
