@@ -1,5 +1,6 @@
 const { User } = require('../models');
 const{ Op } = require('sequelize');
+const bcrypt = require('bcrypt')
 
 
 //UsersRepository 클래스에 user 모델을 생성자로 넣어줌.
@@ -41,6 +42,7 @@ class UsersRepository {
     // 로그인
     userLogin = async ( loginId, password ) => {
         const loginData = await this.User.findOne({ where: { loginId, password } });
+        
         return loginData;
         
     };

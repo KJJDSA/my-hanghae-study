@@ -1,4 +1,5 @@
 const UsersRepository = require('../repositories/users.repository');
+const bcrypt = require('bcrypt')
 
 //UserService class를 생성
 class UsersService {
@@ -6,7 +7,7 @@ class UsersService {
     constructor() {
         this.userRepository = new UsersRepository; };
     
-    
+    //회원가입
     createUser = async ({
         loginId,
         nickname,
@@ -21,10 +22,15 @@ class UsersService {
             throw new Error("동일한 ID를 가진 User가 존재합니다.");
         }
         
+        // //bcrypt를 사용해서 password를 암호화 -> hasedPw
+        // const salt = await bcrypt.genSalt(5);
+        // const hashedPW = await bcrypt.hash(password, salt);
+        
         const user = await this.userRepository.createUser({
             loginId,
             nickname,
             password,
+            // hashedPW, // hash 된 password 저장
             profileImgUrl,
             intro,
         });
