@@ -17,10 +17,10 @@ class PostsController {
   };
 
   createPost = async (req, res, next) => {
-    console.log(req.file, req.body.url); //미들웨어 확인용
+    console.log(req.file); //미들웨어 확인용
     const userId = res.locals.user.userId;
     const { title, content } = req.body;
-    const img = `/img/${req.file.filename}`; // 이미지 데이터X 주소만 가져옴
+    const img = req.file.location; // 이미지 데이터X 저장된 경로만 가져옴
     if (!req.headers.authorization) {
       res.status(400);
       return;
