@@ -1,4 +1,5 @@
-const PostService = require('../services/posts.service');
+const PostService = require('../services/posts');
+// require('dotenv').config();
 
 class PostsController {
   postService = new PostService();
@@ -18,14 +19,14 @@ class PostsController {
 
   createPost = async (req, res, next) => {
     console.log(req.file); //미들웨어 확인용
-    const userId = res.locals.user.userId;
+    const { userId, nickname } = res.locals.user;
     const { title, content } = req.body;
-    const img = req.file.location; // 이미지 데이터X 저장된 경로만 가져옴
-    if (!req.headers.authorization) {
+    const imgUrl = /**req.file.location ||**/ null; // 이미지 데이터X 저장된 경로만 가져옴 // 잠시 주석처리
+    if (!req.cookies[process.env.COOKIE_NAME]) {
       res.status(400);
       return;
     }
-    const createPostData = await this.postService.createPost(userId, title, content, img);
+    const createPostData = await this.postService.createPost({ userId, nickname, title, content, imgUrl }); //imgUrl 잠시 지움
 
     res.status(201).json({ data: createPostData });
   };
@@ -37,7 +38,7 @@ class PostsController {
 
     await this.postService.updatePost(postId, userId, title, content);
 
-    res.status(204);
+    res.status(204).json({ message: "GOOD" });
   };
 
   deletePost = async (req, res, next) => {
@@ -46,7 +47,7 @@ class PostsController {
 
     await this.postService.deletePost(postId, userId);
 
-    res.status(204);
+    res.status(204).json({ message: "GOOD" });
   };
 
   likePost = async (req, res, next) => {
@@ -55,7 +56,7 @@ class PostsController {
     const userId = res.locals.user.userId;
 
     await this.postService.likePost(postId, like, userId);
-    res.status(204);
+    res.status(204).json({ message: "GOOD" });
   };
 }
 
