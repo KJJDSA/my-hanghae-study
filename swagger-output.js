@@ -10,8 +10,24 @@ module.exports = {
   "basePath": "/",
   "tags": [
     {
-      "name": "User",
-      "description": "Endpoints"
+      "name": "회원 가입API",
+      "description": ""
+    },
+    {
+      "name": "로그인API",
+      "description": ""
+    },
+    {
+      "name": "게시글API",
+      "description": ""
+    },
+    {
+      "name": "댓글API",
+      "description": ""
+    },
+    {
+      "name": "미완성API",
+      "description": "이건 쓰시면 서버 꺼질 수 있어요!!!"
     }
   ],
   "schemes": [
@@ -34,7 +50,7 @@ module.exports = {
   "paths": {
     "/": {
       "get": {
-        "description": "",
+        "description": "Hello! 를 뱉는 기본API",
         "parameters": [],
         "responses": {
           "200": {
@@ -46,12 +62,30 @@ module.exports = {
     "/api/star/posts/": {
       "get": {
         "description": "",
+        "tags": ["게시글API"],
         "parameters": [],
         "responses": {}
       },
       "post": {
         "description": "",
-        "parameters": [],
+        "tags": ["게시글API"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "example": "제목"
+                },
+                "content": {
+                  "example": "내용"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "401": {
             "description": "Unauthorized"
@@ -62,17 +96,41 @@ module.exports = {
     "/api/star/posts/{postId}": {
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
-      },
-      "put": {
-        "description": "",
+        "tags": ["게시글API"],
         "parameters": [
           {
             "name": "postId",
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "description": "",
+        "tags": ["게시글API"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "example": "수정할 제목"
+                },
+                "content": {
+                  "example": "수정할 내용"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -83,6 +141,7 @@ module.exports = {
       },
       "delete": {
         "description": "",
+        "tags": ["게시글API"],
         "parameters": [
           {
             "name": "postId",
@@ -100,7 +159,8 @@ module.exports = {
     },
     "/api/star/posts/likes/{postId}": {
       "put": {
-        "description": "",
+        "description": "이건 하시면 서버 꺼짐....",
+        "tags": ["미완성API"],
         "parameters": [
           {
             "name": "postId",
@@ -119,17 +179,38 @@ module.exports = {
     "/api/star/comments/{postId}": {
       "get": {
         "description": "",
-        "parameters": [],
-        "responses": {}
-      },
-      "post": {
-        "description": "",
+        "tags": ["댓글API"],
         "parameters": [
           {
             "name": "postId",
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {}
+      },
+      "post": {
+        "description": "",
+        "tags": ["댓글API"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "example": "코멘트쓰셈"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -142,12 +223,25 @@ module.exports = {
     "/api/star/comments/{commentId}": {
       "put": {
         "description": "",
+        "tags": ["댓글API"],
         "parameters": [
           {
             "name": "commentId",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "example": "수정할 코멘트 작성하세요."
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -158,6 +252,7 @@ module.exports = {
       },
       "delete": {
         "description": "",
+        "tags": ["댓글API"],
         "parameters": [
           {
             "name": "commentId",
@@ -175,7 +270,8 @@ module.exports = {
     },
     "/api/users/": {
       "get": {
-        "description": "",
+        "description": "기본API(아무 기능 없음)",
+        "tags": ["회원가입API"],
         "parameters": [],
         "responses": {
           "200": {
@@ -184,15 +280,55 @@ module.exports = {
         }
       },
       "post": {
-        "description": "",
-        "parameters": [],
+        "description": "회원가입",
+        "tags": ["회원가입API"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "loginId": {
+                  "example": "아이디"
+                },
+                "nickname": {
+                  "example": "닉네임"
+                },
+                "password": {
+                  "example": "패스워드"
+                },
+                "confirm": {
+                  "example": "패스워드"
+                }
+              }
+            }
+          }
+        ],
         "responses": {}
       }
     },
     "/api/users/login": {
       "post": {
-        "description": "",
-        "parameters": [],
+        "description": "로그인",
+        "tags": ["로그인API"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "loginId": {
+                  "example": "아이디"
+                },
+                "password": {
+                  "example": "패뜨워드"
+                }
+              }
+            }
+          }
+        ],
         "responses": {}
       }
     }
@@ -214,7 +350,7 @@ module.exports = {
     "User": {
       "type": "object",
       "properties": {
-        "userId": {
+        "loginId": {
           "type": "number",
           "example": 1
         },
