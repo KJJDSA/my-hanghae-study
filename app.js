@@ -1,8 +1,7 @@
 const express = require('express');
 const Http = require('http');
 const routes = require('./routes');
-
-var cors = require('cors');
+const cors = require('cors');
 
 // const swaggerUi = require('swagger-ui-express');
 // const swaggerFile = require('./swagger-output.json');
@@ -20,7 +19,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api', routes);
-app.use(cors());
+
+app.use(cors({
+  origin: '*', // 출처 허용 옵션
+  credential: 'true' // 사용자 인증이 필요한 리소스(쿠키 ..등) 접근
+}));
 
 // try {
 //   fs.readdirSync('uploads');
@@ -30,8 +33,9 @@ app.use(cors());
 // }
 
 app.get('/', (req, res) => {
-  res.send('hello!');
-});
+  res.send("hello!")
+})
+
 // app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 http.listen(port, () => {
