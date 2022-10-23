@@ -28,13 +28,9 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING
     },
-    confirm: {
-      allowNull: false,
-      type: DataTypes.STRING
-    },
     profileImgUrl: {
       type: DataTypes.STRING,
-      defaultValue: "./Asset/profileImg/defult_img/default_img.jpeg"
+      defaultValue: "public/images/defaultProfile/default_img.jpeg"
     },
     intro: {
       type: DataTypes.STRING,
