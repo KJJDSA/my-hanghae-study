@@ -1,5 +1,4 @@
 const PostService = require('../services/posts');
-// require('dotenv').config();
 
 class PostsController {
   postService = new PostService();
@@ -29,10 +28,12 @@ class PostsController {
 
   createPost = async (req, res, next) => {
     try {
-      // console.log(req.file); //미들웨어 확인용
+      console.log(req.body);
+      const imgUrl = req.files.location || null;
       const { userId, nickname } = res.locals.user;
       const { title, content } = req.body;
-      const imgUrl = `/img/${req.file.location}` || null; // 이미지 데이터X 저장된 경로만 가져옴 // 잠시 주석처리
+
+      // 이미지 데이터X 저장된 경로만 가져옴 // 잠시 주석처리
       if (!req.cookies[process.env.COOKIE_NAME]) {
         res.status(400);
         return;

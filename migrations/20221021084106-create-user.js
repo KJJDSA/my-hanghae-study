@@ -23,7 +23,7 @@ module.exports = {
       },
       profileImgUrl: {
         type: Sequelize.STRING,
-        defaultValue: "public/images/default_img.jpeg"
+        defaultValue: "public/images/defaultProfile/default_img.jpeg"
       },
       intro: {
         type: Sequelize.STRING,
