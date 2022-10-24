@@ -11,15 +11,16 @@ AWS.config.update({
   region: 'ap-northeast-2',
 });
 
-module.exports = multer({
+const upload = multer({
   storage: multerS3({
     s3: new AWS.S3(),
     bucket: 'team4-mini',
     async key(req, file, cb) {
-      console.log(file.originalname);
       await cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
       console.log(file.originalname);
     },
   }),
   limits: { fileSize: 5 * 2000 * 2000 },
 });
+
+exports.upload = multer(upload);
