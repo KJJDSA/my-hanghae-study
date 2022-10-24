@@ -28,12 +28,10 @@ class PostsController {
 
   createPost = async (req, res, next) => {
     try {
-      console.log(req.body);
-      const imgUrl = req.files.location || null;
+      // const imgUrl = req.files.location; //잠시 주석처리
       const { userId, nickname } = res.locals.user;
       const { title, content } = req.body;
 
-      // 이미지 데이터X 저장된 경로만 가져옴 // 잠시 주석처리
       if (!req.cookies[process.env.COOKIE_NAME]) {
         res.status(400);
         return;
@@ -43,7 +41,6 @@ class PostsController {
         nickname,
         title,
         content,
-        imgUrl,
       }); //imgUrl 잠시 지움
       res.status(200).json({ data: createPostData });
     } catch (error) {
