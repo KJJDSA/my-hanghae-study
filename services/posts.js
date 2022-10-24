@@ -27,13 +27,14 @@ class PostService {
     }
   };
 
-  createPost = async ({ userId, nickname, title, content }) => {
+  createPost = async ({ userId, nickname, title, content, imgUrl }) => {
     try {
       const createPostData = await this.postRepository.createPost({
         userId,
         nickname,
         title,
         content,
+        imgUrl,
       });
 
       return createPostData;

@@ -2,7 +2,6 @@ const multer = require('multer');
 const path = require('path');
 const AWS = require('aws-sdk');
 const multerS3 = require('multer-s3');
-console.log(AWS, '1234');
 require('dotenv').config();
 
 AWS.config.update({
@@ -15,8 +14,8 @@ const upload = multer({
   storage: multerS3({
     s3: new AWS.S3(),
     bucket: 'team4-mini',
-    async key(req, file, cb) {
-      await cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
+    key(req, file, cb) {
+      cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
       console.log(file.originalname);
     },
   }),
