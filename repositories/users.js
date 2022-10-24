@@ -1,6 +1,6 @@
 const { User } = require('../models');
 const { Op } = require('sequelize');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
 
 
 //UsersRepository 클래스에 user 모델을 생성자로 넣어줌.
@@ -15,6 +15,8 @@ class Users {
             where: { loginId },
         });
         return user;
+
+    
     };
 
     // createUser라는 async function 생성 .
