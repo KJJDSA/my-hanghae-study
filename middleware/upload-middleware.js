@@ -16,7 +16,7 @@ const upload = multer({
     bucket: 'team4-mini',
     key(req, file, cb) {
       cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`);
-      console.log(file.originalname);
+
     },
   }),
   limits: { fileSize: 5 * 2000 * 2000 },
