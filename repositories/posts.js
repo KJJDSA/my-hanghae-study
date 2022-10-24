@@ -22,13 +22,14 @@ class PostRepository {
     }
   };
 
-  createPost = async ({ userId, nickname, title, content }) => {
+  createPost = async ({ userId, nickname, title, content, imgUrl }) => {
     try {
       const createPostData = await Post.create({
         userId,
         nickname,
         title,
         content,
+        imgUrl,
         likeSum: 0,
       });
 
