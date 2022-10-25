@@ -80,9 +80,10 @@ class PostsController {
     try {
       const { postId } = req.params;
       const { title, content } = req.body;
+      const imgUrl = req.file.location;
       const userId = res.locals.user.userId;
 
-      await this.postService.updatePost(postId, userId, title, content);
+      await this.postService.updatePost(postId, userId, title, content, imgUrl);
       res.status(200).json({ message: '게시글 수정완료' });
     } catch (error) {
       console.log(`${error.name}:${error.message}`);

@@ -21,7 +21,7 @@ class PostRepository {
       throw error;
     }
   };
-  // 1025일새벽 1시 프론트와 연결 테스를 위해 주석처리함
+
   createPost = async ({ userId, nickname, title, content, imgUrl }) => {
     try {
       const createPostData = await Post.create({
@@ -39,9 +39,9 @@ class PostRepository {
     }
   };
 
-  updatePost = async (postId, title, content) => {
+  updatePost = async (postId, imgUrl, title, content) => {
     try {
-      const updatePostData = await Post.update({ title, content }, { where: { postId } });
+      const updatePostData = await Post.update({ imgUrl, title, content }, { where: { postId } });
 
       return updatePostData;
     } catch (error) {
