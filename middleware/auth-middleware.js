@@ -3,7 +3,7 @@ const { User } = require("../models");
 // require('dotenv').config();
 
 module.exports = (req, res, next) => {
-    const authorization = req.cookies[process.env.COOKIE_NAME];
+    const authorization = req.headers.authorization;
 
     const [authType, authToken] = (authorization || "").split(" ");
     if (!authToken || authType !== "Bearer") {

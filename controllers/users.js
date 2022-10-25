@@ -17,7 +17,7 @@ class Users {
 
             //입력값이 없을때 걸러주는거
             if (!loginId || !nickname || !password) {
-                throw new InvalidParamsError();
+                return({ error : "입력값을 확인해 주세요" })
             }
 
             const user = await this.UsersService.createUser({
@@ -44,7 +44,7 @@ class Users {
             //바디에서 아이디 비번을 가져와서
             const { loginId, password } = req.body;
             const login = await this.UsersService.userLogin(loginId, password);
-            const authorization = req.cookies[process.env.COOKIE_NAME];
+            const authorization = req.headers.authorization;
     
             //login이 null이면 가입 정보를 못 찾음.
             if (login === null) {

@@ -1,5 +1,5 @@
 const UsersRepository = require('../repositories/users');
-const ValidationError = require('../exceptions/exception')
+const { ValidationError }  = require('../exceptions/exception')
 // const bcrypt = require('bcrypt')
 
 //UserService class를 생성
@@ -18,14 +18,11 @@ class Users {
         profileImgUrl,
         intro,
     }) => {
-        try {
             //DB에 존재하는 동일 loginid로 User인지 확인
             const isExistUser = await this.userRepository.findUser({ loginId });
     
             if (isExistUser && isExistUser.loginId === loginId) {
-                throw new ValidationError(
-                    "동일한 ID를 가진 User가 존재합니다."
-                );
+                return ({error : " 동일한 아이디가 존재합니다. "})
             }
     
             // //bcrypt를 사용해서 password를 암호화 -> hasedPw
@@ -43,15 +40,11 @@ class Users {
             });
     
             return user;
-        }catch(error){
-            throw new ValidationError();
-        }
         
     };
 
     // 로그인
     userLogin = async (loginId, password) => {
-        try{
             const loginData = await this.userRepository.userLogin(loginId, password);
     
             if (loginData === null) return loginData;
@@ -62,9 +55,7 @@ class Users {
                 userId: loginData.userId,
                 password: loginData.password
             };
-        } catch (error){
-            throw new ValidationError();
-        }
+
         
     };
 
