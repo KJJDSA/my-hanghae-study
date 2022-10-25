@@ -3,15 +3,25 @@ const PostRepository = require('../repositories/posts');
 class PostService {
   postRepository = new PostRepository();
 
-  getPosts = async () => {
+  getPosts = async ({ page, pagesize }) => {
+    console.log(page, pagesize);
     try {
-      const allPost = await this.postRepository.getPosts();
-
+      let allPost = await this.postRepository.getPosts();
       allPost.sort((a, b) => {
         return b.createdAt - a.createdAt;
       });
 
-      return allPost;
+      let selectPost = allPost.filter((a, b) => {
+        if (b >= pagesize * (page - 1)) {
+          if (b < page * pagesize) {
+            return a
+          }
+        }
+      })
+      selectPost.sort((a, b) => {
+        return b.createdAt - a.createdAt;
+      });
+      return selectPost;
     } catch (error) {
       throw error;
     }
@@ -26,7 +36,7 @@ class PostService {
       throw error;
     }
   };
-    //1025일새벽 1시 프론트와 연결 테스를 위해 주석처리함
+  //1025일새벽 1시 프론트와 연결 테스를 위해 주석처리함
   createPost = async ({ userId, nickname, title, content, imgUrl }) => {
     try {
       const createPostData = await this.postRepository.createPost({
