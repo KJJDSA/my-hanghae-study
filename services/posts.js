@@ -26,7 +26,7 @@ class PostService {
       throw error;
     }
   };
-    //1025일새벽 1시 프론트와 연결 테스를 위해 주석처리함
+
   createPost = async ({ userId, nickname, title, content, imgUrl }) => {
     try {
       const createPostData = await this.postRepository.createPost({
@@ -43,9 +43,9 @@ class PostService {
     }
   };
 
-  updatePost = async (postId, userId, title, content) => {
+  updatePost = async (postId, userId, imgUrl, title, content) => {
     try {
-      await this.postRepository.updatePost(postId, title, content);
+      await this.postRepository.updatePost(postId, imgUrl, title, content);
       const findPost = await this.postRepository.findPostById(postId);
       if (!findPost) throw { name: 'ERROR', message: "Post doesn't exist" };
       if (findPost.userId !== userId) {
