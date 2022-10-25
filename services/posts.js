@@ -52,7 +52,7 @@ class PostService {
         return '권한이 없습니다.';
       }
 
-      return findPost;
+      return '게시글 수정 완료';
     } catch (error) {
       throw error;
     }
@@ -68,7 +68,7 @@ class PostService {
 
       await this.postRepository.deletePost(postId);
 
-      return findPost;
+      return '게시글 삭제완료';
     } catch (error) {
       throw error;
     }
