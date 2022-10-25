@@ -26,7 +26,7 @@ class PostService {
       throw error;
     }
   };
-
+    //1025일새벽 1시 프론트와 연결 테스를 위해 주석처리함
   createPost = async ({ userId, nickname, title, content, imgUrl }) => {
     try {
       const createPostData = await this.postRepository.createPost({

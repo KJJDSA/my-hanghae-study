@@ -1,4 +1,6 @@
 const PostService = require('../services/posts');
+const jwt = require("jsonwebtoken");
+const { User } = require("../models");
 
 class PostsController {
   postService = new PostService();
@@ -28,23 +30,44 @@ class PostsController {
 
   createPost = async (req, res, next) => {
     try {
-      const imgUrl = req.files.location;
-      const { userId, nickname } = res.locals.user;
-      const { title, content } = req.body;
-      console.log(imgUrl, '99999');
+      const imgUrl = await req.file.location;
+      console.log(req.body)
+      
+      // const authorization = req.headers.authorization;
+      //
+      // const [authType, authToken] = (authorization || "").split(" ");
+      // if (!authToken || authType !== "Bearer") {
+      //   res.status(401).send({
+      //     errorMessage: "로그인 후 이용 가능한 기능입니다.",
+      //   });
+      //   return;
+      // }
+      //
+      // res.locals.authToken = authToken;
+      //
+      // try {
+      //   const { userId } = jwt.verify(authToken, process.env.JWT_SECRET_KEY);
+      //   User.findOne({ where: { userId } }).then((user) => {
+      //     res.locals.user = user;
+      //     next();
+      //   });
+      // } catch (err) {
+      //   res.status(401).send({
+      //     errorMessage: "로그인 후 이용 가능한 기능입니다.",
+      //   });
+      // }
 
-      // 이미지 데이터X 저장된 경로만 가져옴 // 잠시 주석처리
-      if (!req.cookies[process.env.COOKIE_NAME]) {
-        res.status(400);
-        return;
-      }
+      const { userId, nickname } = res.locals.user;
+
+      const { title, content } = req.body;
+      
       const createPostData = await this.postService.createPost({
         userId,
         nickname,
         title,
         content,
         imgUrl,
-      }); //imgUrl 잠시 지움
+      });
       res.status(200).json({ data: createPostData });
     } catch (error) {
       console.log(`${error.name}:${error.message}`);
