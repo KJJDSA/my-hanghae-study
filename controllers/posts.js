@@ -1,6 +1,6 @@
 const PostService = require('../services/posts');
-const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const jwt = require('jsonwebtoken');
+const { User } = require('../models');
 
 class PostsController {
   postService = new PostService();
@@ -31,36 +31,12 @@ class PostsController {
 
   createPost = async (req, res, next) => {
     try {
-      // const imgUrl = await req.file.location;
-      console.log(req.body)
-
-      // const authorization = req.headers.authorization;
-      //
-      // const [authType, authToken] = (authorization || "").split(" ");
-      // if (!authToken || authType !== "Bearer") {
-      //   res.status(401).send({
-      //     errorMessage: "로그인 후 이용 가능한 기능입니다.",
-      //   });
-      //   return;
-      // }
-      //
-      // res.locals.authToken = authToken;
-      //
-      // try {
-      //   const { userId } = jwt.verify(authToken, process.env.JWT_SECRET_KEY);
-      //   User.findOne({ where: { userId } }).then((user) => {
-      //     res.locals.user = user;
-      //     next();
-      //   });
-      // } catch (err) {
-      //   res.status(401).send({
-      //     errorMessage: "로그인 후 이용 가능한 기능입니다.",
-      //   });
-      // }
+      const imgUrl = await req.file.location;
+      console.log(req.body);
 
       const { userId, nickname } = res.locals.user;
 
-      const { title, content, imgUrl } = req.body;
+      const { title, content } = req.body;
 
       const createPostData = await this.postService.createPost({
         userId,
@@ -83,8 +59,8 @@ class PostsController {
       const imgUrl = req.file.location;
       const userId = res.locals.user.userId;
 
-      await this.postService.updatePost(postId, userId, title, content, imgUrl);
-      res.status(200).json({ message: '게시글 수정완료' });
+      const updatePost = await this.postService.updatePost(postId, userId, title, content, imgUrl);
+      res.status(200).json({ message: updatePost });
     } catch (error) {
       console.log(`${error.name}:${error.message}`);
       res.status(400).json({ Type: error.name, Message: error.message });
@@ -96,8 +72,8 @@ class PostsController {
       const { postId } = req.params;
       const userId = res.locals.user.userId;
 
-      await this.postService.deletePost(postId, userId);
-      res.status(200).json({ message: '게시글 삭제 완료' });
+      const deletePost = await this.postService.deletePost(postId, userId);
+      res.status(200).json({ message: deletePost });
     } catch (error) {
       console.log(`${error.name}:${error.message}`);
       res.status(400).json({ Type: error.name, Message: error.message });
