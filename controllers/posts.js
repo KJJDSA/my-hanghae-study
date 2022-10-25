@@ -7,7 +7,8 @@ class PostsController {
 
   getPosts = async (req, res, next) => {
     try {
-      const posts = await this.postService.getPosts();
+      const { page, pagesize } = req.query;
+      const posts = await this.postService.getPosts({ page, pagesize });
 
       res.status(200).json({ data: posts });
     } catch (error) {
@@ -30,9 +31,9 @@ class PostsController {
 
   createPost = async (req, res, next) => {
     try {
-      const imgUrl = await req.file.location;
+      // const imgUrl = await req.file.location;
       console.log(req.body)
-      
+
       // const authorization = req.headers.authorization;
       //
       // const [authType, authToken] = (authorization || "").split(" ");
@@ -59,8 +60,8 @@ class PostsController {
 
       const { userId, nickname } = res.locals.user;
 
-      const { title, content } = req.body;
-      
+      const { title, content, imgUrl } = req.body;
+
       const createPostData = await this.postService.createPost({
         userId,
         nickname,
