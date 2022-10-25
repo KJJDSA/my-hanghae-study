@@ -27,7 +27,7 @@ class PostService {
     }
   };
 
-  createPost = async ({ userId, nickname, title, content, imgUrl }) => {
+  createPost = async ({ userId, nickname, imgUrl, title, content }) => {
     try {
       const createPostData = await this.postRepository.createPost({
         userId,
@@ -43,9 +43,9 @@ class PostService {
     }
   };
 
-  updatePost = async (postId, userId, title, content) => {
+  updatePost = async (postId, userId, imgUrl, title, content) => {
     try {
-      await this.postRepository.updatePost(postId, title, content);
+      await this.postRepository.updatePost(postId, imgUrl, title, content);
       const findPost = await this.postRepository.findPostById(postId);
       if (!findPost) throw { name: 'ERROR', message: "Post doesn't exist" };
       if (findPost.userId !== userId) {

@@ -22,7 +22,7 @@ class PostRepository {
     }
   };
 
-  createPost = async ({ userId, nickname, title, content, imgUrl }) => {
+  createPost = async ({ userId, nickname, imgUrl, title, content }) => {
     try {
       const createPostData = await Post.create({
         userId,
@@ -39,9 +39,9 @@ class PostRepository {
     }
   };
 
-  updatePost = async (postId, title, content) => {
+  updatePost = async (postId, imgUrl, title, content) => {
     try {
-      const updatePostData = await Post.update({ title, content }, { where: { postId } });
+      const updatePostData = await Post.update({ imgUrl, title, content }, { where: { postId } });
 
       return updatePostData;
     } catch (error) {

@@ -3,6 +3,13 @@ const app = express();
 const Http = require('http');
 const http = Http.createServer(app);
 const routes = require('./routes');
+// const bodyParser = reqiure('body-parser');
+// app.use(bodyParser.json());
+// app.use(
+//   bodyParser.urlencoded({
+//     extended: true,
+//   })
+// );
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.js');
