@@ -3,7 +3,7 @@ const app = express();
 const Http = require('http');
 const http = Http.createServer(app);
 const routes = require('./routes');
-const bodyParser = require("body-parser")
+const bodyParser = require('body-parser');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.js');
@@ -20,9 +20,11 @@ app.use(
   })
 );
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

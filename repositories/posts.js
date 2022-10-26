@@ -39,9 +39,9 @@ class PostRepository {
     }
   };
 
-  updatePost = async (postId, imgUrl, title, content) => {
+  updatePost = async (postId, title, content) => {
     try {
-      const updatePostData = await Post.update({ imgUrl, title, content }, { where: { postId } });
+      const updatePostData = await Post.update({ title, content }, { where: { postId } });
 
       return updatePostData;
     } catch (error) {
