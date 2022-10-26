@@ -7,7 +7,8 @@ class PostsController {
 
   getPosts = async (req, res, next) => {
     try {
-      const posts = await this.postService.getPosts();
+      const { page, pagesize } = req.query;
+      const posts = await this.postService.getPosts({ page, pagesize });
 
       res.status(200).json({ data: posts });
     } catch (error) {
@@ -32,30 +33,6 @@ class PostsController {
     try {
       const imgUrl = await req.file.location;
       console.log(req.body);
-
-      // const authorization = req.headers.authorization;
-      //
-      // const [authType, authToken] = (authorization || "").split(" ");
-      // if (!authToken || authType !== "Bearer") {
-      //   res.status(401).send({
-      //     errorMessage: "로그인 후 이용 가능한 기능입니다.",
-      //   });
-      //   return;
-      // }
-      //
-      // res.locals.authToken = authToken;
-      //
-      // try {
-      //   const { userId } = jwt.verify(authToken, process.env.JWT_SECRET_KEY);
-      //   User.findOne({ where: { userId } }).then((user) => {
-      //     res.locals.user = user;
-      //     next();
-      //   });
-      // } catch (err) {
-      //   res.status(401).send({
-      //     errorMessage: "로그인 후 이용 가능한 기능입니다.",
-      //   });
-      // }
 
       const { userId, nickname } = res.locals.user;
 
