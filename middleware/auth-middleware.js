@@ -6,12 +6,7 @@ module.exports = (req, res, next) => {
     const authorization = req.headers.authorization;
 
     const [authType, authToken] = (authorization || "").split(" ");
-    if (!authToken || authType !== "Bearer") {
-        res.status(401).send({
-            errorMessage: "로그인 후 이용 가능한 기능입니다.",
-        });
-        return;
-    }
+    if (!authToken || authType !== "Bearer") throw { message: "옳지 않은 접근입니다." }
 
     res.locals.authToken = authToken;
 
@@ -21,9 +16,9 @@ module.exports = (req, res, next) => {
             res.locals.user = user;
             next();
         });
-    } catch (err) {
+    } catch (error) {
         res.status(401).send({
-            errorMessage: "로그인 후 이용 가능한 기능입니다.",
+            errorMessage: error.message || "로그인 후 이용 가능한 기능입니다."
         });
     }
 };
