@@ -4,7 +4,7 @@ const { User } = require("../models");
 
 module.exports = (req, res, next) => {
     const authorization = req.headers.authorization;
-
+    if (!authorization) throw { message: "로그인 후 이용 가능한 기능입니다." };
     const [authType, authToken] = (authorization || "").split(" ");
     if (!authToken || authType !== "Bearer") throw { message: "옳지 않은 접근입니다." }
 
@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
         });
     } catch (error) {
         res.status(401).send({
-            errorMessage: error.message || "로그인 후 이용 가능한 기능입니다."
+            errorMessage: error.message
         });
     }
 };
