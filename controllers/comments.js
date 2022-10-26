@@ -19,8 +19,7 @@ class Commentscontroller {
     } catch (error) {
       console.log(error.name + ":" + error.message)
       return res.status(error.status || 400).send({
-        message: "댓글 조회에 실패했습니다.",
-        ErrorData: error.name + ":" + error.message
+        errorMessage: error.message || `댓글 조회에 실패했습니다.`
       })
     }
   }
@@ -36,8 +35,7 @@ class Commentscontroller {
     } catch (error) {
       console.log(error.name + ":" + error.message)
       return res.status(error.status || 400).send({
-        message: "댓글 생성에 실패했습니다.",
-        ErrorData: error.name + ":" + error.message
+        errorMessage: error.message || `댓글 생성에 실패했습니다.`
       })
     }
   }
@@ -52,8 +50,7 @@ class Commentscontroller {
     } catch (error) {
       console.log(error.name + ":" + error.message)
       return res.status(error.status || 400).send({
-        message: "댓글 수정에 실패했습니다.",
-        ErrorData: error.name + ":" + error.message
+        errorMessage: error.message || `댓글 수정에 실패했습니다.`
       })
     }
   }
@@ -67,11 +64,11 @@ class Commentscontroller {
     } catch (error) {
       console.log(error.name + ":" + error.message)
       return res.status(error.status || 400).send({
-        message: "댓글 삭제에 실패했습니다.",
-        ErrorData: error.name + ":" + error.message
+        errorMessage: error.message || `댓글 삭제에 실패했습니다. `
       })
     }
-
   };
 }
+
+
 module.exports = Commentscontroller;

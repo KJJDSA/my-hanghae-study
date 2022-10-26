@@ -17,7 +17,7 @@ class Users {
 
             //입력값이 없을때 걸러주는거
             if (!loginId || !nickname || !password) {
-                return({ error : "입력값을 확인해 주세요" })
+                throw { message: "입력값을 확인해 주세요" }
             }
 
             const user = await this.UsersService.createUser({
@@ -32,9 +32,10 @@ class Users {
             res.status(201).json({ data: user });
 
         } catch (error) {
-            console.error(error);
-            res.status(error.status || 400);
-            res.json({ errorMessage: "회원가입 실패" });
+            console.log(error.name + ":" + error.message)
+            return res.status(error.status || 400).send({
+                errorMessage: error.message || `회원가입에 실패했습니다.`
+            })
         }
     };
 
@@ -45,28 +46,24 @@ class Users {
             const { loginId, password } = req.body;
             const login = await this.UsersService.userLogin(loginId, password);
             const authorization = req.headers.authorization;
-    
+
             //login이 null이면 가입 정보를 못 찾음.
-            if (login === null) {
-                return res.status(404).send({ errorMessage: "가입 정보를 찾을 수 없습니다" });
-            }
-    
+            if (login === null) throw { Message: "가입 정보를 찾을 수 없습니다" }
+
             const token = jwt.sign({ userId: login.userId }, process.env.JWT_SECRET_KEY, { expiresIn: '600m' })
-    
+
             //header에 정보가 있으면 "이미 로그인이 되어있습니다." 반환
-            if (authorization) {
-                res.status(400).send({
-                    errorMessage: "이미 로그인이 되어 있습니다."
-                });
-                return;
-            }
-    
+            if (authorization) throw { message: "이미 로그인이 되어 있습니다." }
+
             //token 값을 userId로 생성
             res.cookie(process.env.COOKIE_NAME, `Bearer ${token}`, { expiresIn: '600m' })   //hh99 , bearer : token값 엄청긴거
             res.send({ token })
-            
-        } catch(error){
-            next(error);
+
+        } catch (error) {
+            console.log(error.name + ":" + error.message)
+            return res.status(error.status || 400).send({
+                errorMessage: error.message || "로그인에 실패했습니다."
+            })
         }
     };
 }
