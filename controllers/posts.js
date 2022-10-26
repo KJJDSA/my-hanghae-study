@@ -79,14 +79,15 @@ class PostsController {
     try {
       const { postId } = req.params;
       const { title, content } = req.body;
-      const imgUrl = req.file.location;
       const userId = res.locals.user.userId;
+      console.log(userId);
 
-      const updatePost = await this.postService.updatePost(postId, userId, title, content, imgUrl);
+      const updatePost = await this.postService.updatePost(postId, userId, title, content);
+
       res.status(200).json({ message: updatePost });
     } catch (error) {
-      console.log(`${error.name}:${error.message}`);
-      res.status(400).json({ Type: error.name, Message: error.message });
+      console.log(error);
+      res.status(400).json(error);
     }
   };
 
@@ -98,8 +99,8 @@ class PostsController {
       const deletePost = await this.postService.deletePost(postId, userId);
       res.status(200).json({ message: deletePost });
     } catch (error) {
-      console.log(`${error.name}:${error.message}`);
-      res.status(400).json({ Type: error.name, Message: error.message });
+      console.log(error);
+      res.status(400).json(error);
     }
   };
 

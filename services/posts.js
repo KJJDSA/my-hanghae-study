@@ -43,16 +43,14 @@ class PostService {
     }
   };
 
-  updatePost = async (postId, userId, imgUrl, title, content) => {
+  updatePost = async (postId, userId, title, content) => {
     try {
-      await this.postRepository.updatePost(postId, imgUrl, title, content);
+      await this.postRepository.updatePost(postId, title, content);
       const findPost = await this.postRepository.findPostById(postId);
       if (!findPost) throw { name: 'ERROR', message: "Post doesn't exist" };
-      if (findPost.userId !== userId) {
-        return '권한이 없습니다.';
-      }
+      if (findPost.userId !== userId) throw { errorMessage: '권한이 없습니다.' };
 
-      return '게시글 수정 완료';
+      return '게시글 수정을 완료했습니다.';
     } catch (error) {
       throw error;
     }
@@ -62,13 +60,11 @@ class PostService {
     try {
       const findPost = await this.postRepository.findPostById(postId);
       if (!findPost) throw { name: 'ERROR', message: "Post doesn't exist" };
-      if (findPost.userId !== userId) {
-        return '권한이 없습니다.';
-      }
+      if (findPost.userId !== userId) throw { errorMessage: '권한이 없습니다.' };
 
       await this.postRepository.deletePost(postId);
 
-      return '게시글 삭제완료';
+      return '게시글 삭제를 완료했습니다.';
     } catch (error) {
       throw error;
     }
