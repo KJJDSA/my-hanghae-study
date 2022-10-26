@@ -44,7 +44,8 @@ class Users {
         try {
             //바디에서 아이디 비번을 가져와서
             const { loginId, password } = req.body;
-            const login = await this.UsersService.userLogin(loginId, password);
+            console.log(loginId)
+            const login = await this.UsersService.userLogin({ loginId, password });
             const authorization = req.headers.authorization;
 
             //login이 null이면 가입 정보를 못 찾음.

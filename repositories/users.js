@@ -16,7 +16,7 @@ class Users {
         });
         return user;
 
-    
+
     };
 
     // createUser라는 async function 생성 .
@@ -42,7 +42,7 @@ class Users {
     };
 
     // 로그인
-    userLogin = async (loginId, password) => {
+    userLogin = async ({ loginId, password }) => {
         const loginData = await this.User.findOne({ where: { loginId, password } });
 
         return loginData;
