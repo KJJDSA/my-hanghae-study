@@ -15,8 +15,8 @@ class PostsController {
       res.status(200).json({ data: posts });
     } catch (error) {
       console.log(error)
-      // console.log(`${error.name}:${error.message}`);
-      // res.status(400).json({ Type: error.name, Message: error.message });
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
 
