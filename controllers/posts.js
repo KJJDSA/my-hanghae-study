@@ -11,10 +11,10 @@ class PostsController {
       const { page, pagesize } = req.query;
       const { userId } = res.locals.user;
       const posts = await this.postService.getPosts({ page, pagesize, userId });
-      console.log(posts)
+      console.log(posts);
       res.status(200).json({ data: posts });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       console.log(`${error.name}:${error.message}`);
       res.status(400).json({ Type: error.name, Message: error.message });
     }
@@ -93,8 +93,7 @@ class PostsController {
       const likePost = await this.postService.likePost(postId, like, userId);
       res.status(200).json({ message: likePost });
     } catch (error) {
-      console.log(`${error.name}:${error.message}`);
-      res.status(400).json({ Type: error.name, Message: error.message });
+      res.status(400).json(error);
     }
   };
 }
