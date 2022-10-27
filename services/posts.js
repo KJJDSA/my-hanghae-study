@@ -6,7 +6,7 @@ class PostService {
 
   getPosts = async ({ page, pagesize, userId }) => {
     try {
-      // 무한스크롤 위해 page, pagesize 받음. 
+      // 무한스크롤 위해 page, pagesize 받음.
       let allPost = await this.postRepository.getPosts();
       // 무한스크롤 위해 날짜순 정렬
       allPost.sort((a, b) => {
@@ -16,15 +16,15 @@ class PostService {
       let selectPost = allPost.filter((a, b) => {
         if (b >= pagesize * (page - 1)) {
           if (b < page * pagesize) {
-            return a
+            return a;
           }
         }
-      })
+      });
       selectPost.sort((a, b) => {
         return b.createdAt - a.createdAt;
       });
       // 로그인을 한 경우
-      if (userId !== "non") {
+      if (userId !== 'non') {
         let userLikes = await this.postRepository.getILikes({ userId });
 
         // console.log(selectPost[0].dataValues)
@@ -32,9 +32,9 @@ class PostService {
           // console.log(userLikes.map((y) => y.postId) + '=' + x.dataValues.PostId)
           return {
             ...x.dataValues,
-            userLike: userLikes.map((y) => y.postId).includes(x.dataValues.PostId)
-          }
-        })
+            userLike: userLikes.map((y) => y.postId).includes(x.dataValues.PostId),
+          };
+        });
         return result;
       } else {
         let result = selectPost.map((x) => {
@@ -42,9 +42,9 @@ class PostService {
           return {
             ...x.dataValues,
             userLike: false,
-          }
-        })
-        return result
+          };
+        });
+        return result;
       }
     } catch (error) {
       throw error;
@@ -60,7 +60,6 @@ class PostService {
       throw error;
     }
   };
-
 
   createPost = async ({ userId, nickname, title, content, imgUrl }) => {
     try {
