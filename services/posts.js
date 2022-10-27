@@ -1,12 +1,14 @@
 const PostRepository = require('../repositories/posts');
+const { post } = require('../routes/posts');
 
 class PostService {
   postRepository = new PostRepository();
 
-  getPosts = async ({ page, pagesize }) => {
-    console.log(page, pagesize);
+  getPosts = async ({ page, pagesize, userId }) => {
     try {
+      // 무한스크롤 위해 page, pagesize 받음. 
       let allPost = await this.postRepository.getPosts();
+      // 무한스크롤 위해 날짜순 정렬
       allPost.sort((a, b) => {
         return b.createdAt - a.createdAt;
       });
@@ -21,7 +23,29 @@ class PostService {
       selectPost.sort((a, b) => {
         return b.createdAt - a.createdAt;
       });
-      return selectPost;
+      // 로그인을 한 경우
+      if (userId !== "non") {
+        let userLikes = await this.postRepository.getILikes({ userId });
+
+        // console.log(selectPost[0].dataValues)
+        let result = selectPost.map((x) => {
+          // console.log(userLikes.map((y) => y.postId) + '=' + x.dataValues.PostId)
+          return {
+            ...x.dataValues,
+            userLike: userLikes.map((y) => y.postId).includes(x.dataValues.PostId)
+          }
+        })
+        return result;
+      } else {
+        let result = selectPost.map((x) => {
+          // console.log(userLikes.map((y) => y.postId) + '=' + x.dataValues.PostId)
+          return {
+            ...x.dataValues,
+            userLike: false,
+          }
+        })
+        return result
+      }
     } catch (error) {
       throw error;
     }

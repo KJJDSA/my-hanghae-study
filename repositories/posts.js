@@ -12,6 +12,15 @@ class PostRepository {
     }
   };
 
+  getILikes = async ({ userId }) => {
+    try {
+      const likes = await Like.findAll({ where: { userId } });
+      return likes;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   findPostById = async (postId) => {
     try {
       const post = await Post.findByPk(postId);

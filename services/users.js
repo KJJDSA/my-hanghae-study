@@ -1,5 +1,5 @@
 const UsersRepository = require('../repositories/users');
-const { ValidationError }  = require('../exceptions/exception')
+const { ValidationError } = require('../exceptions/exception')
 // const bcrypt = require('bcrypt')
 
 //UserService class를 생성
@@ -18,17 +18,16 @@ class Users {
         profileImgUrl,
         intro,
     }) => {
+        try {
             //DB에 존재하는 동일 loginid로 User인지 확인
             const isExistUser = await this.userRepository.findUser({ loginId });
-    
-            if (isExistUser && isExistUser.loginId === loginId) {
-                return ({error : " 동일한 아이디가 존재합니다. "})
-            }
-    
+
+            if (isExistUser && isExistUser.loginId === loginId) throw { message: " 동일한 아이디가 존재합니다. " }
+
             // //bcrypt를 사용해서 password를 암호화 -> hasedPw
             // const salt = await bcrypt.genSalt(5);
             // const hashedPW = await bcrypt.hash(password, salt);
-    
+
             const user = await this.userRepository.createUser({
                 loginId,
                 nickname,
@@ -38,25 +37,29 @@ class Users {
                 profileImgUrl,
                 intro,
             });
-    
+            console.log(user)
+
             return user;
-        
+        } catch (error) {
+            throw error;
+        }
     };
 
     // 로그인
-    userLogin = async (loginId, password) => {
-            const loginData = await this.userRepository.userLogin(loginId, password);
-    
-            if (loginData === null) return loginData;
-    
-            //userLogin에 userID까지 넣어줌 => controller로 가서 userId로 token 생성할 예정
-            return {
-                loginId: loginData.loginId,
-                userId: loginData.userId,
-                password: loginData.password
-            };
+    userLogin = async ({ loginId, password }) => {
+        const loginData = await this.userRepository.userLogin({ loginId, password });
 
-        
+        if (loginData === null) return loginData;
+
+        //userLogin에 userID까지 넣어줌 => controller로 가서 userId로 token 생성할 예정
+        return {
+            loginId: loginData.loginId,
+            userId: loginData.userId,
+            nickname: loginData.nickname,
+            password: loginData.password
+        };
+
+
     };
 
 }

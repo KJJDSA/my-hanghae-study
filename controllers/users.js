@@ -44,7 +44,8 @@ class Users {
         try {
             //바디에서 아이디 비번을 가져와서
             const { loginId, password } = req.body;
-            const login = await this.UsersService.userLogin(loginId, password);
+            const login = await this.UsersService.userLogin({ loginId, password });
+            console.log(login)
             const authorization = req.headers.authorization;
 
             //login이 null이면 가입 정보를 못 찾음.
@@ -57,7 +58,7 @@ class Users {
 
             //token 값을 userId로 생성
             res.cookie(process.env.COOKIE_NAME, `Bearer ${token}`, { expiresIn: '600m' })   //hh99 , bearer : token값 엄청긴거
-            res.send({ token })
+            res.send({ token, nickname: login.nickname })
 
         } catch (error) {
             console.log(error.name + ":" + error.message)
