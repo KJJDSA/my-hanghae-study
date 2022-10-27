@@ -7,9 +7,7 @@ class PostService {
   getPosts = async ({ page, pagesize, userId }) => {
     try {
       // 무한스크롤 위해 page, pagesize 받음. 
-      console.log(userId)
       let allPost = await this.postRepository.getPosts();
-      if (userId !== 0) userLikes = await this.postRepository.getILikes({ userId });
       // 무한스크롤 위해 날짜순 정렬
       allPost.sort((a, b) => {
         return b.createdAt - a.createdAt;
@@ -25,23 +23,29 @@ class PostService {
       selectPost.sort((a, b) => {
         return b.createdAt - a.createdAt;
       });
-      // 찾은 likes가 없으면 그냥 다 false로 return
-      if (userLikes === undefined) {
-        return {
-          ...selectPost,
-          userLike: false,
-        }
+      // 로그인을 한 경우
+      if (userId !== "non") {
+        let userLikes = await this.postRepository.getILikes({ userId });
+
+        // console.log(selectPost[0].dataValues)
+        let result = selectPost.map((x) => {
+          // console.log(userLikes.map((y) => y.postId) + '=' + x.dataValues.PostId)
+          return {
+            ...x.dataValues,
+            userLike: userLikes.map((y) => y.postId).includes(x.dataValues.PostId)
+          }
+        })
+        return result;
+      } else {
+        let result = selectPost.map((x) => {
+          // console.log(userLikes.map((y) => y.postId) + '=' + x.dataValues.PostId)
+          return {
+            ...x.dataValues,
+            userLike: false,
+          }
+        })
+        return result
       }
-      let result = selectPost.map((x) => {
-        // console.log(userLikes.map((y) => y.postId) + '=' + x.dataValues.PostId)
-        return {
-          ...x.dataValues,
-          userLike: userLikes.map((y) => y.postId).includes(x.dataValues.PostId)
-        }
-      })
-      // 실수 1: repository return 안써서 안됐었음 ㅋㅋㅋㅋㅋ(실성)
-      // 실수 2: 왜 postId 가 아니고 PostId임....? 
-      return result;
     } catch (error) {
       throw error;
     }

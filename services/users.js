@@ -18,30 +18,31 @@ class Users {
         profileImgUrl,
         intro,
     }) => {
-        //DB에 존재하는 동일 loginid로 User인지 확인
-        const isExistUser = await this.userRepository.findUser({ loginId });
+        try {
+            //DB에 존재하는 동일 loginid로 User인지 확인
+            const isExistUser = await this.userRepository.findUser({ loginId });
 
-        if (isExistUser && isExistUser.loginId === loginId) {
-            return ({ error: " 동일한 아이디가 존재합니다. " })
+            if (isExistUser && isExistUser.loginId === loginId) throw { message: " 동일한 아이디가 존재합니다. " }
+
+            // //bcrypt를 사용해서 password를 암호화 -> hasedPw
+            // const salt = await bcrypt.genSalt(5);
+            // const hashedPW = await bcrypt.hash(password, salt);
+
+            const user = await this.userRepository.createUser({
+                loginId,
+                nickname,
+                password,
+                confirm,
+                // hashedPW, // hash 된 password 저장
+                profileImgUrl,
+                intro,
+            });
+            console.log(user)
+
+            return user;
+        } catch (error) {
+            throw error;
         }
-
-        // //bcrypt를 사용해서 password를 암호화 -> hasedPw
-        // const salt = await bcrypt.genSalt(5);
-        // const hashedPW = await bcrypt.hash(password, salt);
-
-        const user = await this.userRepository.createUser({
-            loginId,
-            nickname,
-            password,
-            confirm,
-            // hashedPW, // hash 된 password 저장
-            profileImgUrl,
-            intro,
-        });
-        console.log(user)
-
-        return user;
-
     };
 
     // 로그인
@@ -54,6 +55,7 @@ class Users {
         return {
             loginId: loginData.loginId,
             userId: loginData.userId,
+            nickname: loginData.nickname,
             password: loginData.password
         };
 

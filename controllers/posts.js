@@ -9,10 +9,9 @@ class PostsController {
     try {
       // 로그인 하지 않았을 때 undefined 오류가 뜨지 않게 해야합니다.
       const { page, pagesize } = req.query;
-      const { userId } = res.locals.user ?? 0;
-      console.log(userId)
+      const { userId } = res.locals.user;
       const posts = await this.postService.getPosts({ page, pagesize, userId });
-
+      console.log(posts)
       res.status(200).json({ data: posts });
     } catch (error) {
       console.log(error)

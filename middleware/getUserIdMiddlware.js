@@ -6,8 +6,8 @@ module.exports = (req, res, next) => {
   try {
     const authorization = req.headers.authorization;
     if (!authorization) {
-      res.locals.user.userId = 0;
-      next();
+      res.locals.user = { userId: 'non' };
+      return next();
     }
     const [authType, authToken] = (authorization || "").split(" ");
     if (!authToken || authType !== "Bearer") throw { message: "옳지 않은 접근입니다." }
