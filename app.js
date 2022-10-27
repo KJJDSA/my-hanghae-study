@@ -5,6 +5,15 @@ const http = Http.createServer(app);
 const routes = require('./routes');
 const bodyParser = require("body-parser")
 
+const io = require('socket.io')(http, { cors: { origin: "*" } });
+
+io.on("connection", (socket) => {
+  socket.on("chatting", (data) => {
+    console.log(data);
+    io.emit("receive", data)
+  })
+});
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.js');
 
@@ -21,7 +30,7 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-    extended: true
+  extended: true
 }));
 
 app.use(express.urlencoded({ extended: false }));
