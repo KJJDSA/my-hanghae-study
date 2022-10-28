@@ -10,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      User.belongsTo(models.bankaccount, { foreignKey: "userId", sourceKey: "userId" });
+      User.belongsTo(models.bankcard, { foreignKey: "userId", sourceKey: "userId" });
+      User.belongsTo(models.matchuser, { foreignKey: "userId", sourceKey: "userId" });
     }
   }
   User.init({
@@ -21,5 +23,15 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
+
+  // User.associate = models => {
+  //   /**
+  //    *  Users모델 안에 "company_id라는 컬럼 이름"으로 CompanyInformation모델에 있는 "id값"을 새로운 컬럼으로 추가한다.
+  //    */
+  //   User.belongsTo(models.bankaccount, { foreignKey: "userId", sourceKey: "userId" });
+  //   User.belongsTo(models.bankcard, { foreignKey: "userId", sourceKey: "userId" });
+  //   User.belongsTo(models.matchuser, { foreignKey: "userId", sourceKey: "userId" });
+
+  // };
   return User;
 };
