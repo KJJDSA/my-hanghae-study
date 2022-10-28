@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      bankcard.hasMany(models.User, { foreignKey: "userId", sourceKey: "userId" });
     }
   }
   bankcard.init({
@@ -24,5 +24,13 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'bankcard',
   });
+
+  // bankcard.associate = models => {
+
+  //   /**
+  //    * CompanyInformation안에 있는 "id값"을 "company_id라는 컬럼 이름"으로 Users모델에 새로운 컬럼으로 추가한다.
+  //    */
+  //   bankcard.hasMany(models.User, {foreignKey : "userId", sourceKey:"userId"});
+  // };
   return bankcard;
 };

@@ -9,7 +9,11 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Users', // Users 모델에서
+          key: 'userId', // 그 아이디 값을 참고합니다.
+        }
       },
       bank: {
         type: Sequelize.STRING

@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      matchroom.belongsTo(models.matchuser, { foreignKey: "matchroomId", sourceKey: "matchroomId" });
     }
   }
   matchroom.init({
@@ -21,5 +21,13 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'matchroom',
   });
+
+  // matchroom.associate = models => {
+  //   /**
+  //    *  Users모델 안에 "company_id라는 컬럼 이름"으로 CompanyInformation모델에 있는 "id값"을 새로운 컬럼으로 추가한다.
+  //    */
+  //   matchroom.belongsTo(models.matchuser, { foreignKey: "matchroomId", sourceKey: "matchroomId" });
+
+  // };
   return matchroom;
 };

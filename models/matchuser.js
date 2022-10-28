@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      matchuser.hasMany(models.User, { foreignKey: "userId", sourceKey: "userId" });
+      matchuser.hasMany(models.matchroom, { foreignKey: "matchroomId", sourceKey: "matchroomId" });
     }
   }
   matchuser.init({
@@ -21,5 +22,13 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'matchuser',
   });
+
+  // matchuser.associate = models => {
+  //   /**
+  //    * CompanyInformation안에 있는 "id값"을 "company_id라는 컬럼 이름"으로 Users모델에 새로운 컬럼으로 추가한다.
+  //    */
+  //   matchuser.hasMany(models.User, { foreignKey: "userId", sourceKey: "userId" });
+  //   matchuser.hasMany(models.matchroom, { foreignKey: "matchroomId", sourceKey: "matchroomId" });
+  // };
   return matchuser;
 };
