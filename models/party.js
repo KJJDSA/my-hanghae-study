@@ -1,26 +1,32 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class matchroom extends Model {
+  class Partys extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      matchroom.belongsTo(models.matchuser, { foreignKey: "matchroomId", sourceKey: "matchroomId" });
+      Partys.hasMany(models.Members, {
+        foreignKey: "partyId",
+        sourceKey: "partyId",
+      });
     }
   }
-  matchroom.init({
-    ottService: DataTypes.STRING,
-    ID: DataTypes.STRING,
-    password: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'matchroom',
-  });
+  Partys.init(
+    {
+      ottService: DataTypes.STRING,
+      numOfMembers: DataTypes.INTEGER,
+      ID: DataTypes.STRING,
+      password: DataTypes.STRING,
+      hasLeader: DataTypes.BOOLEAN,
+    },
+    {
+      sequelize,
+      modelName: "Partys",
+    }
+  );
 
   // matchroom.associate = models => {
   //   /**
@@ -29,5 +35,5 @@ module.exports = (sequelize, DataTypes) => {
   //   matchroom.belongsTo(models.matchuser, { foreignKey: "matchroomId", sourceKey: "matchroomId" });
 
   // };
-  return matchroom;
+  return Partys;
 };
