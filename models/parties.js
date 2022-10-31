@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
       },
       ottService: DataTypes.STRING,
-      numOfMembers: DataTypes.INTEGER,
+      numOfMembers: { type: DataTypes.INTEGER, defaultValue: 0 },
       ID: DataTypes.STRING,
       password: DataTypes.STRING,
       hasLeader: DataTypes.BOOLEAN,
