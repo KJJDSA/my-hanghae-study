@@ -40,6 +40,7 @@ class MatchRepository {
         },
         { where: { partyId } }
       );
+      console.log(updatedParty);
       return updatedParty;
     } catch (error) {
       throw error;
@@ -53,6 +54,14 @@ class MatchRepository {
         isLeader: true,
       });
       return createdMember;
+    } catch (error) {
+      throw error;
+    }
+  };
+  findByPartyId = async ({ partyId }) => {
+    try {
+      const finalParty = await Parties.findByPk(partyId);
+      return finalParty;
     } catch (error) {
       throw error;
     }
