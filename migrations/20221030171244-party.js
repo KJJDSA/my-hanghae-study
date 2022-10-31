@@ -13,6 +13,7 @@ module.exports = {
       },
       numOfMembers: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       ID: {
         type: Sequelize.STRING,
