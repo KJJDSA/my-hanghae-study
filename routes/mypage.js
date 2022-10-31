@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const passport = require('passport');
 const MyPageController = require("../controllers/mypage");
 const myPageController = new MyPageController();
 
