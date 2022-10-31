@@ -52,6 +52,16 @@ app.get('/', (req, res) => {
   res.send('hello!');
 });
 
+const jwt = require('jsonwebtoken');
+app.get('/token/:userId', (req, res) => {
+  const userId = req.params
+  const token = jwt.sign({ userId }, process.env.SECRET_KEY)
+  const expires = new Date();
+  expires.setMinutes(expires.getMinutes() + 600);
+  res.cookie(process.env.COOKIE_NAME, `Bearer ${token}`, { expires: expires });
+  res.send(token);
+});
+
 http.listen(port, () => {
   console.log(`${port}포트로 서버가 열렸습니당`);
 });
