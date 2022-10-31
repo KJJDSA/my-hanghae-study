@@ -1,5 +1,4 @@
 const MyPageService = require("../services/mypage");
-const { User } = require("../models")
 
 class MyPageController {
   constructor() {
@@ -10,7 +9,7 @@ class MyPageController {
     try {
       const { userId } = res.locals.user;
       const myBankAccount = await this.myPageService.lookupMyBankAccount({
-        userId
+        userId,
       });
       res.status(200).json({ data: myBankAccount });
     } catch (error) {
