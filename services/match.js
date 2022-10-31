@@ -15,7 +15,7 @@ class MatchService {
           return a.createdAt - b.createdAt;
         });
         const partyId = availbleParty[0].partyId;
-        const numOfMembers = availbleParty[0].numOfMembers + 1;
+        const numOfMembers = (availbleParty[0].numOfMembers += 1);
         await this.matchRepository.updateLeadersParty({
           partyId,
           ID,
@@ -33,7 +33,7 @@ class MatchService {
           ottService,
         });
         const partyId = newParty.partyId;
-        const numOfMembers = newParty.numOfMembers + 1;
+        const numOfMembers = (newParty.numOfMembers += 1);
         await this.matchRepository.updateLeadersParty({
           partyId,
           ID,
@@ -70,7 +70,7 @@ class MatchService {
             return a.createdAt - b.createdAt;
           });
           const partyId = hasLeaderParty[0].partyId;
-          const numOfMembers = hasLeaderParty[0].numOfMembers + 1;
+          const numOfMembers = hasLeaderParty[0].numOfMembers + 1; //재준님 이거안돼요...
           // 해당 파티 레코드의 numOfMembers 를 1늘려줌
           await this.matchRepository.updateMembersParty({
             partyId,
