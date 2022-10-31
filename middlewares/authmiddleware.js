@@ -4,9 +4,9 @@ const { User } = require("../models");
 
 module.exports = (req, res, next) => {
   try {
-    const authorization = req.headers[process.env.COOKIE_NAME];
+    const authorization = req.cookies[process.env.COOKIE_NAME];
     if (!authorization) {
-      return res.redirect('/auth/kakao')
+      return res.redirect('/api/auth/kakao')
     }
     const [authType, authToken] = (authorization || "").split(" ");
     if (!authToken || authType !== "Bearer") throw { message: "옳지 않은 접근입니다." }
