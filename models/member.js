@@ -1,44 +1,45 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class BankCards extends Model {
+  class Members extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      BankCards.belongsTo(models.User, {
+      Members.belongsTo(models.User, {
         foreignKey: "userId",
         sourceKey: "userId",
       });
+      Members.belongsTo(models.Party, {
+        foreignKey: "partyId",
+        sourceKey: "partyId",
+      });
     }
   }
-  BankCards.init(
+  Members.init(
     {
-      bankcardId: {
+      memberId: {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
+      partyId: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
-      bank: DataTypes.STRING,
-      card: DataTypes.STRING,
-      MMYY: DataTypes.STRING,
-      birth: DataTypes.STRING,
-      password: DataTypes.STRING,
+      isLeader: DataTypes.BOOLEAN,
     },
     {
       sequelize,
-      modelName: "BankCard",
+      modelName: "Member",
     }
   );
 
-  // bankcard.associate = models => {
-
+  // matchuser.associate = models => {
   //   /**
   //    * CompanyInformation안에 있는 "id값"을 "company_id라는 컬럼 이름"으로 Users모델에 새로운 컬럼으로 추가한다.
   //    */
-  //   bankcard.hasMany(models.User, {foreignKey : "userId", sourceKey:"userId"});
+  //   matchuser.hasMany(models.User, { foreignKey: "userId", sourceKey: "userId" });
+  //   matchuser.hasMany(models.matchroom, { foreignKey: "matchroomId", sourceKey: "matchroomId" });
   // };
-  return BankCards;
+  return Members;
 };
