@@ -5,7 +5,9 @@ const { User } = require("../models");
 module.exports = (req, res, next) => {
   try {
     const authorization = req.headers[process.env.COOKIE_NAME];
-    if (!authorization) throw { message: "로그인 후 이용 가능한 기능입니다." };
+    if (!authorization) {
+      return res.redirect('/auth/kakao')
+    }
     const [authType, authToken] = (authorization || "").split(" ");
     if (!authToken || authType !== "Bearer") throw { message: "옳지 않은 접근입니다." }
 
