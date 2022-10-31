@@ -11,8 +11,8 @@ class MyPageService {
         userId,
       });
       return myBankAccount;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   };
   updateBankAccount = async ({ userId, bank, account }) => {

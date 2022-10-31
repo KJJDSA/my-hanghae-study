@@ -1,9 +1,9 @@
 const { BankAccount } = require("../models");
 
-class userRepository {
+class MyPageRepository {
   lookupMyBankAccount = async ({ userId }) => {
     try {
-      const myBankAccount = await BankAccount.findByPk({ userId });
+      const myBankAccount = await BankAccount.findAll({ where: { userId } });
       return myBankAccount;
     } catch (error) {
       throw error;
@@ -23,4 +23,4 @@ class userRepository {
   };
 }
 
-module.exports = userRepository;
+module.exports = MyPageRepository;

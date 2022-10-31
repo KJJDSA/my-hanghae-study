@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      BankAccounts.belongsTo(models.Users, {
+      BankAccounts.belongsTo(models.User, {
         foreignKey: "userId",
         sourceKey: "userId",
       });
@@ -16,13 +16,17 @@ module.exports = (sequelize, DataTypes) => {
   }
   BankAccounts.init(
     {
+      bankaccountId: {
+        primaryKey: true,
+        type: DataTypes.INTEGER
+      },
       userId: DataTypes.INTEGER,
       bank: DataTypes.STRING,
       account: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: "BankAccounts",
+      modelName: "BankAccount",
     }
   );
 

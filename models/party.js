@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Partys.hasMany(models.Members, {
+      Partys.hasMany(models.Member, {
         foreignKey: "partyId",
         sourceKey: "partyId",
       });
@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   Partys.init(
     {
+      partyId: {
+        primaryKey: true,
+        type: DataTypes.INTEGER
+      },
       ottService: DataTypes.STRING,
       numOfMembers: DataTypes.INTEGER,
       ID: DataTypes.STRING,
@@ -24,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Partys",
+      modelName: "Party",
     }
   );
 

@@ -1,4 +1,5 @@
-const userService = require("../services/mypage");
+const MyPageService = require("../services/mypage");
+const { User } = require("../models")
 
 class MyPageController {
   constructor() {
@@ -9,10 +10,10 @@ class MyPageController {
     try {
       const { userId } = res.locals.user;
       const myBankAccount = await this.myPageService.lookupMyBankAccount({
-        userId,
+        userId
       });
       res.status(200).json({ data: myBankAccount });
-    } catch (err) {
+    } catch (error) {
       console.log(`${error.name}:${error.message}`);
       res.status(400).json({ Type: error.name, Message: error.message });
     }
@@ -28,7 +29,7 @@ class MyPageController {
         account,
       });
       res.status(200).json({ data: myBankAccount });
-    } catch (err) {
+    } catch (error) {
       console.log(`${error.name}:${error.message}`);
       res.status(400).json({ Type: error.name, Message: error.message });
     }
@@ -44,7 +45,7 @@ class MyPageController {
         account,
       });
       res.status(200).json({ data: myBankAccount });
-    } catch (err) {
+    } catch (error) {
       console.log(`${error.name}:${error.message}`);
       res.status(400).json({ Type: error.name, Message: error.message });
     }
@@ -57,7 +58,7 @@ class MyPageController {
         userId,
       });
       res.status(200).json({ message: "삭제가 완료되었습니다." });
-    } catch (err) {
+    } catch (error) {
       console.log(`${error.name}:${error.message}`);
       res.status(400).json({ Type: error.name, Message: error.message });
     }

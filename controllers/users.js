@@ -1,3 +1,4 @@
+// controllers/user
 const userService = require("../services/users");
 
 class Users {
@@ -5,7 +6,8 @@ class Users {
     this.userService = new userService();
   }
 
-  createUser = async (req, res) => {};
+  createUser = async (req, res) => {
+  };
 }
 
 module.exports = Users;
