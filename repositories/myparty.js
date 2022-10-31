@@ -1,10 +1,10 @@
-const { Party } = require("../models");
-const { Member } = require("../models");
+const { Parties } = require("../models");
+const { Members } = require("../models");
 
 class MyPartyRepository {
   lookupMyParty = async ({ userId }) => {
     try {
-      const myParty = await Party.findAll({
+      const myParty = await Parties.findAll({
         where: { userId },
         order: [["createdAt", "DESC"]],
         include: [

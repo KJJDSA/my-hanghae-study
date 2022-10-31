@@ -1,9 +1,9 @@
-const { BankAccount } = require("../models");
+const { BankAccounts } = require("../models");
 
 class MyPageRepository {
   lookupMyBankAccount = async ({ userId }) => {
     try {
-      const myBankAccount = await BankAccount.findAll({ where: { userId } });
+      const myBankAccount = await BankAccounts.findAll({ where: { userId } });
       return myBankAccount;
     } catch (error) {
       throw error;
@@ -11,7 +11,7 @@ class MyPageRepository {
   };
   updateBankAccount = async ({ userId, ottService, ID, password }) => {
     try {
-      const updateBankAccount = await BankAccount.update(
+      const updateBankAccount = await BankAccounts.update(
         { ottService, ID, password },
         { where: { userId } }
       );

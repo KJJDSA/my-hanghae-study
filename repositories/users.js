@@ -1,10 +1,9 @@
 // repositories/users
-const { User } = require('../models');
-
+const { Users } = require("../models");
 
 class userRepository {
   constructor() {
-    this.User = User;
+    this.User = Users;
   }
 }
 

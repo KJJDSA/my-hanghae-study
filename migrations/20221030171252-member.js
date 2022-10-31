@@ -11,7 +11,7 @@ module.exports = {
       partyId: {
         type: Sequelize.INTEGER,
         references: {
-          model: "Partys", // Partys 모델에서
+          model: "Parties", // Partys 모델에서
           key: "partyId", // 그 아이디 값을 참고합니다.
         },
       },

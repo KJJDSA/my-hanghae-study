@@ -1,24 +1,26 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Partys extends Model {
+  class Parties extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Partys.hasMany(models.Member, {
+      Parties.hasMany(models.Members, {
         foreignKey: "partyId",
         sourceKey: "partyId",
       });
     }
   }
-  Partys.init(
+  Parties.init(
     {
       partyId: {
+        allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
       },
       ottService: DataTypes.STRING,
       numOfMembers: DataTypes.INTEGER,
@@ -28,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Party",
+      modelName: "Parties",
     }
   );
 
@@ -39,5 +41,5 @@ module.exports = (sequelize, DataTypes) => {
   //   matchroom.belongsTo(models.matchuser, { foreignKey: "matchroomId", sourceKey: "matchroomId" });
 
   // };
-  return Partys;
+  return Parties;
 };
