@@ -28,14 +28,17 @@ class MatchRepository {
       throw error;
     }
   };
-  updateLeadersParty = async ({ ID, password, numOfMembers }) => {
+  updateLeadersParty = async ({ partyId, ID, password, numOfMembers }) => {
     try {
-      const updatedParty = await Party.create({
-        ID,
-        password,
-        hasLeader: true,
-        numOfMembers,
-      });
+      const updatedParty = await Party.update(
+        {
+          ID,
+          password,
+          hasLeader: true,
+          numOfMembers,
+        },
+        { where: { partyId } }
+      );
       return updatedParty;
     } catch (error) {
       throw error;
