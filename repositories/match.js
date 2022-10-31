@@ -18,7 +18,7 @@ class MatchRepository {
       throw error;
     }
   };
-  createLeadersParty = async ({ ottService, ID, password }) => {
+  createLeadersParty = async ({ ottService }) => {
     try {
       const createdParty = await Party.create({
         ottService,
