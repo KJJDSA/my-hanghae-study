@@ -10,21 +10,21 @@ class MatchService {
       const availbleParty = await this.matchRepository.findLeadersParty({
         ottService,
       });
-      console.log(availbleParty, "웅");
       if (availbleParty.length > 0) {
-        console.log("시발");
         availbleParty.sort((a, b) => {
           return a.createdAt - b.createdAt;
         });
         const partyId = availbleParty[0].partyId;
         const numOfMembers = availbleParty[0].numOfMembers + 1;
-        const updateLeadersParty =
-          await this.matchRepository.updateLeadersParty({
-            partyId,
-            ID,
-            password,
-            numOfMembers,
-          });
+        await this.matchRepository.updateLeadersParty({
+          partyId,
+          ID,
+          password,
+          numOfMembers,
+        });
+        const updateLeadersParty = await this.matchRepository.findByPartyId({
+          partyId,
+        });
         const createLeadersMember =
           await this.matchRepository.createLeadersMember({ userId, partyId });
         return updateLeadersParty, createLeadersMember;
@@ -32,19 +32,20 @@ class MatchService {
         const newParty = await this.matchRepository.createLeadersParty({
           ottService,
         });
-        console.log(newParty, "뉴파티");
         const partyId = newParty.partyId;
         const numOfMembers = newParty.numOfMembers + 1;
-        const updateLeadersParty =
-          await this.matchRepository.updateLeadersParty({
-            partyId,
-            ID,
-            password,
-            numOfMembers,
-          });
+        await this.matchRepository.updateLeadersParty({
+          partyId,
+          ID,
+          password,
+          numOfMembers,
+        });
+        const updateLeadersParty = await this.matchRepository.findByPartyId({
+          partyId,
+        });
         const createLeadersMember =
           await this.matchRepository.createLeadersMember({ userId, partyId });
-        return updateLeadersParty, createLeadersMember;
+        return { party: updateLeadersParty, member: createLeadersMember };
       }
     } catch (error) {
       throw error;
