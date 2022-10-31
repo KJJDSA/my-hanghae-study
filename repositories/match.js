@@ -56,6 +56,95 @@ class MatchRepository {
       throw error;
     }
   };
+  /*##################### MEMBER #########################*/
+  findMemberParty = async ({ ottService }) => {
+    try {
+      const availbleParty = await Party.findAll({
+        where: {
+          [Op.and]: [
+            { ottService },
+            // { hasLeader: false },
+            { numOfMembers: { [Op.lt]: 4 } },
+          ],
+        },
+      });
+      return availbleParty;
+    } catch (error) {
+      throw error;
+    }
+  };
+  findHasLeaderParty = async ({ ottService }) => {
+    try {
+      const HasLeaderParty = await Party.findAll({
+        where: {
+          [Op.and]: [
+            { ottService },
+            { hasLeader: true }, // 파티장이 있는 방을 찾아본다.
+            { numOfMembers: { [Op.lt]: 4 } },
+          ],
+        },
+      });
+      return HasLeaderParty;
+    } catch (error) {
+      throw error;
+    }
+  };
+  findNoLeaderParty = async ({ ottService }) => {
+    try {
+      const NoLeaderParty = await Party.findAll({
+        where: {
+          [Op.and]: [
+            { ottService },
+            { hasLeader: false }, // 파티장 없고 2명 이하인 방
+            { numOfMembers: { [Op.lt]: 3 } },
+          ],
+        },
+      });
+      return NoLeaderParty;
+    } catch (error) {
+      throw error;
+    }
+  };
+  createMemberParty = async ({ ottService }) => {
+    try {
+      const createdParty = await Party.create({
+        ottService,
+        numOfMembers: 1,
+        ID: null,
+        password: null,
+        hasLeader: false,
+      });
+      return createdParty;
+    } catch (error) {
+      throw error;
+    }
+  };
+  updateMemberParty = async ({ partyId, numOfMembers }) => {
+    try {
+      const updatedParty = await Party.update(
+        {
+          numOfMembers,
+        },
+        { where: { partyId } }
+      );
+      return updatedParty;
+    } catch (error) {
+      throw error;
+    }
+  };// ?
+  createMember = async ({ userId, partyId }) => {
+    try {
+      const createdMember = await Member.create({
+        userId,
+        partyId,
+        isLeader: false,
+      });
+      return createdMember;
+    } catch (error) {
+      throw error;
+    }
+  };
+
 }
 
 module.exports = MatchRepository;
