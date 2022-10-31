@@ -1,9 +1,8 @@
-// const express = require('express');
-// const { default: next } = require('next');
+const express = require('express');
 const passport = require('passport');
 const { User } = require('../models');
-const router = require('./users');
 const jwt = require('jsonwebtoken')
+const router = express.Router();
 
 //  카카오 로그인 : /auth/kakao
 router.get('/kakao', passport.authenticate('kakao'));
