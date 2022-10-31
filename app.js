@@ -1,14 +1,30 @@
 const express = require('express');
+const session = require('express-session');
 const app = express();
 const Http = require('http');
 const http = Http.createServer(app);
 require('dotenv').config();
 const port = process.env.EXPRESS_PORT;
 const routes = require('./routes');
-
+const passport = require('passport');
+const passportConfig = require('./passport');
 const bodyParser = require("body-parser")
 const cookieParser = require('cookie-parser');
 
+
+app.use(cookieParser(process.env.COOKIE_NAME));
+app.use(session({
+  resave: false,
+  saveUninitialized: false,
+  secret: process.env.COOKIE_NAME,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+  },
+}));
+app.use(passport.initialize())
+
+passportConfig();
 const cors = require('cors');
 
 // const swaggerUi = require('swagger-ui-express');
