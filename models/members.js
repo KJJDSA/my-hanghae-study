@@ -26,7 +26,6 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      alias: DataTypes.STRING,
       partyId: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
       isLeader: DataTypes.BOOLEAN,
