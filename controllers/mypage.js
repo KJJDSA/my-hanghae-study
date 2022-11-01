@@ -50,10 +50,10 @@ class MyPageController {
     }
   };
 
-  deleteBankAccount = async (req, res) => {
+  DeleteBankAccount = async (req, res) => {
     try {
       const { userId } = res.locals.user;
-      await this.myPageService.deleteBankAccount({
+      await this.myPageService.DeleteBankAccount({
         userId,
       });
       res.status(200).json({ message: "삭제가 완료되었습니다." });
@@ -62,6 +62,66 @@ class MyPageController {
       res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
+
+
+  /** ############# 카드 ############### */
+  createCard = async (req, res, next) => {
+    try {
+      const { bank, card, MMYY, birth, password } = req.body;
+      const { userId } = res.locals.user;
+      const createCard = await this.myPageService
+        .createCard({ bank, card, MMYY, birth, password, userId });
+      res.status(201).json({ data: createCard });
+    } catch (error) {
+      return res.status(400).send({
+        errorMessage: error.name + ':' + error.message,
+      });
+    }
+  };
+
+  cardList = async (req, res, next) => {
+    try {
+      const { userId } = res.locals.user;
+      const cards = await this.myPageService.cardList({ userId });
+      if (cards) {
+        cards.sort((a, b) => b.createdAt - a.createdAt);
+      }
+      return res.status(200).json({ data: cards });
+    } catch (error) {
+      return res.status(400).send({
+        errorMessage: error.name + ':' + error.message,
+      });
+    }
+  };
+
+  cardEdit = async (req, res, next) => {
+    try {
+      const { BankCardId } = req.params;
+      const { bank, card, MMYY, birth, password } = req.body;
+      const { userId } = res.locals.user;
+      const cardEdit = await this.myPageService
+        .cardEdit({ bank, card, MMYY, birth, password, userId, BankCardId });
+      res.status(200).json({ data: cardEdit });
+    } catch (error) {
+      return res.status(400).send({
+        errorMessage: error.name + ':' + error.message,
+      });
+    }
+  };
+
+  cardDelete = async (req, res, next) => {
+    try {
+      const { BankCardId } = req.params;
+      const { userId } = res.locals.user;
+      const cardDelete = await this.myPageService.cardDelete({ BankCardId, userId });
+      res.status(200).json({ data: cardDelete });
+    } catch (error) {
+      return res.status(400).send({
+        errorMessage: error.name + ':' + error.message,
+      });
+    }
+  };
+
 }
 
 module.exports = MyPageController;
