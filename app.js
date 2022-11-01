@@ -29,8 +29,9 @@ app.use(passport.initialize());
 passportConfig();
 const cors = require("cors");
 
-// const swaggerUi = require('swagger-ui-express');
-// const swaggerFile = require('./swagger-output.js');
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger-output.js');
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.use(
   cors({
@@ -53,7 +54,7 @@ app.use('/api', routes);
 // app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.get("/", (req, res) => {
-  res.send("hello!");
+  res.send("hello world!");
 });
 
 const jwt = require("jsonwebtoken");
