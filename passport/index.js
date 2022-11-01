@@ -1,6 +1,6 @@
 const passport = require("passport");
 const kakao = require("./kakaoStretegy");
-const Users = require("../models/users");
+const Userss = require("../models/users");
 
 module.exports = () => {
   passport.serializeUser((user, done) => {

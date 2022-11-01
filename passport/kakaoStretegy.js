@@ -4,7 +4,7 @@ const passport = require("passport");
 const KakaoStrategy = require("passport-kakao").Strategy;
 
 // 유저 모델 임포트
-const { Users } = require("../models");
+const { Userss } = require("../models");
 
 require("dotenv").config();
 
@@ -26,7 +26,7 @@ module.exports = () => {
           // console.log(`${profile.id} 유저 정보`)
 
           // 찾은 유저 정보가 이미 db에 존재하는지 찾기
-          const isExistUser = await Users.findOne({
+          const isExistUser = await Userss.findOne({
             where: { kakaoId: profile.id },
           });
 
@@ -37,15 +37,15 @@ module.exports = () => {
             // 그냥 로그인
             done(null, isExistUser);
 
-            console.log("유저 정보가 존재해 자동 로그인 되었습니다.");
-          } else {
-            // 유저 정보가 존재하지 않는다면
-            console.log("유저 정보가 존재하지 않습니다.");
+            console.log('유저 정보가 존재해 자동 로그인 되었습니다.');
 
+          } else { // 유저 정보가 존재하지 않는다면
+            console.log('유저 정보가 존재하지 않습니다.');
+            console.log(profile._json)
             // 로그인 한 유저 정보 디비에 저장(회원가입)
             const newUser = await Users.create({
               kakaoId: profile.id,
-              email: profile._json && profile._json.kakao_account_email, // 이메일 정보를 카카오에서 받아온다
+              email: profile._json.kakao_account.email || null, // 이메일 정보를 카카오에서 받아온다
               nickname: profile.displayName,
             });
 

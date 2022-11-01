@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { Users } = require("../models");
 require('dotenv').config();
 
 module.exports = (req, res, next) => {
@@ -14,9 +14,9 @@ module.exports = (req, res, next) => {
     // res.locals.authToken = authToken;
     // console.log(authToken)
     const { userId } = jwt.verify(authToken, process.env.SECRET_KEY);
-    console.log(userId.userId)
-    User.findOne({ where: { userId } }).then((user) => {
+    Users.findOne({ where: { userId: userId.userId } }).then((user) => {
       res.locals.user = user;
+      // console.log(user)
       next();
     });
   } catch (error) {

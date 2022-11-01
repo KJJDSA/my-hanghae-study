@@ -2,56 +2,40 @@ const express = require("express");
 const router = express.Router();
 const OTTS = [
   {
-    Netflix: {
-      ottService: "Netflix",
-      price: 170000,
-      hostCommision: 490,
-      memberCommision: 990,
-    }
+    ottService: "Netflix",
+    price: 170000,
+    hostCommision: 490,
+    memberCommision: 990,
   },
   {
-    Wavve: {
-      ottService: "Wavve",
-      price: 139000,
-      hostCommision: 490,
-      memberCommision: 990,
-
-    }
+    ottService: "Wavve",
+    price: 139000,
+    hostCommision: 490,
+    memberCommision: 990,
   },
   {
-    Watcha: {
-      ottService: "Watcha",
-      price: 129000,
-      hostCommision: 490,
-      memberCommision: 990,
-
-    }
+    ottService: "Watcha",
+    price: 129000,
+    hostCommision: 490,
+    memberCommision: 990,
   },
   {
-    Laftel: {
-      ottService: "Laftel",
-      price: 149000,
-      hostCommision: 490,
-      memberCommision: 990,
-    }
+    ottService: "Laftel",
+    price: 149000,
+    hostCommision: 490,
+    memberCommision: 990,
   },
   {
-    Tving: {
-      ottService: "Tving",
-      price: 139000,
-      hostCommision: 490,
-      memberCommision: 990,
-
-    }
+    ottService: "Tving",
+    price: 139000,
+    hostCommision: 490,
+    memberCommision: 990,
   },
   {
-    "Disney+": {
-      ottService: "Disney+",
-      price: 99000,
-      hostCommision: 490,
-      memberCommision: 990,
-
-    }
+    ottService: "Disney+",
+    price: 99000,
+    hostCommision: 490,
+    memberCommision: 990,
   }
 ]
 

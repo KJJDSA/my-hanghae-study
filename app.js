@@ -5,11 +5,13 @@ const Http = require("http");
 const http = Http.createServer(app);
 require("dotenv").config();
 const port = process.env.EXPRESS_PORT;
-const routes = require("./routes");
-const passport = require("passport");
-const passportConfig = require("./passport");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
+const routes = require('./routes');
+const passport = require('passport');
+const passportConfig = require('./passport');
+// const bodyParser = require("body-parser") // 그냥 express.json해도 똑같다
+const cookieParser = require('cookie-parser');
+
+
 app.use(cookieParser(process.env.COOKIE_NAME));
 app.use(
   session({
@@ -37,16 +39,16 @@ app.use(
   })
 );
 
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
-
-app.use("/api", routes);
-
+// 세개 다 라우터 미들웨어 아래에 있길래 위로 올림
+app.use(express.json());
+app.use(express.urlencoded({
+  extended: true
+}));
 app.use(cookieParser());
+
+app.use('/api', routes);
+
+
 
 // app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 

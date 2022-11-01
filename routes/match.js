@@ -7,6 +7,6 @@ const authMiddleware = require("../middlewares/authmiddleware");
 
 router.post("/leader", matchController.matchLeader);
 
-router.post("/member", authMiddleware, matchController.matchLeader);
+router.post("/member", authMiddleware, matchController.matchMember);
 
 module.exports = router;
