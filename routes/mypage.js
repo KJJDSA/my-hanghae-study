@@ -10,9 +10,9 @@ router.post("/account", authMiddleware, myPageController.registerBankAccount);
 router.put("/account", authMiddleware, myPageController.updateBankAccount);
 router.delete("/account", authMiddleware, myPageController.deleteBankAccount);
 
-router.get("/card", authMiddleware, myPageController.lookupMyBankAccount);
-router.post("/card", authMiddleware, myPageController.updateBankAccount);
-router.put("/card", authMiddleware, myPageController.lookupMyBankAccount);
-router.delete("/card", authMiddleware, myPageController.updateBankAccount);
+router.get("/card", authMiddleware, myPageController.cardList);
+router.post("/card", authMiddleware, myPageController.createCard);
+router.put("/card/:BankCardId", authMiddleware, myPageController.cardEdit);
+router.delete("/card/:BankCardId", authMiddleware, myPageController.cardDelete);
 
 module.exports = router;
