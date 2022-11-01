@@ -9,14 +9,41 @@ class MyPageRepository {
       throw error;
     }
   };
-  updateBankAccount = async ({ userId, ottService, ID, password }) => {
+
+  registerBankAccount = async ({ userId, bank, account }) => {
+    try {
+      const registerBankAccount = await BankAccounts.create({
+        bank,
+        account,
+        userId,
+      });
+
+      return registerBankAccount;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  updateBankAccount = async ({ userId, bank, account }) => {
     try {
       const updateBankAccount = await BankAccounts.update(
-        { ottService, ID, password },
+        { bank, account },
         { where: { userId } }
       );
 
       return updateBankAccount;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  deleteBankAccount = async ({ userId }) => {
+    try {
+      const deleteBankAccount = await BankAccounts.destroy({
+        where: { userId },
+      });
+
+      return deleteBankAccount;
     } catch (error) {
       throw error;
     }
