@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       kakaoId: DataTypes.STRING,
       nickname: DataTypes.STRING,
-      email: DataTypes.STRING,
+      password: DataTypes.STRING,
       phone: DataTypes.STRING,
     },
     {
