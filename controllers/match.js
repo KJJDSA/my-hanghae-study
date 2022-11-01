@@ -7,7 +7,7 @@ class MatchController {
 
   matchLeader = async (req, res) => {
     try {
-      const { userId } = { userId: 1 };
+      const { userId } = res.locals.user;
       const { ottService, ID, password } = req.body;
       const matchLeader = await this.matchService.matchLeader({
         userId,
