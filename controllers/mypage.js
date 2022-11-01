@@ -106,14 +106,19 @@ class MyPageController {
     }
   };
 
-
   /** ############# 카드 ############### */
   createCard = async (req, res, next) => {
     try {
       const { bank, card, MMYY, birth, password } = req.body;
       const { userId } = res.locals.user;
-      const createCard = await this.myPageService
-        .createCard({ bank, card, MMYY, birth, password, userId });
+      const createCard = await this.myPageService.createCard({
+        bank,
+        card,
+        MMYY,
+        birth,
+        password,
+        userId,
+      });
       res.status(201).json({ data: createCard });
     } catch (error) {
       return res.status(400).send({
@@ -162,7 +167,6 @@ class MyPageController {
       });
     }
   };
-
 }
 
 module.exports = MyPageController;

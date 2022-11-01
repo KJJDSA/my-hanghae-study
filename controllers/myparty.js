@@ -7,7 +7,7 @@ class MyPartyController {
 
   lookupMyParty = async (req, res) => {
     try {
-      const { userId } = { userId: 1 };
+      const { userId } = res.locals.user;
       const myParty = await this.myPartyService.lookupMyParty({
         userId,
       });

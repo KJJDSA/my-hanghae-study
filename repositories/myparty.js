@@ -2,21 +2,21 @@ const { Parties } = require("../models");
 const { Members } = require("../models");
 
 class MyPartyRepository {
-  // 모든 파티 정보를 db에서 조회하는 함수
-  lookupMyParty = async ({ userId }) => {
+  findMember = async ({ userId }) => {
     try {
-      const member = await Members.findAll({ userId });
-      const { partyId } = { partyId: member[0].partyId };
-      const myParty = await Parties.findAll({
-        where: { partyId },
-        order: [["createdAt", "DESC"]],
-        include: [
-          {
-            model: Members,
-            attributes: ["alias"], // Members 테이블에 있는 nickname은 Alias 로 정하게 되었습니다.
-          }, //이거 안되서 그냥 넘길게용
-        ],
+      const member = await Members.findAll({
+        where: { userId },
       });
+      return member;
+    } catch (err) {
+      throw error;
+    }
+  };
+
+  // 모든 파티 정보를 db에서 조회하는 함수
+  lookupMyParty = async (partyId) => {
+    try {
+      const myParty = await Parties.findByPk(partyId);
       return myParty;
     } catch (error) {
       throw error;
