@@ -10,7 +10,6 @@ const passport = require("passport");
 const passportConfig = require("./passport");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-
 app.use(cookieParser(process.env.COOKIE_NAME));
 app.use(
   session({
