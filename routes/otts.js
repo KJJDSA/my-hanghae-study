@@ -7,7 +7,6 @@ const OTTS = [
       price: 170000,
       hostCommision: 490,
       memberCommision: 990,
-
     }
   },
   {
@@ -46,8 +45,8 @@ const OTTS = [
     }
   },
   {
-    Disney: {
-      ottService: "Disney",
+    "Disney+": {
+      ottService: "Disney+",
       price: 99000,
       hostCommision: 490,
       memberCommision: 990,

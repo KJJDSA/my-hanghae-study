@@ -2,25 +2,23 @@ const MyPartyService = require('../services/myparty');
 
 class MyPartyController {
 
-    myPartyService = new MyPartyService;
+   constructor() {
+    this.myPartyService = new MyPartyService();
+  }
 
-    allPartyInfo = async (req, res) => {
-
-        try {
-
-            const allPartyInfo = await this.myPartyService.sortPartyInfo();
-            
-            res.status(200).json({ data: allPartyInfo });
-
-        } catch (err) {
-
-            console.log(err);
-            
-            res.status(err.status || 400);
-            
-        }
-
+    lookupMyParty = async (req, res) => {
+      try {
+        const { userId } = res.locals.user;
+        const myParty = await this.myPartyService.lookupMyParty({
+          userId,
+        });
+        res.status(200).json({ data: myParty });
+      } catch (error) {
+        console.log(`${error.name}:${error.message}`);
+        res.status(400).json({ Type: error.name, Message: error.message });
+      }
     };
+  }
 
 
     changePartyInfo = async (req, res) => {
@@ -40,11 +38,8 @@ class MyPartyController {
             res.status(200).json({ message: "수정이 완료되었습니다." });
         
         } catch (err) {
-
-            console.log(err);
-
-            res.status(err.status || 400);
-
+        console.log(`${error.name}:${error.message}`);
+        res.status(400).json({ Type: error.name, Message: error.message });
         }
     };
 

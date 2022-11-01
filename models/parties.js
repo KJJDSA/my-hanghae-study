@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Parties extends Model {
     /**
@@ -10,22 +8,39 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Parties.hasMany(models.Members, {
+        foreignKey: "partyId",
+        sourceKey: "partyId",
+      });
     }
   }
-  Parties.init({
-    partyId: {
-      primaryKey: true,
-      type: DataTypes.INTEGER
+  Parties.init(
+    {
+      partyId: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
+      ottService: DataTypes.STRING,
+      numOfMembers: { type: DataTypes.INTEGER, defaultValue: 0 },
+      ID: DataTypes.STRING,
+      password: DataTypes.STRING,
+      hasLeader: DataTypes.BOOLEAN,
     },
-    ottService: DataTypes.STRING,
-    numOfMembers: DataTypes.INTEGER,
-    ID: DataTypes.STRING,
-    password: DataTypes.STRING,
-    hasLeader: DataTypes.BOOLEAN
-  }, {
-    sequelize,
-    modelName: 'Parties',
-  });
+    {
+      sequelize,
+      modelName: "Parties",
+    }
+  );
+
+  // matchroom.associate = models => {
+  //   /**
+  //    *  Users모델 안에 "company_id라는 컬럼 이름"으로 CompanyInformation모델에 있는 "id값"을 새로운 컬럼으로 추가한다.
+  //    */
+  //   matchroom.belongsTo(models.matchuser, { foreignKey: "matchroomId", sourceKey: "matchroomId" });
+
+  // };
   return Parties;
 };
+
