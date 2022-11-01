@@ -64,7 +64,7 @@ class UserController {
         res.status(401).send({ errorMessage: '닉네임 또는 패스워드가 틀렸습니다.' });
       } else {
         console.log(error);
-        return res.status(401).send({
+        return res.status(400).send({
           errorMessage: '로그인에 실패하였습니다.',
         });
       }
