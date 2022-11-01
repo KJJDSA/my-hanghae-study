@@ -4,7 +4,7 @@ const passport = require("passport");
 const KakaoStrategy = require("passport-kakao").Strategy;
 
 // 유저 모델 임포트
-const { Userss } = require("../models");
+const { Users } = require("../models");
 
 require("dotenv").config();
 
@@ -26,7 +26,7 @@ module.exports = () => {
           // console.log(`${profile.id} 유저 정보`)
 
           // 찾은 유저 정보가 이미 db에 존재하는지 찾기
-          const isExistUser = await Userss.findOne({
+          const isExistUser = await Users.findOne({
             where: { kakaoId: profile.id },
           });
 

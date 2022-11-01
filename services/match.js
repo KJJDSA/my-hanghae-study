@@ -27,7 +27,7 @@ class MatchService {
         });
         const createLeadersMember =
           await this.matchRepository.createLeadersMember({ userId, partyId });
-        return updateLeadersParty, createLeadersMember;
+        return { party: updateLeadersParty, member: createLeadersMember };
       } else {
         const newParty = await this.matchRepository.createLeadersParty({
           ottService,
