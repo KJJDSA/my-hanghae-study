@@ -7,11 +7,11 @@ const authMiddleware = require("../middlewares/authmiddleware");
 
 
 // 유저 닉네임, 폰번호 조회
-router.get("/", myPageController.nicknameAndPhone);
+router.get("/", authMiddleware, myPageController.nicknameAndPhone);
 // 유저 닉네임, 폰번호 수정
-router.put("/", myPageController.updateNicknameAndPhone);
+router.put("/", authMiddleware, myPageController.updateNicknameAndPhone);
 // 유저 탈퇴
-router.delete("/", myPageController.deleteUserAccount);
+router.delete("/", authMiddleware, myPageController.deleteUserAccount);
 
 router.get("/account", authMiddleware, myPageController.lookupMyBankAccount);
 router.post("/account", authMiddleware, myPageController.registerBankAccount);
@@ -20,7 +20,7 @@ router.delete("/account", authMiddleware, myPageController.deleteBankAccount);
 
 router.get("/card", authMiddleware, myPageController.cardList);
 router.post("/card", authMiddleware, myPageController.createCard);
-router.put("/card/:BankCardId", authMiddleware, myPageController.cardEdit);
-router.delete("/card/:BankCardId", authMiddleware, myPageController.cardDelete);
+router.put("/card", authMiddleware, myPageController.cardEdit);
+router.delete("/card", authMiddleware, myPageController.cardDelete);
 
 module.exports = router;

@@ -38,6 +38,7 @@ class UserService {
 
     if (match) {
       const token = jwt.sign({ userId: loginUser.userId }, process.env.SECRET_KEY)
+      // console.log(loginUser.userId)
       const expires = new Date();
       expires.setMinutes(expires.getMinutes() + 600);
       return { token: token, expires: expires, }

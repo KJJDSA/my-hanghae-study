@@ -34,7 +34,7 @@ class MyPageService {
   // 유저 회원 탈퇴
   deleteUserAccount = async ({ userId }) => {
     try {
-      const myInfo = await this.myPageRepository.deleteUserAccount({userId});
+      const myInfo = await this.myPageRepository.deleteUserAccount({ userId });
       return myInfo;
     } catch (error) {
       throw error;
@@ -55,6 +55,12 @@ class MyPageService {
 
   registerBankAccount = async ({ userId, bank, account }) => {
     try {
+      // 한개만 생성 가능
+      const isExist = await this.myPageRepository.accountIsExist({ userId });
+      // console.log(isExist)
+      if (isExist) {
+        throw { name: "account", message: "계좌가 이미 존재합니다." };
+      }
       await this.myPageRepository.registerBankAccount({
         userId,
         bank,
@@ -109,6 +115,10 @@ class MyPageService {
 
   createCard = async ({ bank, card, MMYY, birth, password, userId }) => {
     try {
+      const isExist = await this.myPageRepository.cardIsExist({ userId });
+      if (isExist) {
+        throw { name: "card", message: "카드가 이미 존재합니다." };
+      }
       const createCard = await this.myPageRepository
         .createCard({ bank, card, MMYY, birth, password, userId });
       return createCard;
@@ -129,31 +139,27 @@ class MyPageService {
     }
   };
 
-  cardEdit = async ({ bank, card, MMYY, birth, password, userId, BankCardId }) => {
+  cardEdit = async ({ bank, card, MMYY, birth, password, userId, }) => {
     try {
-      const isExist = await this.myPageRepository.cardIsExist({ BankCardId });
-      if (!isExist) {
-        throw { name: "cardedit-S", message: "카드가 존재하지 않습니다." };
-      }
       const cardedit = await this.myPageRepository
-        .cardEdit({ bank, card, MMYY, birth, password, userId, BankCardId });
+        .cardEdit({ bank, card, MMYY, birth, password, userId });
 
-      if (cardedit < 1) throw { name: "cardEdit-S", message: "수정 실패" };
+      if (cardedit < 1) throw { name: "card", message: "수정 실패" };
       return "수정 성공";
     } catch (error) {
       throw error;
     }
   };
 
-  cardDelete = async ({ BankCardId, userId }) => {
+  cardDelete = async ({ userId }) => {
     try {
-      const isExist = await this.myPageRepository.cardIsExist({ BankCardId });
+      const isExist = await this.myPageRepository.cardIsExist({ userId });
       if (!isExist) {
-        throw { name: "carddelete-S", message: "카드가 존재하지 않습니다." };
+        throw { name: "card", message: "카드가 존재하지 않습니다." };
       }
 
-      const carddelete = await this.myPageRepository.cardDelete({ BankCardId, userId });
-      if (carddelete < 1) throw { name: "carddelete-S", message: "삭제할 수 없습니다." };
+      const carddelete = await this.myPageRepository.cardDelete({ userId });
+      if (carddelete < 1) throw { name: "card", message: "삭제할 수 없습니다." };
       return "삭제 성공";
     } catch (error) {
       throw error;
