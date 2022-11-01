@@ -21,9 +21,10 @@ module.exports = (sequelize, DataTypes) => {
   Members.init(
     {
       memberId: {
-        primaryKey: true,
+        allowNull: false,
         autoIncrement: true,
-        type: DataTypes.INTEGER
+        primaryKey: true,
+        type: DataTypes.INTEGER,
       },
       partyId: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,

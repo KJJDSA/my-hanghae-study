@@ -22,19 +22,23 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
-  Users.init({
-    userId: {
-      primaryKey: true,
-      autoIncrement: true,
-      type: DataTypes.INTEGER
+  Users.init(
+    {
+      userId: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
+      kakaoId: DataTypes.STRING,
+      nickname: DataTypes.STRING,
+      email: DataTypes.STRING,
+      phone: DataTypes.STRING,
     },
-    kakaoId: DataTypes.STRING,
-    nickname: DataTypes.STRING,
-    email: DataTypes.STRING,
-    phone: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Users',
-  });
+    {
+      sequelize,
+      modelName: "Users",
+    }
+  );
   return Users;
 };

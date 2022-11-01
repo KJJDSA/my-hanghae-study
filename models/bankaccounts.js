@@ -1,45 +1,43 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class BankCards extends Model {
+  class BankAccounts extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      BankCards.belongsTo(models.Users, {
+      BankAccounts.belongsTo(models.Users, {
         foreignKey: "userId",
         sourceKey: "userId",
       });
     }
   }
-  BankCards.init(
+  BankAccounts.init(
     {
       bankcardId: {
-        primaryKey: true,
+        allowNull: false,
         autoIncrement: true,
-        type: DataTypes.INTEGER
+        primaryKey: true,
+        type: DataTypes.INTEGER,
       },
       userId: DataTypes.INTEGER,
       bank: DataTypes.STRING,
-      card: DataTypes.STRING,
-      MMYY: DataTypes.STRING,
-      birth: DataTypes.STRING,
-      password: DataTypes.STRING,
+      account: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: "BankCards",
+      modelName: "BankAccounts",
     }
   );
 
-  // bankcard.associate = models => {
+  // bankaccount.associate = models => {
 
   //   /**
   //    * CompanyInformation안에 있는 "id값"을 "company_id라는 컬럼 이름"으로 Users모델에 새로운 컬럼으로 추가한다.
   //    */
-  //   bankcard.hasMany(models.User, {foreignKey : "userId", sourceKey:"userId"});
+  //   bankaccount.hasMany(models.User, { foreignKey: "userId", sourceKey: "userId" });
   // };
-  return BankCards;
+  return BankAccounts;
 };

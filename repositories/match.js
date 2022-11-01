@@ -1,6 +1,6 @@
-const { Op } = require("sequelize");
 const { Parties } = require("../models");
 const { Members } = require("../models");
+const { Op } = require("sequelize");
 
 class MatchRepository {
   findLeadersParty = async ({ ottService }) => {
@@ -40,6 +40,7 @@ class MatchRepository {
         },
         { where: { partyId } }
       );
+      console.log(updatedParty);
       return updatedParty;
     } catch (error) {
       throw error;
@@ -53,6 +54,14 @@ class MatchRepository {
         isLeader: true,
       });
       return createdMember;
+    } catch (error) {
+      throw error;
+    }
+  };
+  findByPartyId = async ({ partyId }) => {
+    try {
+      const finalParty = await Parties.findByPk(partyId);
+      return finalParty;
     } catch (error) {
       throw error;
     }
@@ -132,7 +141,7 @@ class MatchRepository {
     } catch (error) {
       throw error;
     }
-  };// ?
+  }; // ?
   createMember = async ({ userId, partyId }) => {
     try {
       const createdMember = await Members.create({
@@ -145,7 +154,6 @@ class MatchRepository {
       throw error;
     }
   };
-
 }
 
 module.exports = MatchRepository;

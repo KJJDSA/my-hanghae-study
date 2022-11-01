@@ -10,31 +10,47 @@ class MatchService {
       const availbleParty = await this.matchRepository.findLeadersParty({
         ottService,
       });
-      if (availbleParty) {
+      if (availbleParty.length > 0) {
         availbleParty.sort((a, b) => {
           return a.createdAt - b.createdAt;
         });
+        const partyId = availbleParty[0].partyId;
+        const numOfMembers = (availbleParty[0].numOfMembers += 1);
+        await this.matchRepository.updateLeadersParty({
+          partyId,
+          ID,
+          password,
+          numOfMembers,
+        });
+        const updateLeadersParty = await this.matchRepository.findByPartyId({
+          partyId,
+        });
+        const createLeadersMember =
+          await this.matchRepository.createLeadersMember({ userId, partyId });
+        return updateLeadersParty, createLeadersMember;
       } else {
-        availbleParty = await this.matchRepository.createLeadersParty({
+        const newParty = await this.matchRepository.createLeadersParty({
           ottService,
         });
+        const partyId = newParty.partyId;
+        const numOfMembers = (newParty.numOfMembers += 1);
+        await this.matchRepository.updateLeadersParty({
+          partyId,
+          ID,
+          password,
+          numOfMembers,
+        });
+        const updateLeadersParty = await this.matchRepository.findByPartyId({
+          partyId,
+        });
+        const createLeadersMember =
+          await this.matchRepository.createLeadersMember({ userId, partyId });
+        return { party: updateLeadersParty, member: createLeadersMember };
       }
-      const partyId = availbleParty[0].partyId;
-      const numOfMembers = availbleParty[0].numOfMembers + 1;
-      const updateLeadersParty = await this.matchRepository.updateLeadersParty({
-        partyId,
-        ID,
-        password,
-        numOfMembers,
-      });
-      const createLeadersMember =
-        await this.matchRepository.createLeadersMember({ userId, partyId });
-      return updateLeadersParty, createLeadersMember;
     } catch (error) {
       throw error;
     }
   };
-
 
   matchMember = async ({ userId, ottService }) => {
     try {
@@ -54,13 +70,12 @@ class MatchService {
           hasLeaderParty.sort((a, b) => {
             return a.createdAt - b.createdAt;
           });
-          console.log(hasLeaderParty);
-          const partyId = hasLeaderParty[0].partyId
-          const numOfMembers = hasLeaderParty[0].numOfMembers + 1;
+          const partyId = hasLeaderParty[0].partyId;
+          const numOfMembers = hasLeaderParty[0].numOfMembers + 1; //재준님 이거안돼요...
           // 해당 파티 레코드의 numOfMembers 를 1늘려줌
           await this.matchRepository.updateMemberParty({
             partyId,
-            numOfMembers
+            numOfMembers,
           });
           // Members 테이블에 매칭한 유저 생성함
           await this.matchRepository.createMember({ userId, partyId })
@@ -116,6 +131,5 @@ class MatchService {
     }
   };
 }
-
 
 module.exports = MatchService;

@@ -5,9 +5,8 @@ const MatchController = require("../controllers/match");
 const matchController = new MatchController();
 const authMiddleware = require("../middlewares/authmiddleware");
 
-router.get("/host", authMiddleware, matchController.matchLeader);
+router.post("/leader", matchController.matchLeader);
 
 router.post("/member", authMiddleware, matchController.matchMember);
-
 
 module.exports = router;

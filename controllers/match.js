@@ -7,7 +7,7 @@ class MatchController {
 
   matchLeader = async (req, res) => {
     try {
-      const { userId } = res.locals.user;
+      const { userId } = { userId: 1 };
       const { ottService, ID, password } = req.body;
       const matchLeader = await this.matchService.matchLeader({
         userId,
@@ -22,7 +22,6 @@ class MatchController {
     }
   };
 
-
   matchMember = async (req, res) => {
     try {
       const { userId } = res.locals.user;
@@ -30,7 +29,7 @@ class MatchController {
       const { ottService } = req.body;
       const matchMember = await this.matchService.matchMember({
         userId,
-        ottService
+        ottService,
       });
       res.status(200).json({ data: matchMember });
     } catch (error) {
@@ -39,6 +38,5 @@ class MatchController {
     }
   };
 }
-
 
 module.exports = MatchController;
