@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   BankAccounts.init(
     {
-      bankcardId: {
+      bankAccountId: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
