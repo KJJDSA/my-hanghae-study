@@ -7,12 +7,12 @@ class MyPageRepository {
   // 유저 닉네임과 폰 번호 조회
   nicknameAndPhone = async ({ userId }) => {
     try {
-      const myInfo = await Users.findAll({ where: { userId }});
+      const myInfo = await Users.findAll({ where: { userId }, attributes: { exclude: ["password"] } });
       return myInfo;
-    } catch (err) {
+    } catch (error) {
       throw error;
     }
-    
+
   }
 
   // 유저 닉네임과 폰 번호를 수정
@@ -23,7 +23,7 @@ class MyPageRepository {
         { where: { userId } }
       );
       return myInfo;
-    } catch (err) {
+    } catch (error) {
       throw error;
     }
   }
@@ -31,7 +31,7 @@ class MyPageRepository {
   // 유저 회원 탈퇴
   deleteUserAccount = async ({ userId }) => {
     try {
-      const myInfo = await Users.destroy({ where: {userId} });
+      const myInfo = await Users.destroy({ where: { userId } });
       return myInfo;
     } catch (error) {
       throw error;
@@ -62,7 +62,15 @@ class MyPageRepository {
       throw error;
     }
   };
+  accountIsExist = async ({ userId }) => {
+    try {
+      const isExist = await BankAccounts.findOne({ where: { userId } });
 
+      return isExist;
+    } catch (error) {
+      throw error;
+    }
+  };
   updateBankAccount = async ({ userId, bank, account }) => {
     try {
       const updateBankAccount = await BankAccounts.update(
@@ -131,14 +139,13 @@ class MyPageRepository {
     MMYY,
     birth,
     password,
-    userId,
-    BankCardId,
+    userId
   }) => {
     try {
       const updateCount = await BankCards.update(
         { bank, card, MMYY, birth, password, userId },
         {
-          where: { BankCardId },
+          where: { userId },
         }
       );
       return updateCount;
@@ -147,19 +154,19 @@ class MyPageRepository {
     }
   };
 
-  cardIsExist = async ({ BankCardId }) => {
+  cardIsExist = async ({ userId }) => {
     try {
-      const isExist = await BankCards.findByPk(BankCardId);
+      const isExist = await BankCards.findOne({ where: { userId } });
 
       return isExist;
     } catch (error) {
       throw error;
     }
   };
-  cardDelete = async ({ BankCardId, userId }) => {
+  cardDelete = async ({ userId }) => {
     try {
       const deleteCount = await BankCards.destroy({
-        where: { BankCardId, userId },
+        where: { userId },
       });
 
       return deleteCount;

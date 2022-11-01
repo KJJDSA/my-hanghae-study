@@ -14,7 +14,15 @@ module.exports = {
       "description": ""
     },
     {
-      "name": "마이페이지API",
+      "name": "마이페이지API - 유저관리",
+      "description": ""
+    },
+    {
+      "name": "마이페이지API - 계좌관리",
+      "description": ""
+    },
+    {
+      "name": "마이페이지API - 카드관리",
       "description": ""
     },
     {
@@ -149,16 +157,102 @@ module.exports = {
         }
       }
     },
-    "/api/mypage/account": {
+    "/api/mypage/": {
       "get": {
-        "description": "내가 등록한 계좌를 불러오는 기능입니다",
-        "tags": ["마이페이지API"],
+        "description": "내 정보를 불러오는 기능입니다.",
+        "tags": ["마이페이지API - 유저관리"],
         "parameters": [],
         "responses": {}
       },
       "put": {
-        "description": "내 계좌정보를 변경하는 기능입니다",
-        "tags": ["마이페이지API"],
+        "description": "내 정보 수정하는 기능입니다",
+        "tags": ["마이페이지API - 유저관리"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nickname": {
+                  "type": "string",
+                  "example": "sparta"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "1234-5678-9123-4567"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "description": "회원탈퇴 기능입니다.",
+        "tags": ["마이페이지API - 유저관리"],
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/mypage/account": {
+      "get": {
+        "description": "내 계좌를 불러오는 기능입니다.",
+        "tags": ["마이페이지API - 계좌관리"],
+        "parameters": [],
+        "responses": {}
+      },
+      "post": {
+        "description": "내 계좌를 생성하는 기능입니다.",
+        "tags": ["마이페이지API - 계좌관리"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bank": {
+                  "type": "string",
+                  "example": "KB"
+                },
+                "account": {
+                  "type": "string",
+                  "example": "1234-5678-9123-4567"
+                },
+              }
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "description": "내 계좌를 변경하는 기능입니다.",
+        "tags": ["마이페이지API - 계좌관리"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "bank": {
+                  "type": "string",
+                  "example": "KB"
+                },
+                "account": {
+                  "type": "string",
+                  "example": "1234-5678-9123-4567"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "description": "내 계좌를 삭제하는 기능입니다.",
+        "tags": ["마이페이지API - 계좌관리"],
         "parameters": [],
         "responses": {}
       }
@@ -166,13 +260,13 @@ module.exports = {
     "/api/mypage/card": {
       "get": {
         "description": "내가 등록한 카드를 불러오는 기능입니다",
-        "tags": ["마이페이지API"],
+        "tags": ["마이페이지API - 카드관리"],
         "parameters": [],
         "responses": {}
       },
       "post": {
         "description": "카드 등록할 떄 쓰는 API입니다",
-        "tags": ["마이페이지API"],
+        "tags": ["마이페이지API - 카드관리"],
         "parameters": [
           {
             "name": "body",
@@ -205,19 +299,11 @@ module.exports = {
           }
         ],
         "responses": {}
-      }
-    },
-    "/api/mypage/card/{BankCardId}": {
+      },
       "put": {
-        "description": "해당 카드정보를 변경하는 기능입니다.",
-        "tags": ["마이페이지API"],
+        "description": "내 카드정보를 변경하는 기능입니다.",
+        "tags": ["마이페이지API - 카드관리"],
         "parameters": [
-          {
-            "name": "bankCardId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -251,22 +337,15 @@ module.exports = {
         "responses": {}
       },
       "delete": {
-        "description": "해당 카드를 삭제하는 기능입니다.",
-        "tags": ["마이페이지API"],
-        "parameters": [
-          {
-            "name": "bankCardId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-        ],
+        "description": "내 카드를 삭제하는 기능입니다.",
+        "tags": ["마이페이지API - 카드관리"],
+        "parameters": [],
         "responses": {}
       }
     },
     "/api/myparty/": {
       "get": {
-        "description": "매칭된 파티 정보를 불러오는 기능입니다.",
+        "description": "매칭된 파티 정보를 불러오는 기능입니다. 미완",
         "tags": ["마이파티API"],
         "parameters": [],
         "responses": {
@@ -278,7 +357,7 @@ module.exports = {
     },
     "/api/myparty/{partyId}": {
       "put": {
-        "description": "파티의 ott 계정을 수정하는 기능입니다.",
+        "description": "파티의 ott 계정을 수정하는 기능입니다. 미완?",
         "tags": ["마이파티API"],
         "parameters": [
           {

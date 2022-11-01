@@ -12,7 +12,8 @@ const passportConfig = require('./passport');
 const cookieParser = require('cookie-parser');
 
 
-app.use(cookieParser(process.env.COOKIE_NAME));
+app.use(cookieParser());
+// app.use(cookieParser(process.env.COOKIE_NAME));
 app.use(
   session({
     resave: false,
@@ -43,9 +44,8 @@ app.use(
 // 세개 다 라우터 미들웨어 아래에 있길래 위로 올림
 app.use(express.json());
 app.use(express.urlencoded({
-  extended: true
+  extended: false
 }));
-app.use(cookieParser());
 
 app.use('/api', routes);
 
