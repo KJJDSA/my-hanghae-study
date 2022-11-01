@@ -34,6 +34,7 @@ module.exports = () => {
 
           // 유저 정보가 이미 존재한다면
           if (isExistUser) {
+            isExistUser.signup = false; //신규정보 입력 패스
             // 그냥 로그인
             done(null, isExistUser);
 
@@ -48,7 +49,7 @@ module.exports = () => {
               email: profile._json.kakao_account.email || null, // 이메일 정보를 카카오에서 받아온다
               nickname: profile.displayName,
             });
-
+            newUser.signup = true; // 신규유저인지 확인
             done(null, newUser);
 
             console.log("유저 정보가 입력되어 자동 로그인 되었습니다.");

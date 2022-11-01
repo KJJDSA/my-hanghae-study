@@ -3,6 +3,7 @@ const passport = require("passport");
 const { Users } = require("../models");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
+const authMiddleware = require("../middlewares/authmiddleware");
 
 //  카카오 로그인 : /auth/kakao
 router.get("/kakao", passport.authenticate("kakao"));
@@ -20,7 +21,10 @@ router.get('/kakao/oauth', passport.authenticate("kakao", {
   res.cookie(process.env.COOKIE_NAME, `Bearer ${token}`, {
     expires: expires,
   });
-  res.redirect("/");
+  if (req.user.signup === true) {
+    return res.redirect("http://localhost:3000/api/user") // signup 프로퍼티가 true면 추가정보 입력란으로. 근데 이거 링크를 뭐라고 달면 되지..
+  }
+  res.redirect(`http://localhost:3000?token=${token}`);
 }
 );
 
@@ -36,4 +40,5 @@ router.get("/logout", (req, res, next) => {
   res.redirect("/");
 });
 
-module.exports = router;
+module.exports = router
+
