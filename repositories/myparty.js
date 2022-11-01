@@ -5,16 +5,16 @@ const { Parties } = require('../models');
 class MyPartyRepository {
 
   // 모든 파티 정보를 db에서 조회하는 함수
-  findAllParty = async ({ userId }) => {
+  lookupMyParty = async ({ userId }) => {
     try {
       const myParty = await Parties.findAll({
         where: { userId },
         order: [["createdAt", "DESC"]],
-        include: [
+        attributes: [
           {
-            model: Member,
-            attributes: ["nickname"],
-          },
+            model: Members,
+            include: ["alias"], // Members 테이블에 있는 nickname은 Alias 로 정하게 되었습니다.
+          }, //이거 안되서 그냥 넘길게용
         ],
       });
       return myParty;

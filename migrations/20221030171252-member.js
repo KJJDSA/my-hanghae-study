@@ -22,6 +22,10 @@ module.exports = {
           key: "userId", // 그 아이디 값을 참고합니다.
         },
       },
+      alias: {
+        type: Sequelize.STRING,
+        defaultValue: "Alias"
+      },
       isLeader: {
         type: Sequelize.BOOLEAN,
       },
