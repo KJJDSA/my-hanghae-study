@@ -1,9 +1,46 @@
+const users = require("../models/users");
 const MyPageRepository = require("../repositories/mypage");
 
 class MyPageService {
   constructor() {
     this.myPageRepository = new MyPageRepository();
   }
+
+  // 유저 닉네임과 폰 번호 조회
+  nicknameAndPhone = async ({ userId }) => {
+    try {
+      const myInfo = await this.myPageRepository.nicknameAndPhone({ userId });
+      return myInfo;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // 유저 닉네임과 폰 번호를 수정
+  updateNicknameAndPhone = async ({ userId, nickname, phone }) => {
+    try {
+      const myInfo = await this.myPageRepository.updateNicknameAndPhone({
+        userId,
+        nickname,
+        phone
+      });
+      return myInfo;
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // 유저 회원 탈퇴
+  deleteUserAccount = async ({ userId }) => {
+    try {
+      const myInfo = await this.myPageRepository.deleteUserAccount({userId});
+      return myInfo;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 
   lookupMyBankAccount = async ({ userId }) => {
     try {

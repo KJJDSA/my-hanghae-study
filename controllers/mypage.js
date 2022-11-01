@@ -5,6 +5,49 @@ class MyPageController {
     this.myPageService = new MyPageService();
   }
 
+  // 유저 닉네임과 폰 번호 조회
+  nicknameAndPhone = async (req, res) => {
+    try {
+      const { userId } = res.locals.user;
+      const userInfo = await this.myPageService.nicknameAndPhone({ userId });
+      res.status(200).json({ data: userInfo });
+    } catch (error) {
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
+    }
+  }
+
+  // 유저 닉네임과 폰 번호를 수정
+  updateNicknameAndPhone = async (req, res) => {
+    try {
+      const { userId } = res.locals.user;
+      const { nickname, phone } = req.body;
+      const userInfo = await this.myPageService.updateNicknameAndPhone({
+        userId,
+        nickname,
+        phone
+      });
+      res.status(200).json({ message: "수정이 완료되었습니다." });
+    } catch (error) {
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
+    }
+  }
+
+  // 유저 회원 탈퇴
+  deleteUserAccount = async (req, res) => {
+    try {
+      const { userId } = res.locals.user;
+      const userInfo = await this.myPageService.deleteUserAccount({userId});
+      res.status(200).json({ message: "회원 탈퇴 완료"});
+    } catch (error) {
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
+    }
+  }
+
+
+
   lookupMyBankAccount = async (req, res) => {
     try {
       const { userId } = res.locals.user;
