@@ -22,7 +22,7 @@ class MyPageController {
     try {
       const { userId } = res.locals.user;
       const { nickname, phone } = req.body;
-      const userInfo = await this.myPageService.updateNicknameAndPhone({
+      await this.myPageService.updateNicknameAndPhone({
         userId,
         nickname,
         phone
@@ -38,7 +38,7 @@ class MyPageController {
   deleteUserAccount = async (req, res) => {
     try {
       const { userId } = res.locals.user;
-      const userInfo = await this.myPageService.deleteUserAccount({userId});
+      await this.myPageService.deleteUserAccount({userId});
       res.status(200).json({ message: "회원 탈퇴 완료"});
     } catch (error) {
       console.log(`${error.name}:${error.message}`);
