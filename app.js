@@ -11,7 +11,7 @@ const passportConfig = require('./passport');
 const bodyParser = require("body-parser")
 const cookieParser = require('cookie-parser');
 
-
+app.use(bodyParser.json());
 app.use(cookieParser(process.env.COOKIE_NAME));
 app.use(session({
   resave: false,
