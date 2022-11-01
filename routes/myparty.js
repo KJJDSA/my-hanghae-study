@@ -3,11 +3,12 @@ const router = express.Router();
 
 const MyPartyController = require('../controllers/myparty');
 const myPartyController = new MyPartyController;
+const authMiddleware = require("../middlewares/authmiddleware");
 
 // 전체 파티 정보 불러오기
-router.get('/', myPartyController.lookupMyParty);
+router.get('/', authMiddleware, myPartyController.lookupMyParty);
 
 // OTT 정보 수정하기
-router.put('/:partyId', myPartyController.changePartyInfo);
+router.put('/:partyId', authMiddleware, myPartyController.changePartyInfo);
 
 module.exports = router;
