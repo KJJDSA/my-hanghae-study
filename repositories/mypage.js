@@ -47,22 +47,29 @@ class MyPageRepository {
       return deleteBankAccount;
     } catch (error) {
       throw error;
-      
+    }
+  };
+
   /** ############################### 카드 #################################### */
 
   createCard = async ({ bank, card, MMYY, birth, password, userId }) => {
     try {
-      let createCard = await BankCards.create(
-        { bank, card, MMYY, birth, password, userId }
-      );
+      let createCard = await BankCards.create({
+        bank,
+        card,
+        MMYY,
+        birth,
+        password,
+        userId,
+      });
       return {
         bankcardId: createCard.dataValues.bankcardId,
         userId: createCard.dataValues.userId,
         bank: createCard.dataValues.bank,
-        card: createCard.dataValues.card
+        card: createCard.dataValues.card,
       };
     } catch (error) {
-      throw error
+      throw error;
     }
   };
 
@@ -70,22 +77,35 @@ class MyPageRepository {
     try {
       const results = await BankCards.findAll({
         where: { userId },
-        attributes: { exclude: ['birth', 'MMYY', 'password', 'createdAt', 'updatedAt'] }
+        attributes: {
+          exclude: ["birth", "MMYY", "password", "createdAt", "updatedAt"],
+        },
       });
       return results;
     } catch (error) {
-      throw error
+      throw error;
     }
   };
 
-  cardEdit = async ({ bank, card, MMYY, birth, password, userId, BankCardId }) => {
+  cardEdit = async ({
+    bank,
+    card,
+    MMYY,
+    birth,
+    password,
+    userId,
+    BankCardId,
+  }) => {
     try {
-      const updateCount = await BankCards.update({ bank, card, MMYY, birth, password, userId }, {
-        where: { BankCardId }
-      });
+      const updateCount = await BankCards.update(
+        { bank, card, MMYY, birth, password, userId },
+        {
+          where: { BankCardId },
+        }
+      );
       return updateCount;
     } catch (error) {
-      throw error
+      throw error;
     }
   };
 
@@ -95,7 +115,7 @@ class MyPageRepository {
 
       return isExist;
     } catch (error) {
-      throw error
+      throw error;
     }
   };
   cardDelete = async ({ BankCardId, userId }) => {
@@ -106,9 +126,8 @@ class MyPageRepository {
 
       return deleteCount;
     } catch (error) {
-      throw error
+      throw error;
     }
   };
 }
-
 module.exports = MyPageRepository;
