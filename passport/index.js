@@ -1,13 +1,13 @@
 ; const passport = require('passport');
 const kakao = require('./kakaoStretegy');
-const User = require('../models/user');
+const Users = require('../models/user');
 
 module.exports = () => {
     passport.serializeUser((user, done) => {
         done(null, user.userId);
     })
     passport.deserializeUser((id, done) => {
-        const user = User.findOne({ where: { id } })
+        const user = Users.findOne({ where: { id } })
             .then(user => {
                 console.log(user)
                 done(null, user)

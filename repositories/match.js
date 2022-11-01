@@ -1,10 +1,11 @@
-const { Party } = require("../models");
-const { Member } = require("../models");
+const { Op } = require("sequelize");
+const { Parties } = require("../models");
+const { Members } = require("../models");
 
 class MatchRepository {
   findLeadersParty = async ({ ottService }) => {
     try {
-      const availbleParty = await Party.findAll({
+      const availbleParty = await Parties.findAll({
         where: {
           [Op.and]: [
             { ottService },
@@ -20,7 +21,7 @@ class MatchRepository {
   };
   createLeadersParty = async ({ ottService }) => {
     try {
-      const createdParty = await Party.create({
+      const createdParty = await Parties.create({
         ottService,
       });
       return createdParty;
@@ -30,7 +31,7 @@ class MatchRepository {
   };
   updateLeadersParty = async ({ partyId, ID, password, numOfMembers }) => {
     try {
-      const updatedParty = await Party.update(
+      const updatedParty = await Parties.update(
         {
           ID,
           password,
@@ -46,7 +47,7 @@ class MatchRepository {
   };
   createLeadersMember = async ({ userId, partyId }) => {
     try {
-      const createdMember = await Member.create({
+      const createdMember = await Members.create({
         userId,
         partyId,
         isLeader: true,
@@ -59,7 +60,7 @@ class MatchRepository {
   /*##################### MEMBER #########################*/
   findMemberParty = async ({ ottService }) => {
     try {
-      const availbleParty = await Party.findAll({
+      const availbleParty = await Parties.findAll({
         where: {
           [Op.and]: [
             { ottService },
@@ -75,7 +76,7 @@ class MatchRepository {
   };
   findHasLeaderParty = async ({ ottService }) => {
     try {
-      const HasLeaderParty = await Party.findAll({
+      const HasLeaderParty = await Parties.findAll({
         where: {
           [Op.and]: [
             { ottService },
@@ -91,7 +92,7 @@ class MatchRepository {
   };
   findNoLeaderParty = async ({ ottService }) => {
     try {
-      const NoLeaderParty = await Party.findAll({
+      const NoLeaderParty = await Parties.findAll({
         where: {
           [Op.and]: [
             { ottService },
@@ -107,7 +108,7 @@ class MatchRepository {
   };
   createMemberParty = async ({ ottService }) => {
     try {
-      const createdParty = await Party.create({
+      const createdParty = await Parties.create({
         ottService,
         numOfMembers: 1,
         ID: null,
@@ -121,7 +122,7 @@ class MatchRepository {
   };
   updateMemberParty = async ({ partyId, numOfMembers }) => {
     try {
-      const updatedParty = await Party.update(
+      const updatedParty = await Parties.update(
         {
           numOfMembers,
         },
@@ -134,7 +135,7 @@ class MatchRepository {
   };// ?
   createMember = async ({ userId, partyId }) => {
     try {
-      const createdMember = await Member.create({
+      const createdMember = await Members.create({
         userId,
         partyId,
         isLeader: false,

@@ -8,11 +8,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Members.belongsTo(models.User, {
+      Members.belongsTo(models.Users, {
         foreignKey: "userId",
         sourceKey: "userId",
       });
-      Members.belongsTo(models.Party, {
+      Members.belongsTo(models.Parties, {
         foreignKey: "partyId",
         sourceKey: "partyId",
       });
@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       memberId: {
         primaryKey: true,
+        autoIncrement: true,
         type: DataTypes.INTEGER
       },
       partyId: DataTypes.INTEGER,
@@ -30,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Member",
+      modelName: "Members",
     }
   );
 

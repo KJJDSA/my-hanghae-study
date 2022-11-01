@@ -8,7 +8,7 @@ const port = process.env.EXPRESS_PORT;
 const routes = require('./routes');
 const passport = require('passport');
 const passportConfig = require('./passport');
-const bodyParser = require("body-parser")
+// const bodyParser = require("body-parser") // 그냥 express.json해도 똑같다
 const cookieParser = require('cookie-parser');
 
 
@@ -37,14 +37,16 @@ app.use(
   })
 );
 
-app.use('/api', routes);
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
+// 세개 다 라우터 미들웨어 아래에 있길래 위로 올림
+app.use(express.json());
+app.use(express.urlencoded({
   extended: true
 }));
-
 app.use(cookieParser());
+
+app.use('/api', routes);
+
+
 
 // app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
