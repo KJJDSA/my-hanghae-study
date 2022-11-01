@@ -1,7 +1,45 @@
+const { Users } = require("../models");
 const { BankAccounts } = require("../models");
 const { BankCards } = require("../models");
 
 class MyPageRepository {
+
+  // 유저 닉네임과 폰 번호 조회
+  nicknameAndPhone = async ({ userId }) => {
+    try {
+      const myInfo = await Users.findAll({ where: { userId }});
+      return myInfo;
+    } catch (err) {
+      throw error;
+    }
+    
+  }
+
+  // 유저 닉네임과 폰 번호를 수정
+  updateNicknameAndPhone = async ({ userId, nickname, phone }) => {
+    try {
+      const myInfo = await Users.update(
+        { nickname, phone },
+        { where: { userId } }
+      );
+      return myInfo;
+    } catch (err) {
+      throw error;
+    }
+  }
+
+  // 유저 회원 탈퇴
+  deleteUserAccount = async ({ userId }) => {
+    try {
+      const myInfo = await Users.destroy({ where: {userId} });
+      return myInfo;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+
   lookupMyBankAccount = async ({ userId }) => {
     try {
       const myBankAccount = await BankAccounts.findAll({ where: { userId } });

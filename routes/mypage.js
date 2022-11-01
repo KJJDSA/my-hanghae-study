@@ -5,6 +5,14 @@ const MyPageController = require("../controllers/mypage");
 const myPageController = new MyPageController();
 const authMiddleware = require("../middlewares/authmiddleware");
 
+
+// 유저 닉네임, 폰번호 조회
+router.get("/", myPageController.nicknameAndPhone);
+// 유저 닉네임, 폰번호 수정
+router.put("/", myPageController.updateNicknameAndPhone);
+// 유저 탈퇴
+router.delete("/", myPageController.deleteUserAccount);
+
 router.get("/account", authMiddleware, myPageController.lookupMyBankAccount);
 router.post("/account", authMiddleware, myPageController.registerBankAccount);
 router.put("/account", authMiddleware, myPageController.updateBankAccount);
