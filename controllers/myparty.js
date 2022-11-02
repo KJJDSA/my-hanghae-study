@@ -11,7 +11,6 @@ class MyPartyController {
       const myParty = await this.myPartyService.lookupMyParty({
         userId,
       });
-      console.log(myParty);
       res.status(200).json({ data: myParty });
     } catch (error) {
       console.log(`${error.name}:${error.message}`);
@@ -32,10 +31,22 @@ class MyPartyController {
       );
 
       res.status(200).json({ message: "수정이 완료되었습니다." });
-    } catch (err) {
+    } catch (error) {
       console.log(`${error.name}:${error.message}`);
       res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
+
+  exitParty = async (req, res) => {
+    try {
+      const { userId } = res.locals.user;
+      const { partyId } = req.params;
+      await this.myPartyService.exitParty({ userId, partyId });
+      res.status(200).json({ message: "매칭에서 나갔습니다." });
+    } catch (error) {
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
+    }
+  }
 }
 module.exports = MyPartyController;

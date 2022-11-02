@@ -32,9 +32,13 @@ class MatchService {
 
         //(주의!!!!!)매칭되면 문자 가게 하는 메서드 1/2
         if (numOfMembers === 4) {
-          // const phone_numbers = await this.matchRepository.findAndCheck({ partyId })
+          const phone_numbers = await this.matchRepository.findAndCheck({ partyId })
+          // const message = 
+          // `[티끌플러스]
+          // 축하드립니다 매칭에 성공했어요!
+          // 마이페이지는 검색으로^^`
           // for (const phone of phone_numbers) {
-          //   this.sens.send_message(phone)
+          //   this.sens.send_message(phone, message)
           // }
         }
         return `${partyId + 5030}번 파티의 매칭이 성공했어요! 마이페이지를 확인하세요.`;
@@ -98,9 +102,13 @@ class MatchService {
 
           //(주의!!!!!)매칭되면 문자 가게 하는 메서드 2/2 
           if (numOfMembers === 4) {
-            // const phone_numbers = await this.matchRepository.findAndCheck({ partyId })
+            const phone_numbers = await this.matchRepository.findAndCheck({ partyId })
+            // const message =
+            //   `[티끌플러스]
+            // 축하드립니다 매칭에 성공했어요!
+            // 마이페이지는 검색으로^^`
             // for (const phone of phone_numbers) {
-            //   this.sens.send_message(phone)
+            //   this.sens.send_message(phone, message)
             // }
             return `${partyId + 5030} 번 파티의 매칭이 성공했어요! 마이페이지를 확인하세요.`;
           }

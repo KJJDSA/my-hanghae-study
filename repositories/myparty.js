@@ -8,7 +8,7 @@ class MyPartyRepository {
         where: { userId },
       });
       return member;
-    } catch (err) {
+    } catch (error) {
       throw error;
     }
   };
@@ -29,8 +29,8 @@ class MyPartyRepository {
       const findOnePartyData = await Parties.findByPk(partyId);
 
       return findOnePartyData;
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
 
       res.status(err.status || 400);
     }
@@ -45,12 +45,36 @@ class MyPartyRepository {
       );
 
       return updatePartyData;
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
 
       res.status(err.status || 400);
     }
   };
+
+  findLeader = async ({ partyId }) => {
+    try {
+      const leader = await Members.findOne({
+        where: {
+          [Op.and]: [
+            { partyId },
+            { isLeader: true }, // 리더 불러!!!!
+          ],
+        }
+      })
+      return leader;
+    } catch (error) {
+      throw error
+    }
+  }
+  exitParty = async ({ userId, partyId }) => {
+    await this.Members.destroy({ where: { userId, partyId } })
+    await Parties.update(
+      { numOfMembers: numOfMembers - 1 },
+      { where: { partyId } }
+    );
+    return;
+  }
 }
 
 module.exports = MyPartyRepository;
