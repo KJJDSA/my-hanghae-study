@@ -86,6 +86,11 @@ class MyPartyRepository {
     );
     return result;
   }
+
+  destroyParty = async ({ partyId }) => { // 파티원이 더 없으면 파티를 삭제
+    await Parties.destroy({ where: { partyId } })
+    return;
+  }
 }
 
 module.exports = MyPartyRepository;
