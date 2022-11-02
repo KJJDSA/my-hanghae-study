@@ -345,7 +345,7 @@ module.exports = {
     },
     "/api/myparty/": {
       "get": {
-        "description": "매칭된 파티 정보를 불러오는 기능입니다. 미완",
+        "description": "매칭된 파티 정보를 불러오는 기능입니다.",
         "tags": ["마이파티API"],
         "parameters": [],
         "responses": {
@@ -357,7 +357,7 @@ module.exports = {
     },
     "/api/myparty/{partyId}": {
       "put": {
-        "description": "파티의 ott 계정을 수정하는 기능입니다. 미완?",
+        "description": "파티의 ott 계정을 수정하는 기능입니다.",
         "tags": ["마이파티API"],
         "parameters": [
           {
