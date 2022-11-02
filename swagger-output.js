@@ -391,7 +391,8 @@ module.exports = {
         }
       },
       "delete": {
-        "description": "",
+        "description": "파티를 탈퇴하는 기능입니다. 마지막 멤버였다면 파티가 삭제됩니다.",
+        "tags": ["마이파티API"],
         "parameters": [
           {
             "name": "partyId",
