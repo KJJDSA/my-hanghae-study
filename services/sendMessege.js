@@ -39,9 +39,7 @@ class SendMessage {
         type: "SMS",
         countryCode: "82",
         from: "01021980692",//"발신번호기입",
-        content: `[티끌플러스]
-        축하드립니다 매칭에 성공했어요!
-        마이페이지는 검색으로^^`,//문자내용 기입,
+        content: message,//문자내용 기입,
         messages: [
           { to: `${user_phone_number}`, },],
       },

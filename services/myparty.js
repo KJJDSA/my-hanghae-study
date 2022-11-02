@@ -57,9 +57,25 @@ class MyPartyService {
 
   exitParty = async ({ userId, partyId }) => {
     try {
-      const leaderPhone = await this.myPartyRepository.findLeader({ partyId });
-      this.sens.send_message(leaderPhone, "누군가 파티를 탈퇴했어요! 보안을 위해 비밀번호를 변경해주세요.")
-      await this.myPartyRepository.exitParty({ userId, partyId });
+      // 일단 탈퇴 해주기
+      const result = await this.myPartyRepository.exitParty({ userId, partyId });
+
+      // 다른팀원들에게 메시지 보내기
+      const otherMembers = await this.myPartyRepository.findOtherMember({ partyId });
+      const ottService = otherMembers[0].dataValues.Party.dataValues.ottService;
+      const messageLeader =
+        `[티끌플러스] ${ottService} 탈퇴자 발생! 비밀번호 변경해주세요!`
+      const messageMember =
+        `[티끌플러스] 파티장이 ${ottService} 비밀번호를 변경할거예요!`
+      for (let i = 0; i < otherMembers.length; i++) { // for of 보다 쪼끔 더 빠르넹
+        if (otherMembers[i].dataValues.isLeader) {
+          this.sens.send_message(otherMembers[i].dataValues.User.dataValues.phone, messageLeader)
+          console.log(messageLeader);
+        } else {
+          this.sens.send_message(otherMembers[i].dataValues.User.dataValues.phone, messageMember)
+          console.log(messageMember);
+        }
+      }
       return result;
     } catch (error) {
       throw error;

@@ -41,8 +41,8 @@ class MyPartyController {
     try {
       const { userId } = res.locals.user;
       const { partyId } = req.params;
-      await this.myPartyService.exitParty({ userId, partyId });
-      res.status(200).json({ message: "매칭에서 나갔습니다." });
+      const result = await this.myPartyService.exitParty({ userId, partyId });
+      res.status(200).json({ result, message: "매칭에서 나갔습니다." });
     } catch (error) {
       console.log(`${error.name}:${error.message}`);
       res.status(400).json({ Type: error.name, Message: error.message });

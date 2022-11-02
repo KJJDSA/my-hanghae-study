@@ -1,5 +1,7 @@
 const { Parties } = require("../models");
 const { Members } = require("../models");
+const { Users } = require("../models");
+const { Op } = require("sequelize");
 
 class MyPartyRepository {
   findMember = async ({ userId }) => {
@@ -52,28 +54,39 @@ class MyPartyRepository {
     }
   };
 
-  findLeader = async ({ partyId }) => {
+  findOtherMember = async ({ partyId }) => {
     try {
-      const leader = await Members.findOne({
+      const otherMembers = await Members.findAll({
         where: {
           [Op.and]: [
             { partyId },
-            { isLeader: true }, // 리더 불러!!!!
-          ],
-        }
-      })
-      return leader;
+          ]
+        },
+        // 폰번도 가져오고 ottService 도 가져오기!! 배열쓰면됨.
+        include: [{
+          model: Parties,
+          attributes: ['ottService']
+        },
+        {
+          model: Users,
+          attributes: ['phone']
+        }]
+      });
+      return otherMembers;
     } catch (error) {
       throw error
     }
   }
   exitParty = async ({ userId, partyId }) => {
-    await this.Members.destroy({ where: { userId, partyId } })
-    await Parties.update(
-      { numOfMembers: numOfMembers - 1 },
+    // 일단 테이블에서 삭☆제
+    await Members.destroy({ where: { userId, partyId } })
+    // numofMembers 가져오기(수정해야함)
+    const party = await Parties.findByPk(partyId)
+    const result = await Parties.update(
+      { numOfMembers: party.numOfMembers - 1 },
       { where: { partyId } }
     );
-    return;
+    return result;
   }
 }
 
