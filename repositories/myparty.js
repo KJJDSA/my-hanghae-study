@@ -23,24 +23,22 @@ class MyPartyRepository {
     }
   };
 
-  // 특정 파티의 정보를 조회
-  findOneParty = async (partyId) => {
+  findMemberWithParty = async ({ userId, partyId }) => {
     try {
-      const findOnePartyData = await Parties.findByPk(partyId);
-
-      return findOnePartyData;
-    } catch (error) {
-      console.log(error);
-
-      res.status(err.status || 400);
+      const member = await Members.findOne({
+        where: { userId, partyId },
+      });
+      return member;
+    } catch (err) {
+      throw error;
     }
   };
 
   // 특정 파티의 정보를 바꿈
-  updateParty = async (partyId, ottService, ID, password) => {
+  updateParty = async (partyId, ID, password) => {
     try {
       const updatePartyData = await Parties.update(
-        { ottService, ID, password },
+        { ID, password },
         { where: { partyId } }
       );
 
