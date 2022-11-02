@@ -22,19 +22,19 @@ class MyPartyController {
   changePartyInfo = async (req, res) => {
     try {
       const { partyId } = req.params;
-      const { ottService, ID, password } = req.body;
+      const { userId } = res.locals.user;
+      const { ID, password } = req.body;
 
-      await this.myPartyService.changeOttInfo(
+      await this.myPartyService.changeOttInfo({
+        userId,
         partyId,
-        ottService,
         ID,
-        password
-      );
+        password,
+      });
 
       res.status(200).json({ message: "수정이 완료되었습니다." });
     } catch (err) {
-      console.log(`${error.name}:${error.message}`);
-      res.status(400).json({ Type: error.name, Message: error.message });
+      res.status(400).json({ Type: err.name, Message: err.message });
     }
   };
 }
