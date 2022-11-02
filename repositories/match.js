@@ -1,5 +1,6 @@
 const { Parties } = require("../models");
 const { Members } = require("../models");
+const { Users } = require("../models");
 const { Op } = require("sequelize");
 
 class MatchRepository {
@@ -52,6 +53,7 @@ class MatchRepository {
         userId,
         partyId,
         isLeader: true,
+        isMatched: false // 매칭이 된 상태인지 체크. 없으면 한명 나갔다 다시 들어올때 또 문자 감.
       });
       return createdMember;
     } catch (error) {
@@ -148,12 +150,38 @@ class MatchRepository {
         userId,
         partyId,
         isLeader: false,
+        isMatched: false
       });
       return createdMember;
     } catch (error) {
       throw error;
     }
   };
+  findAndCheck = async ({ partyId }) => {
+    try {
+      const phones = []
+      const members = await Members.findAll({
+        where: {
+          [Op.and]: [
+            { partyId },
+            { isMatched: false }, // 파티아이디 맞고 매칭이 안된 사람만
+          ],
+        },
+        include: {
+          model: Users,
+          attributes: ['phone']
+        }
+      })
+      // console.log(members[0].dataValues)
+      members.map(async (member) => {
+        phones.push(member.dataValues.User.dataValues.phone) //쥰내많노..
+        member.isMatched = true
+        return await member.save()
+      })
+      return phones;
+    } catch (error) {
+      throw error
+    }
+  }
 }
-
 module.exports = MatchRepository;
