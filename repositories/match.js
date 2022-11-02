@@ -41,7 +41,7 @@ class MatchRepository {
         },
         { where: { partyId } }
       );
-      console.log(updatedParty);
+      // console.log(updatedParty);
       return updatedParty;
     } catch (error) {
       throw error;

@@ -3,7 +3,7 @@ const request = require('request');
 const CryptoJS = require('crypto-js');
 
 class SendMessage {
-  send_message = (phone) => {
+  send_message = (phone, message) => {
     var user_phone_number = phone;//수신 전화번호 기입
     var resultCode = 404;
     const date = Date.now().toString();
