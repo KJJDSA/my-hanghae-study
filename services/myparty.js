@@ -29,22 +29,31 @@ class MyPartyService {
     }
   };
 
-  changeOttInfo = async (partyId, ottService, ID, password) => {
+  changeOttInfo = async ({ userId, partyId, ID, password }) => {
     try {
-      const changedPartyData = await this.myPartyRepository.updateParty(
+      const findMember = await this.myPartyRepository.findMemberWithParty({
+        userId,
         partyId,
-        ottService,
+      });
+
+      if (findMember.isLeader == false)
+        throw {
+          name: "권한",
+          message: "아이디 비밀번호 수정은 리더만 가능합니다.",
+        };
+
+      const changedPartyData = await this.myPartyRepository.updateParty({
+        partyId,
         ID,
-        password
-      );
+        password,
+      });
 
       return changedPartyData;
     } catch (err) {
-      console.log(err);
-
-      res.status(err.status || 400);
+      throw err;
     }
   };
+
 
   getOttInfo = async (partyId) => {
     try {
@@ -81,6 +90,7 @@ class MyPartyService {
       throw error;
     }
   }
+
 }
 
 module.exports = MyPartyService;
