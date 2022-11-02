@@ -11,4 +11,6 @@ router.get("/", authMiddleware, myPartyController.lookupMyParty);
 // OTT 정보 수정하기
 router.put("/:partyId", authMiddleware, myPartyController.changePartyInfo);
 
+router.delete("/:partyId", authMiddleware, myPartyController.exitParty)
+
 module.exports = router;
