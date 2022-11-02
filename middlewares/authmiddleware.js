@@ -5,7 +5,7 @@ require('dotenv').config();
 module.exports = (req, res, next) => {
   try {
 
-    const accesstoken = req.headers[process.env.COOKIE_NAME];
+    const accesstoken = req.headers[process.env.COOKIE_NAME] || req.cookies[process.env.COOKIE_NAME];
     console.log(accesstoken)
     if (!accesstoken) {
       // return res.redirect('/api/auth/kakao') // 봉인 카카오 로그인
