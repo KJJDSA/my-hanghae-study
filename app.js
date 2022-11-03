@@ -36,7 +36,7 @@ app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "*",
     credentials: true,
   })
 );
