@@ -27,7 +27,10 @@ class MyPageRepository {
       throw error;
     }
   }
-
+  findMe = async ({ userId }) => {
+    const me = await Users.findAll({ userId });
+    return me;
+  }
   // 유저 회원 탈퇴
   deleteUserAccount = async ({ userId }) => {
     try {

@@ -36,6 +36,11 @@ class MyPageService {
   // 유저 회원 탈퇴
   deleteUserAccount = async ({ userId }) => {
     try {
+      const info = await this.myPageRepository.findMe({ userId })
+      if (!info) {
+        const myInfo = await this.myPageRepository.deleteUserAccount({ userId });
+        return myInfo;
+      }
       // myParty에 이미 있는 메서드를 끌고 와서 사용하도록 하자.
       const partyList = await this.myPartyService.lookupMyParty({ userId })
       // 탈퇴하는 것도 이미 만든 메서드가 있으니 애용하도록 하자.
