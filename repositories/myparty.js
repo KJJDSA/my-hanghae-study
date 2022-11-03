@@ -31,7 +31,7 @@ class MyPartyRepository {
         where: { userId, partyId },
       });
       return member;
-    } catch (err) {
+    } catch (error) {
       throw error;
     }
   };
@@ -93,13 +93,18 @@ class MyPartyRepository {
   }
 
   // 유저 아이디와 파티 아이디로 파티 정보 조회
-  findOneParty = async ({ partyId }) => {
+  findOneParty = async ({ userId, partyId }) => {
     try {
       const myParty = await Parties.findOne({
         raw: true,
         where: { partyId },
+        include: {
+          where: { userId },
+          model: Members,
+          attributes: ['isLeader']
+        }
       });
-      // console.log(myParty)
+      console.log(myParty)
       return myParty
     } catch (error) {
       throw error;
