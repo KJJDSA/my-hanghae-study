@@ -91,6 +91,23 @@ class MyPartyRepository {
     await Parties.destroy({ where: { partyId } })
     return;
   }
+
+  // 유저 아이디와 파티 아이디로 파티 정보 조회
+  findOneParty = async ({ partyId }) => {
+    try {
+      const myParty = await Parties.findOne({
+        raw: true,
+        where: { partyId },
+      });
+      // console.log(myParty)
+      return myParty
+    } catch (error) {
+      throw error;
+    }
+  }
 }
+
+
+
 
 module.exports = MyPartyRepository;
