@@ -40,8 +40,9 @@ class MatchService {
           // for (const phone of phone_numbers) {
           //   this.sens.send_message(phone, message)
           // }
+          return `${partyId + 5030}번 파티의 매칭이 성공했어요! 마이페이지를 확인하세요.`;
         }
-        return `${partyId + 5030}번 파티의 매칭이 성공했어요! 마이페이지를 확인하세요.`;
+        return ` ${partyId}번 파티에 매칭 / ${numOfMembers - 1} -> ${numOfMembers} / 파티장 O`;
       } else {
         const newParty = await this.matchRepository.createLeadersParty({
           ottService,
