@@ -29,6 +29,34 @@ class MyPartyService {
     }
   };
 
+  // 정보 넘기기
+  findOneParty = async ({ userId, partyId }) => {
+    try {
+      const price = {
+        Netflix: 170000,
+        Wavve: 139000,
+        Watcha: 129000,
+        Laftel: 149000,
+        Tving: 99000,
+        DisneyPlus: 99000,
+      }
+      const findParty = await this.myPartyRepository.findOneParty({
+        partyId
+      })
+      const result = {
+        ...findParty,
+        price: price[findParty.ottService] / 4
+      }
+
+      console.log(findParty)
+      return result;
+
+    } catch (error) {
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
+    }
+  }
+
   changeOttInfo = async ({ userId, partyId, ID, password }) => {
     try {
       const findMember = await this.myPartyRepository.findMemberWithParty({

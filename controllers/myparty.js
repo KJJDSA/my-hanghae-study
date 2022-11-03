@@ -18,6 +18,21 @@ class MyPartyController {
     }
   };
 
+  // 프론트 요청
+  findOneParty = async (req, res) => {
+    try {
+      // const { userId } = res.locals.user;
+      const { partyId } = req.params;
+      const myParty = await this.myPartyService.findOneParty({
+        partyId
+      });
+      res.status(200).json({ data: myParty });
+    } catch (error) {
+      console.log(`${error.name}:${error.message}`);
+      res.status(400).json({ Type: error.name, Message: error.message });
+    }
+  }
+
   changePartyInfo = async (req, res) => {
     try {
       const { partyId } = req.params;

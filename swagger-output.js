@@ -356,6 +356,26 @@ module.exports = {
       }
     },
     "/api/myparty/{partyId}": {
+      "get": {
+        "description": "파티 상세 조회 기능입니다.",
+        "tags": ["마이파티API"],
+        "parameters": [
+          {
+            "name": "partyId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
       "put": {
         "description": "파티의 ott 계정을 수정하는 기능입니다.",
         "tags": ["마이파티API"],
