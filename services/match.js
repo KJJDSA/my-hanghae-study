@@ -134,9 +134,6 @@ class MatchService {
             });
             // Members 테이블에 매칭한 유저 생성함
             await this.matchRepository.createMember({ userId, partyId });
-            console.log(
-              `${partyId}번 파티에 매칭 / ${numOfMembers - 1} -> ${numOfMembers} / 파티장 X `
-            );
             return `${partyId}번 파티에 매칭 / ${numOfMembers - 1} -> ${numOfMembers} / 파티장 X `;
             // 3명 이하인 파티는 있는데 파티장이 들어가야 하는 방만 있는 경우
           } else {
@@ -145,9 +142,6 @@ class MatchService {
             });
             const partyId = noLeaderParty.partyId;
             await this.matchRepository.createMember({ userId, partyId });
-            console.log(
-              `모든 파티가 꽉 차서 ${partyId}번 파티를 하나 만들었어요. 파티장X`
-            );
             return `모든 파티가 꽉 차서 ${partyId}번 파티를 하나 만들었어요. 파티장X`;
           }
         }
@@ -158,9 +152,6 @@ class MatchService {
         });
         const partyId = noLeaderParty.partyId;
         await this.matchRepository.createMember({ userId, partyId });
-        console.log(
-          `모든 파티가 꽉 차서 ${partyId}번 파티를 하나 만들었어요. 파티장X`
-        );
         return `모든 파티가 꽉 차서 ${partyId}번 파티를 하나 만들었어요. 파티장X`;
       }
     } catch (error) {
