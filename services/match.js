@@ -6,7 +6,7 @@ class MatchService {
     this.matchRepository = new MatchRepository();
     this.sens = new Sens();
   }
-
+  // 최-종
   matchLeader = async ({ userId, ottService, ID, password }) => {
     try {
       const availbleParty = await this.matchRepository.findLeadersParty({

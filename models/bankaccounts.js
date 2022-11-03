@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+  // 최-종
   BankAccounts.init(
     {
       bankAccountId: {

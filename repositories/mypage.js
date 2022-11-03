@@ -1,6 +1,8 @@
 const { Users } = require("../models");
 const { BankAccounts } = require("../models");
 const { BankCards } = require("../models");
+const { Members } = require("../models");
+
 
 class MyPageRepository {
 

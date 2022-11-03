@@ -2,7 +2,7 @@ const { Parties } = require("../models");
 const { Members } = require("../models");
 const { Users } = require("../models");
 const { Op } = require("sequelize");
-
+// 최-종
 class MatchRepository {
   findLeadersParty = async ({ ottService }) => {
     try {

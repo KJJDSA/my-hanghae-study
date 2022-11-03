@@ -11,7 +11,7 @@ const passportConfig = require('./passport');
 // const bodyParser = require("body-parser") // 그냥 express.json해도 똑같다
 const cookieParser = require('cookie-parser');
 
-
+// 최-종
 app.use(cookieParser());
 // app.use(cookieParser(process.env.COOKIE_NAME));
 app.use(

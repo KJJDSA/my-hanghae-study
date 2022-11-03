@@ -26,7 +26,7 @@ const doc = {
     },
   },
 };
-
+// 최-종
 const outputFile = './swagger-output.json';
 const endpointsFiles = ['./app.js'];
 
