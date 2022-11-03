@@ -31,8 +31,8 @@ class MyPageService {
     } catch (error) {
       throw error;
     }
-  }
 
+  }
   // 유저 회원 탈퇴
   deleteUserAccount = async ({ userId }) => {
     try {
@@ -49,6 +49,7 @@ class MyPageService {
         await this.myPartyService.exitParty({ userId, partyId: partyList[i].partyId })
       }
       // 마지막으로 회원탈퇴
+      await this.myPageRepository.deleteBilling({ userId });
       const myInfo = await this.myPageRepository.deleteUserAccount({ userId });
       return myInfo;
     } catch (error) {
