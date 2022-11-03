@@ -31,6 +31,12 @@ class MyPageRepository {
     const me = await Users.findAll({ where: { userId } });
     return me;
   }
+  deleteBilling = async ({ userId }) => {
+    await BankAccounts.destroy({ where: { userId } });
+    await BankCards.destroy({ where: { userId } });
+    return;
+  }
+
   // 유저 회원 탈퇴
   deleteUserAccount = async ({ userId }) => {
     try {
