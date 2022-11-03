@@ -111,10 +111,10 @@ class MyPartyService {
         `[티끌플러스] 파티장이 ${ottService} 아이디 혹은 비밀번호를 변경할거예요!`
       for (let i = 0; i < otherMembers.length; i++) { // for of 보다 쪼끔 더 빠르넹
         if (otherMembers[i].dataValues.isLeader) {
-          // this.sens.send_message(otherMembers[i].dataValues.User.dataValues.phone, messageLeader)
+          this.sens.send_message(otherMembers[i].dataValues.User.dataValues.phone, messageLeader)
           console.log(messageLeader);
         } else {
-          // this.sens.send_message(otherMembers[i].dataValues.User.dataValues.phone, messageMember)
+          this.sens.send_message(otherMembers[i].dataValues.User.dataValues.phone, messageMember)
           console.log(messageMember);
         }
       }
