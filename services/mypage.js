@@ -38,6 +38,7 @@ class MyPageService {
     try {
       const info = await this.myPageRepository.findMe({ userId })
       if (!info) {
+        await this.myPageRepository.deleteBilling({ userId });
         const myInfo = await this.myPageRepository.deleteUserAccount({ userId });
         return myInfo;
       }
