@@ -1,4 +1,5 @@
 "use strict";
+// 최-종
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("Users", {

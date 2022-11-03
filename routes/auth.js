@@ -4,7 +4,7 @@ const { Users } = require("../models");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 const authMiddleware = require("../middlewares/authmiddleware");
-
+// 최-종
 //  카카오 로그인 : /auth/kakao
 router.get("/kakao", passport.authenticate("kakao"));
 
