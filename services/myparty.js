@@ -41,6 +41,7 @@ class MyPartyService {
         DisneyPlus: 99000,
       }
       const findParty = await this.myPartyRepository.findOneParty({
+        userId,
         partyId
       })
       const result = {

@@ -21,9 +21,10 @@ class MyPartyController {
   // 프론트 요청
   findOneParty = async (req, res) => {
     try {
-      // const { userId } = res.locals.user;
+      const { userId } = res.locals.user;
       const { partyId } = req.params;
       const myParty = await this.myPartyService.findOneParty({
+        userId,
         partyId
       });
       res.status(200).json({ data: myParty });
