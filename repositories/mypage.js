@@ -28,7 +28,7 @@ class MyPageRepository {
     }
   }
   findMe = async ({ userId }) => {
-    const me = await Users.findAll({ userId });
+    const me = await Users.findAll({ where: { userId } });
     return me;
   }
   // 유저 회원 탈퇴
