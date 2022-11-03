@@ -28,7 +28,7 @@ class MyPageRepository {
     }
   }
   findMe = async ({ userId }) => {
-    const me = await Users.findAll({ where: { userId } });
+    const me = await Members.findAll({ where: { userId } });
     return me;
   }
   deleteBilling = async ({ userId }) => {
