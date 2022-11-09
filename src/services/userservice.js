@@ -5,18 +5,18 @@ const env = process.env;
 
 module.exports = class UserService {
     userRepository = new UserRepository();
-    checkUser = async (user_id) => {
+    checkUser = async (id) => {
         try {
-            const user = await this.userRepository.findOne(user_id);
+            const user = await this.userRepository.findOne(id);
             return { status: 200, message: user };
         } catch (error) {
-            return { status: 400, message: faild };
+            return { status: 400, message: "faild" };
         }
     };
 
     loginUser = async (user_id, password) => {
         try {
-            if (!user_id || !password) {
+            if (user_id===undefined || password===undefined) {
                 return { status: 400, message: "INPUT ID OR PW" };
             }
 
@@ -24,7 +24,7 @@ module.exports = class UserService {
                 user_id,
                 password
             );
-            if (!login_user) {
+            if (login_user===undefined) {
                 return { status: 400, message: "NOT FOUND" };
             }
 
@@ -37,10 +37,10 @@ module.exports = class UserService {
 
     createUser = async (user_id, password) => {
         try {
-            if (!user_id || !password) {
+            if (user_id===undefined || password===undefined) {
                 return { status: 400, message: "INPUT ID OR PW" };
             }
-    
+            
             await this.userRepository.createUser(user_id, password);
     
             return { status: 201, message: "success" };

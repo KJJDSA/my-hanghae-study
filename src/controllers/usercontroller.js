@@ -3,9 +3,9 @@ const UserService = require("../services/userservice");
 module.exports = class UserController {
   userService = new UserService();
   checkUser= async(req,res)=>{
-    const { user_id} = req.params;
+    const { id} = req.params;
 
-    const response = await this.userService.checkUser(user_id);
+    const response = await this.userService.checkUser(id);
     return res.status(response.status).json(response.message);
   }
 
