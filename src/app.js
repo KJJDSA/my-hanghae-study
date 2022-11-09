@@ -1,22 +1,21 @@
 const express = require('express');
 const app = express();
-const port = 8080;
 const indexRouter = require("./routes");
 require("dotenv").config();
 const env = process.env;
 
 
 app.use("/api", indexRouter);
-app.use(express.static('public'))
+// app.use(express.static('public'))
 
-app.set('views', __dirname + '/src/views')
-app.set('view engine', 'jsx')
-app.engine('jsx', require('express-react-views').createEngine())
+// app.set('views', __dirname + '/src/views')
+// app.set('view engine', 'jsx')
+// app.engine('jsx', require('express-react-views').createEngine())
 
 
-app.get('/', (req, res) => {
-    res.render('index', { name: 'Rhapsodist' })
-})
+// app.get('/', (req, res) => {
+//     res.render('index', { name: 'Rhapsodist' })
+// })
 
 
 app.listen(env.PORT, () => {
