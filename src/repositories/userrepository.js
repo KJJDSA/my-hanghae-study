@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User } = require("../../models");
 
 module.exports = class UserRepository {
     findOne=async(user_id)=>{
