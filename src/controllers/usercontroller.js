@@ -23,6 +23,6 @@ module.exports = class UserController {
     const response = await this.userService.loginUser(user_id, password);
     res.cookie("BEAVER", response.token, { maxAge: 180000 });
 
-    res.status(response.status).json(response.message);
+    res.status(response.status).json({message:response.message,token:response.token});
   };
 };
