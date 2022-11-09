@@ -1,2 +1,12 @@
 # search
 steamSearch 백엔드
+
+## ENV
+```
+MYSQL_USERNAME
+MYSQL_PASSWORD
+MYSQL_DATABASE
+MYSQL_HOST
+PORT
+SECRETKEY
+```
