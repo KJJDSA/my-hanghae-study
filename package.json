@@ -1,0 +1,39 @@
+{
+  "name": "steamsearch",
+  "version": "1.0.0",
+  "description": "steamSearch 백엔드",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SteamReviewSearch/search.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SteamReviewSearch/search/issues"
+  },
+  "homepage": "https://github.com/SteamReviewSearch/search#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.3",
+    "request": "^2.88.2",
+    "sequelize": "^6.25.5",
+    "steamapi": "^2.2.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.5.2",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.3",
+    "request": "^2.88.2",
+    "sequelize": "^6.25.5",
+    "steamapi": "^2.2.0"
+  }
+}
