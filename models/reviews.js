@@ -10,27 +10,31 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Reviews.belongsTo(models.Games, {
+        foreignKey: "appid",
+        sourceKey: "appid",
+      });
+
     }
   }
   Reviews.init({
     id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
       allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
     },
     appid: DataTypes.INTEGER,
     steamid: DataTypes.STRING,
-    playtime_at_review: DataTypes.INTEGER,
-    recommendationid: DataTypes.INTEGER,
+    playtime_at_review: DataTypes.DOUBLE,
+    recommendationid: DataTypes.DOUBLE,
     language: DataTypes.STRING,
-    review: DataTypes.TEXT,
-    timestamp_updated: DataTypes.DATE,
+    review: DataTypes.STRING(8000),
+    timestamp_updated: DataTypes.STRING,
     voted_up: DataTypes.BOOLEAN,
-    votes_up: DataTypes.INTEGER,
-    votes_funny: DataTypes.INTEGER,
-    weigthed_vote_score: DataTypes.STRING,
+    votes_up: DataTypes.DOUBLE,
+    votes_funny: DataTypes.DOUBLE,
+    weighted_vote_score: DataTypes.STRING,
     written_during_early_access: DataTypes.BOOLEAN
   }, {
     sequelize,

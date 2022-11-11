@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Reviews', {
+    await queryInterface.createTable('Games', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,40 +10,27 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       appid: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        unique: true,
       },
-      steamid: {
+      name: {
         type: Sequelize.STRING
       },
-      playtime_at_review: {
+      review_score: {
+        allowNull: true,
         type: Sequelize.INTEGER
       },
-      recommendationid: {
-        type: Sequelize.INTEGER
-      },
-      language: {
+      review_score_desc: {
+        allowNull: true,
         type: Sequelize.STRING
       },
-      review: {
-        type: Sequelize.TEXT
-      },
-      timestamp_updated: {
-        type: Sequelize.DATE
-      },
-      voted_up: {
-        type: Sequelize.BOOLEAN
-      },
-      votes_up: {
+      total_positive: {
+        allowNull: true,
         type: Sequelize.INTEGER
       },
-      votes_funny: {
+      total_negative: {
+        allowNull: true,
         type: Sequelize.INTEGER
-      },
-      weigthed_vote_score: {
-        type: Sequelize.STRING
-      },
-      written_during_early_access: {
-        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +43,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Reviews');
+    await queryInterface.dropTable('Games');
   }
 };
