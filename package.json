@@ -4,7 +4,7 @@
   "description": "steamSearch 백엔드",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/app.js",
+    "start": "nodemon ./src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -35,6 +35,7 @@
     "express-react-views": "^0.11.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
+    "nodemon": "^2.0.20",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "sequelize": "^6.25.5",

@@ -31,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
     review_score: DataTypes.INTEGER,
     review_score_desc: DataTypes.STRING,
     total_positive: DataTypes.INTEGER,
-    total_negative: DataTypes.INTEGER
+    total_negative: DataTypes.INTEGER,
+    img_url: DataTypes.STRING(1000)
   }, {
     sequelize,
     modelName: 'Games',
