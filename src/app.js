@@ -1,24 +1,16 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const port = 8080;
-const indexRouter = require("./routes");
-require("dotenv").config();
-const env = process.env;
+const routes = require("./routes");
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
-app.use("/api", indexRouter);
-app.use(express.static('public'))
+app.set("view engine", "ejs");
+app.set("views", __dirname + "/views");
 
-app.set('views', __dirname + '/src/views')
-app.set('view engine', 'jsx')
-app.engine('jsx', require('express-react-views').createEngine())
+app.use("/", routes);
 
-
-app.get('/', (req, res) => {
-    res.render('index', { name: 'Rhapsodist' })
-})
-
-
-app.listen(env.PORT, () => {
-  console.log(env.PORT, 'Welcome Steam Search Service');
-});   
+app.listen(0113, () => {
+  console.log(0113, "Welcome Steam Search Service");
+});
