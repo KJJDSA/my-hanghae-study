@@ -1,4 +1,4 @@
-const { Reviews, Games } = require("../../models");
+const { Games } = require("../../models");
 const { Op } = require("sequelize");
 
 module.exports = class SteamSearchRepository {
@@ -28,17 +28,5 @@ module.exports = class SteamSearchRepository {
       throw error;
     }
   }
-  findReviews = async ({ appid }) => {
-    try {
-      // 리뷰 검색. weighted_vote_score 순으로 정렬함
-      const result = await Reviews.findAll({
-        raw: true,
-        order: [['weighted_vote_score', 'DESC']],
-        where: { appid }
-      })
-      return { result };
-    } catch (error) {
-      throw error;
-    }
-  }
+  
 }

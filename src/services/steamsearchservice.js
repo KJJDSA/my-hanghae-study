@@ -1,7 +1,9 @@
-const SteamSearchRepository = require("../repositories/steamsearchrepository");
+const GamesRepository = require("../repositories/gamesrepository");
+const ReviewsRepository = require("../repositories/reviewsrepository");
 const { Op } = require("sequelize");
 module.exports = class SteamSearchController {
-    steamSearchRepository = new SteamSearchRepository();
+    gamesRepository = new GamesRepository();
+    reviewsRepository = new ReviewsRepository();
 
     steamSearch = async ({ keywords }) => {
         try {
@@ -11,7 +13,7 @@ module.exports = class SteamSearchController {
                 keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
             }
 
-            const { game_list_correct } = await this.steamSearchRepository.findGames({ keywords_deformed });
+            const { game_list_correct } = await this.gamesRepository.findGames({ keywords_deformed });
 
 
             // 찾아온 게임들의 appid를 추출, 배열화
@@ -19,7 +21,7 @@ module.exports = class SteamSearchController {
             // 반복문으로 찾아옴
             const review_list = [];
             for (const appid of appids) {
-                const { result } = await this.steamSearchRepository.findReviews({ appid })
+                const { result } = await this.reviewsRepository.findReviews({ appid })
                 review_list.push(result)
             }
 
