@@ -1,9 +1,9 @@
-const { User } = require("../models");
+const { User } = require("../../models");
 
 module.exports = class UserRepository {
-    findOne=async(user_id)=>{
+    findOne=async(id)=>{
         const user = await User.findOne({
-            where:{userId:user_id}
+            where:{id:id}
         });
     
         return user;
@@ -18,9 +18,10 @@ module.exports = class UserRepository {
   };
 
   createUser = async (user_id, password) => {
+    
     const user = await User.create({
-        userId:user_id,
-        password
+      userId:user_id,
+      password
     });
 
     return user;

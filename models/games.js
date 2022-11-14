@@ -10,21 +10,27 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Games.hasMany(models.Reviews, {
+        foreignKey: "appid",
+        sourceKey: "appid",
+      });
     }
   }
   Games.init({
     id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
       allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
     },
-    appId: DataTypes.INTEGER,
+    appid: {
+      unique: true,
+      type: DataTypes.INTEGER
+    },
     name: DataTypes.STRING,
     review_score: DataTypes.INTEGER,
-    review_score_desc: DataTypes.INTEGER,
-    total_postive: DataTypes.INTEGER,
+    review_score_desc: DataTypes.STRING,
+    total_positive: DataTypes.INTEGER,
     total_negative: DataTypes.INTEGER
   }, {
     sequelize,
