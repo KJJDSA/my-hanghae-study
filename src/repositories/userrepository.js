@@ -1,26 +1,26 @@
-const { User } = require("../../models");
+const { Users } = require("../../models");
 
 module.exports = class UserRepository {
-  findOne = async (user_id) => {
-    const user = await User.findOne({
-      where: { userId: user_id },
+  findOne = async ({ id }) => {
+    const user = await Users.findOne({
+      where: { id: id },
     });
 
     return user;
   };
 
-  findUserLogin = async (user_id, password) => {
-    const user = await User.findOne({
-      where: { userId: user_id, password },
+  findUserLogin = async ({ user_id, hash_password }) => {
+    const user = await Users.findOne({
+      where: { userId: user_id, password: hash_password },
     });
 
     return user;
   };
 
-  createUser = async (user_id, password) => {
-    const user = await User.create({
+  createUser = async ({ user_id, hash_password }) => {
+    const user = await Users.create({
       userId: user_id,
-      password,
+      password: hash_password,
     });
 
     return user;

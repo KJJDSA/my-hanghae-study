@@ -5,8 +5,6 @@ const router = express.Router();
 const SteamSearchController = require("../controllers/steamsearchcontroller");
 const steamSearchController = new SteamSearchController();
 
-router.get("/", steamSearchController.gameList);
-
-router.post("/", steamSearchController.gameSearch);
+router.get("/", steamSearchController.steamSearch);
 
 module.exports = router;

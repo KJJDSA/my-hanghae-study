@@ -10,36 +10,40 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       appid: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Games", // Users 모델에서
+          key: "appid", // 그 아이디 값을 참고합니다.
+        },
       },
       steamid: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       playtime_at_review: {
         type: Sequelize.INTEGER
       },
       recommendationid: {
-        type: Sequelize.INTEGER
+        type: Sequelize.DOUBLE                      
       },
       language: {
         type: Sequelize.STRING
       },
       review: {
-        type: Sequelize.TEXT
+        type: Sequelize.STRING(8000)
       },
       timestamp_updated: {
-        type: Sequelize.DATE
+        type: Sequelize.STRING
       },
       voted_up: {
         type: Sequelize.BOOLEAN
       },
       votes_up: {
-        type: Sequelize.INTEGER
+        type: Sequelize.DOUBLE                      
       },
       votes_funny: {
-        type: Sequelize.INTEGER
+        type: Sequelize.DOUBLE                      
       },
-      weigthed_vote_score: {
+      weighted_vote_score: {
         type: Sequelize.STRING
       },
       written_during_early_access: {

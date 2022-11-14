@@ -9,23 +9,32 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      appId: {
-        type: Sequelize.INTEGER
+      appid: {
+        type: Sequelize.INTEGER,
+        unique: true,
       },
       name: {
         type: Sequelize.STRING
       },
       review_score: {
+        allowNull: true,
         type: Sequelize.INTEGER
       },
       review_score_desc: {
-        type: Sequelize.INTEGER
+        allowNull: true,
+        type: Sequelize.STRING
       },
-      total_postive: {
+      total_positive: {
+        allowNull: true,
         type: Sequelize.INTEGER
       },
       total_negative: {
+        allowNull: true,
         type: Sequelize.INTEGER
+      },
+      img_url: {
+        allowNull: true,
+        type: Sequelize.STRING(1000)
       },
       createdAt: {
         allowNull: false,
