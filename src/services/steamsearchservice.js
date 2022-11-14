@@ -11,8 +11,17 @@ module.exports = class SteamSearchController {
                 keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
             }
             // console.log(keywords_deformed)
-            const result = await this.steamSearchRepository.steamSearch({ keywords_deformed });
-            return result;
+            const { game_list_correct } = await this.steamSearchRepository.findGames({ keywords_deformed });
+
+            const appids = game_list_correct.map(game => game.appid)
+            console.log(appids)
+            const review_list = [];
+            for (const appid of appids) {
+                const { result } = await this.steamSearchRepository.findReviews({ appid })
+                review_list.push(result)
+            }
+            console.log(review_list)
+            return { game_list_correct, review_list };
         } catch (error) {
             throw error;
         }
