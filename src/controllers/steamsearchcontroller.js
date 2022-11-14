@@ -8,10 +8,10 @@ module.exports = class SteamSearchController {
             const { keyword } = req.query
             // console.log(keyword)
             const keywords = keyword.split(" ")
-            const result = await this.steamSearchService.steamSearch({ keywords });
+            const { game_list } = await this.steamSearchService.steamSearch({ keywords });
             res.status(200).json({
-                game_list_correct: result.game_list_correct,
-                review_list: result.review_list
+                data: game_list,
+                // review_list: result.review_list
             });
         } catch (error) {
             console.log(error);
