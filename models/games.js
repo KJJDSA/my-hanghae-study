@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "appid",
         sourceKey: "appid",
       });
+      Games.hasMany(models.Metascores, {
+        foreignKey: "appid",
+        sourceKey: "appid",
+      });
     }
   }
   Games.init({
