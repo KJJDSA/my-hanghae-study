@@ -30,7 +30,7 @@ module.exports = class SteamSearchRepository {
   }
   findReviews = async ({ appid }) => {
     try {
-      // 띄어쓰기한 모든 키워드가 존재하는 정확한 검색결과를 표시함
+      // 리뷰 검색. weighted_vote_score 순으로 정렬함
       const result = await Reviews.findAll({
         raw: true,
         order: [['weighted_vote_score', 'DESC']],

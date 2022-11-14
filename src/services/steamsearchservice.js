@@ -10,17 +10,19 @@ module.exports = class SteamSearchController {
             for (const keyword of keywords) {
                 keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
             }
-            // console.log(keywords_deformed)
+
             const { game_list_correct } = await this.steamSearchRepository.findGames({ keywords_deformed });
 
+
+            // 찾아온 게임들의 appid를 추출, 배열화
             const appids = game_list_correct.map(game => game.appid)
-            console.log(appids)
+            // 반복문으로 찾아옴
             const review_list = [];
             for (const appid of appids) {
                 const { result } = await this.steamSearchRepository.findReviews({ appid })
                 review_list.push(result)
             }
-            console.log(review_list)
+
             return { game_list_correct, review_list };
         } catch (error) {
             throw error;
