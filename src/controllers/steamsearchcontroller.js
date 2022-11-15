@@ -17,5 +17,7 @@ module.exports = class SteamSearchController {
             console.log(error);
             res.status(400).json({ Type: error.name, Message: error.message });
         }
+
     }
+  };
 };
