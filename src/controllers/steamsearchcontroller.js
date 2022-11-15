@@ -5,13 +5,12 @@ module.exports = class SteamSearchController {
     steamSearch = async (req, res) => {
         try {
             // 쿼리스트링으로 받음
-            const { keyword } = req.query
-            // console.log(keyword)
+            const { keyword, /** focus */ } = req.query
             const keywords = keyword.split(" ")
-            const { game_list } = await this.steamSearchService.steamSearch({ keywords });
+            const list = await this.steamSearchService.steamSearch({ keywords, /** focus */ });
+            console.log(list)
             res.status(200).json({
-                data: game_list,
-                // review_list: result.review_list
+                data: list,
             });
         } catch (error) {
             console.log(error);
