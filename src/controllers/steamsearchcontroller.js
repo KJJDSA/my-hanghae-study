@@ -8,22 +8,22 @@ module.exports = class SteamSearchController {
     steamSearch = async (req, res,next) => {
         try {
             //테스트코드
-            const user_id="1";
+            const user_id="2";
             // 쿼리스트링으로 받음
             const { keyword } = req.query
             //로깅
             search.info({label:'GET:req /api/search/',message:user_id+"-"+keyword})
             // console.log(keyword)
             const keywords = keyword.split(" ")
-            const { game_list } = await this.steamSearchService.steamSearch({ keywords })
-            const game_id_list=["1234","5678"];
-            if(game_list!==undefined || game_id_list!==undefined){
+
+            const { game_list,appid_list } = await this.steamSearchService.steamSearch({ keywords })
+            if(game_list!==undefined || appid_list!==undefined){
                 //로깅 txt
                 const file_path=path.join(__dirname,'..','..','logs','/users/')
                 let today=new Date();
                 const search_result={
                   date:today.toLocaleString(),
-                  gmae_id:game_id_list
+                  game_appid:appid_list.appid_list
                 }
                 fs.appendFileSync(file_path+user_id+".log", JSON.stringify(search_result)+'\n','utf8')
             }

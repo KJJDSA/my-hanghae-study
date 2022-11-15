@@ -14,8 +14,8 @@ module.exports = class SteamSearchController {
             }
 
             const { game_list } = await this.gamesRepository.findGames({ keywords_deformed });
-
-            return { game_list }
+            const appid_list=await this.gamesRepository.searchGamesId({keywords_deformed});
+            return { game_list,appid_list }
 
             // 관계형으로 합침
 
