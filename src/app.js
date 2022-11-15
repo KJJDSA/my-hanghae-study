@@ -3,7 +3,7 @@ const app = express();
 const routes = require("./routes");
 const ejs = require("ejs");
 const path = require("path");
-const {error,error404}=require("./middlewares/error/error")
+const { error, error404 } = require("./middlewares/error/error");
 require("dotenv").config();
 const env = process.env;
 
@@ -21,7 +21,6 @@ app.get("/", function (req, res) {
 });
 
 app.use("/", routes);
-
 
 app.use(error404);
 app.use(error);
