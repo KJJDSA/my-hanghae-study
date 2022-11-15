@@ -4,7 +4,7 @@ const router = express.Router();
 const UserAnalyzeController = require('../controllers/useranalyzecontroller');
 const userAnalyzeController = new UserAnalyzeController();
 
-// router.get('/', userAnalyzeController.gameList);
+router.get('/best', userAnalyzeController.bestGame);
 
 // router.post('/',userAnalyzeController.gameSearch);
 

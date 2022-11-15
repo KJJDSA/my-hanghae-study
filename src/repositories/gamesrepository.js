@@ -52,4 +52,29 @@ module.exports = class SteamSearchRepository {
     }
   }
 
+  searchGamesId= async ({ keywords_deformed }) => {
+    try {
+      // 띄어쓰기한 모든 키워드가 존재하는 정확한 검색결과를 표시함
+      const appid_list = await Games.findAll({
+        raw: true,
+        attributes: ["appid"],
+        where: {
+          [Op.and]: [
+            keywords_deformed,
+            { review_score_desc: { [Op.not]: null } }
+          ]
+        }
+      })
+      // // 키워드 중 하나라도 맞으면 검색결과를 불러오게 하려했으나 'the', 'a' 같은 건 너무 길게 불러옴. 봉인! 
+      // const game_list_incorrect = await Games.findAll({
+      //   raw: true,
+      //   where: {
+      //     [Op.or]: keywords_deformed
+      //   }
+      // })
+      return { appid_list/** , game_list_incorrect*/ };
+    } catch (error) {
+      throw error;
+    }
+  }
 }
