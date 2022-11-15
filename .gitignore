@@ -7,3 +7,9 @@
 docker-compose.yml
 /db
 
+# Log
+/logs/error/
+/logs/search/
+/logs/users/
+
+
