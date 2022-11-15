@@ -8,7 +8,6 @@ module.exports = class SteamSearchRepository {
     try {
       // 띄어쓰기한 모든 키워드가 존재하는 정확한 검색결과를 표시함
       const game_list = await Games.findAll({
-        raw: true,
         attributes: ["id", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
         where: {
           [Op.and]: [
@@ -38,14 +37,10 @@ module.exports = class SteamSearchRepository {
       game_list.sort((a, b) => {
         return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"]
       })
-
-      // // 키워드 중 하나라도 맞으면 검색결과를 불러오게 하려했으나 'the', 'a' 같은 건 너무 길게 불러옴. 봉인! 
-      // const game_list_incorrect = await Games.findAll({
-      //   raw: true,
-      //   where: {
-      //     [Op.or]: keywords_deformed
-      //   }
-      // })
+      // const game_list = game_list_.map(i =>
+      //   console.log(i)
+      // )
+      // console.log(game_list)
       return { game_list/** , game_list_incorrect*/ };
     } catch (error) {
       throw error;
