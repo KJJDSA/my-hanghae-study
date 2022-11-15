@@ -10,6 +10,7 @@ module.exports = class SteamSearchController {
             //테스트코드
             const user_id="2";
             // 쿼리스트링으로 받음
+
             const { keyword } = req.query
             //로깅
             search.info({label:'GET:req /api/search/',message:user_id+"-"+keyword})
