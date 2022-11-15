@@ -7,6 +7,3 @@
 docker-compose.yml
 /db
 
-# Log
-/logs
-
