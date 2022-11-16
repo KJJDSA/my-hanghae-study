@@ -10,9 +10,10 @@ router.use("/user", UserRouter);
 //스팀 게임 검색 라우터
 router.use("/search", SteamSearchRouter);
 //유저 분석 라우터
+router.use("/analyze", UserAnalyzeRouter);
+
 router.use("/", function (req, res) {
   res.render("index");
 });
-router.use("/analyze", UserAnalyzeRouter);
 
 module.exports = router;

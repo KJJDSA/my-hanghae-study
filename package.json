@@ -29,7 +29,9 @@
     "mysql2": "^2.3.3",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "sequelize": "^6.25.5"
+    "sequelize": "^6.25.5",
+    "winston": "^3.8.2",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "dotenv": "^16.0.3",

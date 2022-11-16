@@ -3,6 +3,9 @@ const app = express();
 const routes = require("./routes");
 const ejs = require("ejs");
 const path = require("path");
+const { error, error404 } = require("./middlewares/error/error");
+require("dotenv").config();
+const env = process.env;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -19,6 +22,9 @@ app.get("/", function (req, res) {
 
 app.use("/", routes);
 
-app.listen(5000, () => {
-  console.log(5000, "Welcome Steam Search Service");
+app.use(error404);
+app.use(error);
+
+app.listen(env.PORT, () => {
+  console.log(env.PORT, "Welcome Steam Search Service");
 });
