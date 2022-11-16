@@ -6,6 +6,6 @@ const userAnalyzeController = new UserAnalyzeController();
 
 router.get('/best', userAnalyzeController.bestGame);
 
-// router.post('/',userAnalyzeController.gameSearch);
+router.get('/:user_id',userAnalyzeController.userBestGame);
 
 module.exports = router;
