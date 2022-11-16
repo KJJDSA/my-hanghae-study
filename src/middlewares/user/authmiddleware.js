@@ -6,11 +6,11 @@ const env = process.env;
 module.exports = async(req, res, next) => {
   try {
     const userRepository = new UserRepository();
-    const { authorization } = req.headers;
+    const  authorization  = req.headers.cookie;
     if (authorization === undefined) {
       return next();
     }
-    const [tokenType, tokenValue] = (authorization||"").split(" ");
+    const [tokenType, tokenValue] = authorization.split("=");
     if (tokenType !== "Bearer") return res.send("Not-Exist-Token");
     
       const userInfo = jwt.verify(tokenValue, env.SECRETKEY);
