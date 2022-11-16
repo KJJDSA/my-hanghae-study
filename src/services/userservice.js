@@ -21,20 +21,19 @@ module.exports = class UserService {
       if (user_id === undefined || password === undefined) {
         return { status: 400, message: "INPUT ID OR PW" };
       }
-      //bcrypt 이용, password 암호화 추가 
-      const salt = bcrypt.genSaltSync(saltRounds);
-      const hash_password = await bcrypt.hash(password, salt);
 
       const login_user = await this.userRepository.findUserLogin({
-        user_id,
-        hash_password
+        user_id
       });
+
       if (login_user === undefined) {
         return { status: 400, message: "NOT FOUND" };
       }
-
-      const token = jwt.sign({ user_id: login_user.user_id }, env.SECRETKEY);
-      return { status: 201, message: "success", token };
+      const match = bcrypt.compareSync(password, login_user.password);
+      if (match) {
+        const token = jwt.sign({ user_id: login_user.user_id }, env.SECRETKEY);
+        return { status: 201, message: "success", token };
+      } else throw "로그인실패"
     } catch (error) {
       console.log(error);
       return { status: 400, message: "faild" };
