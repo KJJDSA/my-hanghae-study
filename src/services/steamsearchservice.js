@@ -1,6 +1,8 @@
 const GamesRepository = require("../repositories/gamesrepository");
 const ReviewsRepository = require("../repositories/reviewsrepository");
 const { Op } = require("sequelize");
+const fs = require("fs")
+const path = require("path");
 module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
     reviewsRepository = new ReviewsRepository();
@@ -25,8 +27,7 @@ module.exports = class SteamSearchController {
             //     return game_list
 
             const { list } = await this.gamesRepository.findGames({ keywords_deformed });
-            const appid_list = await this.gamesRepository.searchGamesId({ keywords_deformed });
-            return { list, appid_list }
+            return { list}
 
             // 관계형으로 합침
 
@@ -42,4 +43,31 @@ module.exports = class SteamSearchController {
             throw error;
         }
     }
+
+    searchLogger=async({user_id,keywords,list})=>{
+        try {
+            // { name: { [Op.like]: "%keyword%" } } 각 키워드를 쿼리 형식으로 만들어주기
+            const keywords_deformed = []
+            // if (focus === "game") {
+            // 검색하는 종류가 게임일경우 Games에서 finder
+            for (const keyword of keywords) {
+                keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
+            }
+            const appid_list = await this.gamesRepository.searchGamesId({ keywords_deformed });
+            if (list !== undefined || appid_list !== undefined) {
+                //로깅 txt
+                const file_path = path.join(__dirname, '..', '..', 'logs', '/users/')
+                let today = new Date();
+                const search_result = {
+                    date: today.toLocaleString(),
+                    game_appid: appid_list.appid_list
+                }
+                fs.appendFileSync(file_path + user_id + ".log", JSON.stringify(search_result) + '\n', 'utf8')
+            }
+            return;
+        }catch(error){
+            throw error;
+        }
+    }
+
 };
