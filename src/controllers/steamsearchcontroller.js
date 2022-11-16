@@ -8,20 +8,22 @@ module.exports = class SteamSearchController {
             const user_id = "1";
             // 쿼리스트링으로 받음
 
-            const { keyword } = req.query
+            const { keyword, language, voted_up } = req.query
             //로깅
             // search.info({ label: 'GET:req /api/search/', message: user_id + "-" + keyword })
 
             // console.log(keyword)
             const keywords = keyword.split(" ")
+            let filter = language && voted_up ? { language, voted_up } : language ? { language } : { voted_up }
+            const { list } = language || voted_up
+                ? await this.steamSearchService.steamFilterSearch({ keywords, filter })
+                : await this.steamSearchService.steamSearch({ keywords })
 
-            const { list} = await this.steamSearchService.steamSearch({ keywords });
-            await this.steamSearchService.searchLogger({user_id,keywords,list});
-            
+            await this.steamSearchService.searchLogger({ user_id, keywords, list });
+
 
             return res.status(200).json({
                 data: list,
-                // review_list: result.review_list
             });
         } catch (error) {
             next(error)
