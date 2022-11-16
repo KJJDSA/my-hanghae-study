@@ -23,7 +23,16 @@ module.exports = class UserAnalyzeService {
                 }
             }
         }
-        return gameList;
+        let counting=new Object();
+        for(let i in gameList){
+            if(counting[gameList[i]]===undefined){
+                counting[gameList[i]]=new Array();
+                counting[gameList[i]].push(i);
+            }else{
+                counting[gameList[i]].push(i);
+            }
+        }
+        return counting;
     }
     userBestGameList=async({user_id})=>{
         let gameList=new Object();
@@ -40,6 +49,15 @@ module.exports = class UserAnalyzeService {
                 }
             }
         }
-        return gameList;
+        let counting=new Object();
+        for(let i in gameList){
+            if(counting[gameList[i]]===undefined){
+                counting[gameList[i]]=new Array();
+                counting[gameList[i]].push(i);
+            }else{
+                counting[gameList[i]].push(i);
+            }
+        }
+        return counting;
     }
 };
