@@ -12,7 +12,7 @@ module.exports = class UserService {
       const user = await this.userRepository.findOne({ id });
       return { status: 200, message: user };
     } catch (error) {
-      return { status: 400, message: "failed" };
+      throw(error)
     }
   };
 
@@ -30,14 +30,13 @@ module.exports = class UserService {
         hash_password
       });
       if (login_user === undefined) {
-        return { status: 400, message: "NOT FOUND" };
+        throw(error)
       }
 
       const token = jwt.sign({ user_id: login_user.user_id }, env.SECRETKEY);
       return { status: 201, message: "success", token };
     } catch (error) {
-      console.log(error);
-      return { status: 400, message: "faild" };
+      throw(error)
     }
   };
 
@@ -54,7 +53,7 @@ module.exports = class UserService {
 
       return { status: 201, message: "success" };
     } catch (error) {
-      return { status: 400, message: "faild" };
+      throw(error)
     }
   };
 };
