@@ -9,7 +9,13 @@
   <title>The search service</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
   <script type="text/javascript">
+    $(document).ready(function () {
+      isLogin()
+    })
+
     function check(event) {
       var search = document.querySelector('#search').value;
 
@@ -18,13 +24,30 @@
         event.preventDefault();
       }
     }
+    function sign_out() {
+      $.removeCookie('Bearer', { path: '/' });
+      alert('로그아웃')
+      window.location.href = "/"
+    }
+
+    function isLogin() {
+      const cookie = $.cookie('Bearer');
+      let temp_html;
+      if (cookie) {
+        temp_html =
+          `<input type="submit" value="로그아웃" onclick="sign_out()">`
+      } else {
+        temp_html = `<a href=/user/login>로그인</a>`
+      }
+      $("#isLogin").append(temp_html)
+    }
   </script>
 </head>
 
 <body>
   <h1 class="blue">Steam Search Service</h1>
   <!--웹페이지 안에 스팀포유 띄움. 그리고 css 파일에 red함수를 가져와서 쓴다.-->
-  <div><a href=/user/login>로그인 하기</a></div>
+  <div id="isLogin"></div>
   <form method="get" action="search">
     <p><input type="text" placeholder="검색어를 입력하세요.." name="keyword" id="search" />
       <select name='focus'>

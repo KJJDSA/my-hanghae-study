@@ -20,7 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <style>
         body {
-            background-color: RGBA(232, 52, 78, 0.2);
+            background-color: RGBA;
             min-height: 100vh;
         }
 
@@ -44,19 +44,19 @@
         }
 
         .is-sparta {
-            color: #e8344e !important;
+            color: #031d33 !important;
         }
 
         .button.is-sparta {
-            background-color: #e8344e;
+            background-color: #031d33;
             border-color: transparent;
             color: #fff !important;
         }
 
         .button.is-sparta.is-outlined {
             background-color: transparent;
-            border-color: #e8344e;
-            color: #e8344e !important;
+            border-color: #031d33;
+            color: #031d33 !important;
         }
 
         .help {
@@ -64,7 +64,6 @@
         }
     </style>
     <script>
-        require("dotenv").config();
         // {% if msg %}
         //     alert("{{ msg }}")
         // {% endif %}
@@ -226,10 +225,14 @@
 </head>
 
 <body>
+    <nav class="level is-mobile">
+        <button class="level-item button is-sparta" onclick="location.href='/'">뒤로가기
+        </button>
+    </nav>
     <section class="hero is-white">
         <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
-            <h1 class="title is-sparta">SWEETER</h1>
-            <h3 class="subtitle is-sparta">세상을 달달하게</h3>
+            <h1 class="title is-sparta">Steam For U</h1>
+            <!-- <h3 class="subtitle is-sparta">세상을 달달하게</h3> -->
         </div>
     </section>
     <section class="section">
