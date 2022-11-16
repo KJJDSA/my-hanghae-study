@@ -37,7 +37,7 @@
         temp_html =
           `<input type="submit" value="로그아웃" onclick="sign_out()">`
       } else {
-        temp_html = `<a href=/user/login>로그인</a>`
+        temp_html = `<input type="submit" value="로그인" onclick="location.href='/user/login'">`
       }
       $("#isLogin").append(temp_html)
     }
@@ -48,6 +48,7 @@
   <h1 class="blue">Steam Search Service</h1>
   <!--웹페이지 안에 스팀포유 띄움. 그리고 css 파일에 red함수를 가져와서 쓴다.-->
   <div id="isLogin"></div>
+  <p></p>
   <form method="get" action="search">
     <p><input type="text" placeholder="검색어를 입력하세요.." name="keyword" id="search" />
       <select name='focus'>

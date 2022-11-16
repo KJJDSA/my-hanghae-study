@@ -97,6 +97,7 @@
                     if (response['result'] == 'success') {
                         console.log(response['token'])
                         $.cookie("Bearer", response['token'], { path: '/' });
+                        alert('로그인 성공')
                         window.location.replace("/")
                     } else {
                         alert(response['msg'])
