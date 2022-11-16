@@ -6,7 +6,7 @@ module.exports = class SteamSearchController {
         try {
             //테스트코드
             const user_id = res.locals.userId;
-
+            console.log(user_id)
             // 쿼리스트링으로 받음
 
             const { keyword, language, voted_up } = req.query
@@ -19,7 +19,9 @@ module.exports = class SteamSearchController {
             const { list } = language || voted_up
                 ? await this.steamSearchService.steamSearch({ keywords, filter })
                 : await this.steamSearchService.steamSearch({ keywords })
-            await this.steamSearchService.searchLogger({ user_id, keywords, list });
+            if(user_id!==undefined){
+                await this.steamSearchService.searchLogger({ user_id, keywords, list });
+            }
             return res.status(200).json({
                 data: list,
             });
