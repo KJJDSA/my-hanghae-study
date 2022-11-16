@@ -3,26 +3,39 @@ const UserService = require("../services/userservice");
 module.exports = class UserController {
   userService = new UserService();
   checkUser = async (req, res) => {
-    const { id } = req.body;
-    const response = await this.userService.checkUser({ id });
-    console.log(response)
-    res.json({ 'result': "success", exists: response });
+    try {
+
+      const { id } = req.body;
+
+      const response = await this.userService.checkUser({ id });
+      res.json({ 'result': "success", exists: response });
+    } catch (error) {
+      next(error)
+    }
   }
 
   signUp = async (req, res, next) => {
-    const { user_id, password } = req.body;
+    try {
 
-    const response = await this.userService.createUser({ user_id, password });
+      const { user_id, password } = req.body;
 
-    res.json({ 'result': 'success' });
+      const response = await this.userService.createUser({ user_id, password });
+
+      res.json({ 'result': 'success' });
+    } catch (error) {
+      next(error)
+    }
   };
 
   login = async (req, res, next) => {
-    const { user_id, password } = req.body;
-    console.log(user_id, password)
+    try {
+      const { user_id, password } = req.body;
 
-    const response = await this.userService.loginUser({ user_id, password });
-    // res.cookie("BEAVER", response.token, { maxAge: 180000 });
-    res.json({ 'result': 'success', 'token': response.token });
+      const response = await this.userService.loginUser({ user_id, password });
+
+      res.json({ 'result': 'success', 'token': response.token });
+    } catch (error) {
+      next(error)
+    }
   };
 };

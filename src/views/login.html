@@ -97,7 +97,7 @@
                 success: function (response) {
                     if (response['result'] == 'success') {
                         console.log(response['token'])
-                        $.cookie("Authorization", 'Bearer ' + response['token'], { path: '/' });
+                        $.cookie("Bearer", response['token'], { path: '/' });
                         window.location.replace("/")
                     } else {
                         alert(response['msg'])

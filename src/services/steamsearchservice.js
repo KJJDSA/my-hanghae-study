@@ -11,7 +11,6 @@ module.exports = class SteamSearchController {
 
     steamSearch = async ({ keywords, filter }) => {
         try {
-            console.log(filter)
             const keywords_deformed = []
             for (const keyword of keywords) {
                 keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
@@ -36,7 +35,6 @@ module.exports = class SteamSearchController {
                     }
                 ],
             }
-            console.log("steamSearch")
             const { list } = await this.gamesRepository.findGames({ options });
             return { list }
 

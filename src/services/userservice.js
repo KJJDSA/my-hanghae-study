@@ -17,7 +17,7 @@ module.exports = class UserService {
         return false
       }
     } catch (error) {
-      return { status: 400, message: "failed" };
+      throw(error)
     }
   };
 
@@ -32,16 +32,19 @@ module.exports = class UserService {
       });
 
       if (login_user === undefined) {
-        return { status: 400, message: "NOT FOUND" };
+        throw(error)
       }
       const match = bcrypt.compareSync(password, login_user.password);
-      if (match) {
-        const token = jwt.sign({ user_id: login_user.user_id }, env.SECRETKEY);
+      if (match) {        
+        const token = jwt.sign({ id: login_user.id }, env.SECRETKEY, {
+          expiresIn: "2h", //토큰 유효시간 2시간
+        });
         return { status: 201, message: "success", token };
-      } else throw "로그인실패"
+      } else {
+        throw("로그인실패")
+      }
     } catch (error) {
-      console.log(error);
-      return { status: 400, message: "faild" };
+      throw(error)
     }
   };
 
@@ -58,7 +61,7 @@ module.exports = class UserService {
 
       return { status: 201, message: "success" };
     } catch (error) {
-      return { status: 400, message: "faild" };
+      throw(error)
     }
   };
 };
