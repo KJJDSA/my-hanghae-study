@@ -16,7 +16,7 @@ module.exports = async(req, res, next) => {
     
       const userInfo = jwt.verify(tokenValue, env.SECRETKEY);
 
-      if(!userInfo.userId){
+      if(!userInfo.id){
         throw { status:400, message:"Wrong-Approach"}
       }
       const usercheck = await userRepository.usercheck(userInfo.id);
