@@ -3,7 +3,7 @@ const { Users } = require("../../models");
 module.exports = class UserRepository {
   findOne = async ({ id }) => {
     const user = await Users.findOne({
-      where: { id: id },
+      where: { userid: id },
     });
 
     return user;

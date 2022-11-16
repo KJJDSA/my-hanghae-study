@@ -64,31 +64,32 @@
         }
     </style>
     <script>
+        require("dotenv").config();
         // {% if msg %}
         //     alert("{{ msg }}")
         // {% endif %}
         function sign_in() {
             let username = $("#input-username").val()
             let password = $("#input-password").val()
+            console.log(username, password)
+            // if (username == "") {
+            //     $("#help-id-login").text("아이디를 입력해주세요.")
+            //     $("#input-username").focus()
+            //     return;
+            // } else {
+            //     $("#help-id-login").text("")
+            // }
 
-            if (username == "") {
-                $("#help-id-login").text("아이디를 입력해주세요.")
-                $("#input-username").focus()
-                return;
-            } else {
-                $("#help-id-login").text("")
-            }
-
-            if (password == "") {
-                $("#help-password-login").text("비밀번호를 입력해주세요.")
-                $("#input-password").focus()
-                return;
-            } else {
-                $("#help-password-login").text("")
-            }
+            // if (password == "") {
+            //     $("#help-password-login").text("비밀번호를 입력해주세요.")
+            //     $("#input-password").focus()
+            //     return;
+            // } else {
+            //     $("#help-password-login").text("")
+            // }
             $.ajax({
                 type: "POST",
-                url: "/login",
+                url: "/user/login",
                 data: {
                     user_id: username,
                     password: password
@@ -96,7 +97,7 @@
                 success: function (response) {
                     if (response['result'] == 'success') {
                         console.log(response['token'])
-                        $.cookie('mytoken', response['token'], { path: '/' });
+                        $.cookie("Authorization", 'Bearer ' + response['token'], { path: '/' });
                         window.location.replace("/")
                     } else {
                         alert(response['msg'])
@@ -182,13 +183,12 @@
         }
 
         function is_password(asValue) {
-            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;
+            var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{3,20}$/;
             return regExp.test(asValue);
         }
 
         function check_dup() {
             let username = $("#input-username").val()
-            console.log(username)
             //공란일 때 거부하는 함수
             if (username == "") {
                 $("#help-id").text("아이디를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
@@ -210,7 +210,6 @@
                     id: username
                 },
                 success: function (response) {
-
                     if (response["exists"]) {
                         $("#help-id").text("이미 존재하는 아이디입니다.").removeClass("is-safe").addClass("is-danger")
                         $("#input-username").focus()
