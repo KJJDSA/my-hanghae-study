@@ -13,11 +13,13 @@ module.exports = class UserAnalyzeService {
             for(let ele of list.split('\n')){
                 if(ele!==""){
                     let id_json=JSON.parse(ele)
-                    for(let id of id_json.game_appid){
-                        if(gameList[id.appid]===undefined){
-                            gameList[id.appid]=1
-                        }else{
-                            gameList[id.appid]++;
+                    if(id_json['game_appid']!==undefined){
+                        for(let id of id_json.game_appid){
+                            if(gameList[id.appid]===undefined){
+                                gameList[id.appid]=1
+                            }else{
+                                gameList[id.appid]++;
+                            }
                         }
                     }
                 }
@@ -40,11 +42,13 @@ module.exports = class UserAnalyzeService {
         for(let ele of list.split('\n')){
             if(ele!==""){
                 let id_json=JSON.parse(ele)
-                for(let id of id_json.game_appid){
-                    if(gameList[id.appid]===undefined){
-                        gameList[id.appid]=1
-                    }else{
-                        gameList[id.appid]++;
+                if(id_json['game_appid']!==undefined){
+                    for(let id of id_json.game_appid){
+                        if(gameList[id.appid]===undefined){
+                            gameList[id.appid]=1
+                        }else{
+                            gameList[id.appid]++;
+                        }
                     }
                 }
             }
