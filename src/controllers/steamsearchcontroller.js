@@ -5,7 +5,8 @@ module.exports = class SteamSearchController {
     steamSearch = async (req, res, next) => {
         try {
             //테스트코드
-            const user_id = "1";
+            const user_id = res.locals.userId;
+
             // 쿼리스트링으로 받음
 
             const { keyword, language, voted_up } = req.query

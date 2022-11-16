@@ -1,3 +1,4 @@
+const { LOCK } = require("sequelize");
 const { Users } = require("../../models");
 
 module.exports = class UserRepository {
@@ -17,11 +18,10 @@ module.exports = class UserRepository {
 
   findUserLogin = async ({ user_id, hash_password }) => {
     try {
-      
       const user = await Users.findOne({
-        where: { userId: user_id, password: hash_password },
+        where: { userid: user_id, password: hash_password },
+        raw:true
       });
-      
       return user;
     } catch (error) {
       error.message="SQL_ERROR"
@@ -33,7 +33,7 @@ module.exports = class UserRepository {
     try {
       
       const user = await Users.create({
-        userId: user_id,
+        userid: user_id,
         password: hash_password,
       });
       
@@ -43,4 +43,11 @@ module.exports = class UserRepository {
       throw(error)
     }
   };
+
+  usercheck=async(id)=>{
+    const user = await Users.findOne({
+        where: { id: id },
+    });
+    return user!==undefined
+  }
 };
