@@ -24,7 +24,6 @@ module.exports = class UserService {
       //bcrypt 이용, password 암호화 추가 
       const salt = bcrypt.genSaltSync(saltRounds);
       const hash_password = await bcrypt.hash(password, salt);
-
       const login_user = await this.userRepository.findUserLogin({
         user_id,
         hash_password
@@ -32,8 +31,9 @@ module.exports = class UserService {
       if (login_user === undefined) {
         throw(error)
       }
-
-      const token = jwt.sign({ user_id: login_user.user_id }, env.SECRETKEY);
+      const token = jwt.sign({ id: login_user.id }, env.SECRETKEY, {
+        expiresIn: "2h", //토큰 유효시간 2시간
+      });
       return { status: 201, message: "success", token };
     } catch (error) {
       throw(error)
