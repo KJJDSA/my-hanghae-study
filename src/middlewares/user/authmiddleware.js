@@ -7,9 +7,8 @@ module.exports = async(req, res, next) => {
   try {
     const userRepository = new UserRepository();
     const { authorization } = req.headers;
-    if (authorization===null || authorization=== undefined) {
-
-      throw {status:400, message:"Not-Login"}
+    if (authorization === undefined) {
+      return next();
     }
     const [tokenType, tokenValue] = (authorization||"").split(" ");
     if (tokenType !== "Bearer") return res.send("Not-Exist-Token");
