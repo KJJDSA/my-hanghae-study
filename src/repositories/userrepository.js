@@ -9,17 +9,17 @@ module.exports = class UserRepository {
     return user;
   };
 
-  findUserLogin = async ({ user_id, hash_password }) => {
-    const user = await Users.findOne({
-      where: { userId: user_id, password: hash_password },
-    });
+  findUserLogin = async ({ user_id }) => {
 
+    const user = await Users.findOne({
+      where: { userid: user_id },
+    });
     return user;
   };
 
   createUser = async ({ user_id, hash_password }) => {
     const user = await Users.create({
-      userId: user_id,
+      userid: user_id,
       password: hash_password,
     });
 
