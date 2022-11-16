@@ -9,8 +9,9 @@ module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
     reviewsRepository = new ReviewsRepository();
 
-    steamSearch = async ({ keywords }) => {
+    steamSearch = async ({ keywords, filter }) => {
         try {
+            console.log(filter)
             const keywords_deformed = []
             for (const keyword of keywords) {
                 keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
@@ -26,7 +27,8 @@ module.exports = class SteamSearchController {
                 include: [
                     {
                         model: Reviews,
-                        attributes: ["playtime_at_review", "language", "review", "timestamp_updated", "voted_up", "votes_up", "votes_funny", "weighted_vote_score"]
+                        attributes: ["playtime_at_review", "language", "review", "timestamp_updated", "voted_up", "votes_up", "votes_funny", "weighted_vote_score"],
+                        where: filter
                     },
                     {
                         model: Metascores,
@@ -41,36 +43,6 @@ module.exports = class SteamSearchController {
         } catch (error) {
             throw error;
         }
-    }
-
-    steamFilterSearch = async ({ keywords, filter }) => {
-        const keywords_deformed = []
-        for (const keyword of keywords) {
-            keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
-        }
-        const options = {
-            attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
-            where: {
-                [Op.and]: [
-                    keywords_deformed,
-                    { review_score_desc: { [Op.not]: null } }
-                ]
-            },
-            include: [
-                {
-                    model: Reviews,
-                    attributes: ["playtime_at_review", "language", "review", "timestamp_updated", "voted_up", "votes_up", "votes_funny", "weighted_vote_score"],
-                    where: filter
-                },
-                {
-                    model: Metascores,
-                    attributes: ["name", "meta_score", "user_review"]
-                }
-            ],
-        }
-        console.log("steamSearch", options.include)
-        const { list } = await this.gamesRepository.findGames({ options });
-        return { list }
     }
 
     searchLogger = async ({ user_id, keywords, list }) => {

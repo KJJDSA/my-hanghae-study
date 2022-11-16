@@ -16,12 +16,9 @@ module.exports = class SteamSearchController {
             const keywords = keyword.split(" ")
             let filter = language && voted_up ? { language, voted_up } : language ? { language } : { voted_up }
             const { list } = language || voted_up
-                ? await this.steamSearchService.steamFilterSearch({ keywords, filter })
+                ? await this.steamSearchService.steamSearch({ keywords, filter })
                 : await this.steamSearchService.steamSearch({ keywords })
-
             await this.steamSearchService.searchLogger({ user_id, keywords, list });
-
-
             return res.status(200).json({
                 data: list,
             });
@@ -29,6 +26,5 @@ module.exports = class SteamSearchController {
             next(error)
             res.status(400).json({ Type: error.name, Message: error.message });
         }
-
     }
 };
