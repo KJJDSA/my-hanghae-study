@@ -19,8 +19,7 @@ module.exports = class UserRepository {
   findUserLogin = async ({ user_id, hash_password }) => {
     try {
       const user = await Users.findOne({
-        where: { userid: user_id, password: hash_password },
-        raw:true
+        where: { userid: user_id },
       });
       return user;
     } catch (error) {

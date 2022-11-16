@@ -5,7 +5,7 @@ module.exports = class UserController {
   checkUser = async (req, res) => {
     try {
       
-      const { id } = req.params;
+      const { id } = req.body;
       
       const response = await this.userService.checkUser({ id });
       return res.status(response.status).json(response.message);
@@ -21,7 +21,7 @@ module.exports = class UserController {
       
       const response = await this.userService.createUser({ user_id, password });
       
-      res.status(response.status).json(response.message);
+      res.status(response.status).json({ 'result': 'success' });
     } catch (error) {
       next(error)
     }
@@ -33,7 +33,7 @@ module.exports = class UserController {
       
       const response = await this.userService.loginUser({ user_id, password });
       
-      res.status(response.status).json({ message: response.message, token: response.token });
+      res.status(response.status).json({ 'result': 'success', 'token': response.token });
     } catch (error) {
       next(error)
     }
