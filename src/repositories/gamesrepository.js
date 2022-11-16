@@ -4,38 +4,11 @@ const { Op } = require("sequelize");
 module.exports = class SteamSearchRepository {
   // 게임을 키워드로 찾고
   // 게임 리뷰를 각각 찾아오고
-  findGames = async ({ keywords_deformed }) => {
+  findGames = async ({ options }) => {
     try {
-      // 띄어쓰기한 모든 키워드가 존재하는 정확한 검색결과를 표시함
-      const game_list = await Games.findAll({
-        attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
-        where: {
-          [Op.and]: [
-            keywords_deformed,
-            { review_score_desc: { [Op.not]: null } }
-          ]
-        },
-        include: [
-          {
-            model: Reviews,
-            attributes: [
-              "playtime_at_review",
-              "language",
-              "review",
-              "timestamp_updated",
-              "voted_up",
-              "votes_up",
-              "votes_funny",
-              "weighted_vote_score"]
-          },
-          {
-            model: Metascores,
-            attributes: ["name", "meta_score", "user_review"]
-          }
-        ],
-      })
+      const game_list = await Games.findAll(options)
+      // console.log(game_list)
       const list = game_list.map(i => {
-        // console.log(i.Game.Metascores[0].dataValues)
         const index = i.Reviews.map(j => {
           const data = {
             appid: i.dataValues.appid,
@@ -62,74 +35,11 @@ module.exports = class SteamSearchRepository {
         // console.log(index)
         return index
       }).sort((a, b) => { return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"] })
-      return { list/** , game_list_incorrect*/ };
+      return { list };
     } catch (error) {
       throw error;
     }
   }
-
-
-  // findReviews = async ({ keywords_deformed }) => {
-  //   try {
-  //     // 띄어쓰기한 모든 키워드가 존재하는 정확한 검색결과를 표시함
-  //     const game_list = await Reviews.findAll({
-  //       attributes: [
-  //         "playtime_at_review",
-  //         "language",
-  //         "review",
-  //         "timestamp_updated",
-  //         "voted_up",
-  //         "votes_up",
-  //         "votes_funny",
-  //         "weighted_vote_score"],
-  //       where: {
-  //         [Op.and]: [
-  //           keywords_deformed
-  //         ]
-  //       },
-  //       include: [
-  //         {
-  //           model: Games,
-  //           attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
-  //           include: [{
-  //             model: Metascores,
-  //             attributes: ["name", "meta_score", "user_review"]
-  //           }]
-  //         },
-  //       ],
-  //     })
-  //     const list = game_list.map(i => {
-  //       // console.log(i.Game.Metascores[0].dataValues)
-  //       const data = {
-  //         appid: i.Game.dataValues.appid,
-  //         name: i.Game.dataValues.name,
-  //         review_score: i.Game.dataValues.review_score,
-  //         review_score_desc: i.Game.dataValues.review_score_desc,
-  //         total_positive: i.Game.dataValues.total_positive,
-  //         total_negative: i.Game.dataValues.total_negative,
-  //         img_url: i.Game.dataValues.img_url,
-  //         Reviews: {
-  //           playtime_at_review: i.dataValues.playtime_at_review,
-  //           language: i.dataValues.language,
-  //           review: i.dataValues.review,
-  //           timestamp_updated: i.dataValues.timestamp_updated,
-  //           voted_up: i.dataValues.voted_up,
-  //           votes_up: i.dataValues.votes_up,
-  //           votes_funny: i.dataValues.votes_funny,
-  //           weighted_vote_score: i.dataValues.weighted_vote_score,
-  //         },
-  //         Metascores: i.Game.Metascores
-  //       }
-  //       // console.log(data)
-  //       return data
-  //     }).sort((a, b) => { return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"] })
-  //     // console.log(game_list)
-  //     return list;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
 
   searchGamesId = async ({ keywords_deformed }) => {
     try {
@@ -144,14 +54,7 @@ module.exports = class SteamSearchRepository {
           ]
         }
       })
-      // // 키워드 중 하나라도 맞으면 검색결과를 불러오게 하려했으나 'the', 'a' 같은 건 너무 길게 불러옴. 봉인! 
-      // const game_list_incorrect = await Games.findAll({
-      //   raw: true,
-      //   where: {
-      //     [Op.or]: keywords_deformed
-      //   }
-      // })
-      return { appid_list/** , game_list_incorrect*/ };
+      return { appid_list };
     } catch (error) {
       throw error;
     }
