@@ -7,9 +7,6 @@ const userController = new UserController();
 
 
 //회원가입
-router.get('/signup', function (req, res) {
-  res.render("signup.html");
-});
 router.post('/signup', userController.signUp);
 
 //로그인

@@ -10,7 +10,12 @@ module.exports = class UserService {
   checkUser = async ({ id }) => {
     try {
       const user = await this.userRepository.findOne({ id });
-      return { status: 200, message: user };
+      console.log(user)
+      if (user) {
+        return user.userid === id ? true : false;
+      } else {
+        return false
+      }
     } catch (error) {
       throw(error)
     }
