@@ -1,5 +1,4 @@
 const SteamSearchService = require("../services/steamsearchservice");
-let { search } = require('../middlewares/log/searchlogger');
 
 module.exports = class SteamSearchController {
     steamSearchService = new SteamSearchService();
@@ -11,7 +10,7 @@ module.exports = class SteamSearchController {
 
             const { keyword } = req.query
             //로깅
-            search.info({ label: 'GET:req /api/search/', message: user_id + "-" + keyword })
+            // search.info({ label: 'GET:req /api/search/', message: user_id + "-" + keyword })
 
             // console.log(keyword)
             const keywords = keyword.split(" ")

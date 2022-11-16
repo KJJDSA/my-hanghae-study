@@ -2,6 +2,7 @@ const GamesRepository = require("../repositories/gamesrepository");
 const ReviewsRepository = require("../repositories/reviewsrepository");
 const { Op } = require("sequelize");
 const fs = require("fs")
+let { search } = require('../middlewares/log/searchlogger');
 const path = require("path");
 module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
@@ -46,6 +47,8 @@ module.exports = class SteamSearchController {
 
     searchLogger=async({user_id,keywords,list})=>{
         try {
+            let key=keywords.join(' ')
+            search.info({ label: 'GET:req /api/search/', message: user_id + "-" + key })
             // { name: { [Op.like]: "%keyword%" } } 각 키워드를 쿼리 형식으로 만들어주기
             const keywords_deformed = []
             // if (focus === "game") {
