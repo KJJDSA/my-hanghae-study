@@ -10,14 +10,14 @@ module.exports = class UserService {
   checkUser = async ({ id }) => {
     try {
       const user = await this.userRepository.findOne({ id });
-      console.log(user)
+      // console.log(user)
       if (user) {
         return user.userid === id ? true : false;
       } else {
         return false
       }
     } catch (error) {
-      throw(error)
+      throw (error)
     }
   };
 
@@ -32,19 +32,19 @@ module.exports = class UserService {
       });
 
       if (login_user === undefined) {
-        throw(error)
+        throw (error)
       }
       const match = bcrypt.compareSync(password, login_user.password);
-      if (match) {        
+      if (match) {
         const token = jwt.sign({ id: login_user.id }, env.SECRETKEY, {
           expiresIn: "2h", //토큰 유효시간 2시간
         });
         return { status: 201, message: "success", token };
       } else {
-        throw("로그인실패")
+        throw ("로그인실패")
       }
     } catch (error) {
-      throw(error)
+      throw (error)
     }
   };
 
@@ -61,7 +61,7 @@ module.exports = class UserService {
 
       return { status: 201, message: "success" };
     } catch (error) {
-      throw(error)
+      throw (error)
     }
   };
 };

@@ -10,11 +10,12 @@ module.exports = class SteamSearchController {
       // 쿼리스트링으로 받음
 
       const { keyword, language, voted_up } = req.query;
-      //로깅
-      search.info({
-        label: "GET:req /api/search/",
-        message: user_id + "-" + keyword,
-      });
+      console.log(keyword, language, voted_up)
+      // //로깅
+      // search.info({
+      //   label: "GET:req /api/search/",
+      //   message: user_id + "-" + keyword,
+      // });
 
       // console.log(keyword)
       const keywords = keyword.split(" ");
@@ -22,8 +23,8 @@ module.exports = class SteamSearchController {
         language && voted_up
           ? { language, voted_up }
           : language
-          ? { language }
-          : { voted_up };
+            ? { language }
+            : { voted_up };
       const { list } =
         language || voted_up
           ? await this.steamSearchService.steamSearch({ keywords, filter })
@@ -31,9 +32,7 @@ module.exports = class SteamSearchController {
       if (user_id !== undefined) {
         await this.steamSearchService.searchLogger({ user_id, keywords, list });
       }
-      res.render("search", {
-        data: list,
-      });
+      res.json({ data: list });
     } catch (error) {
       next(error);
       res.status(400).json({ Type: error.name, Message: error.message });
