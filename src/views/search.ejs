@@ -9,15 +9,46 @@
   <title>The search service</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
   <script type="text/javascript">
-    function check(event) {
+    function check() {
       var search = document.querySelector('#search').value;
 
       if (search == "") {
         alert("검색어를 입력해주세요");
         event.preventDefault();
-      }
+      } else{ show_reviews();}
     }
+    function show_reviews() {
+      let keyword = $('#keyword').val();
+      let lanugage = $("#language").val();
+      let voted_up = $("#voted_up").val();
+    
+            $.ajax({
+                type: "GET",
+                url: `/search?${keyword}&${lanugage}&${voted_up}`,
+                data: {},
+                success: function (data) {
+                  console.log(data);
+                  let temp_html = `<div class = "review-card">`;
+                    for (let i = 0; i < data.length; i++) {
+                        let name = data[i]['name']
+                        let img_url = data[i]['img_url']
+                        let review = data[i]['Reviews']['review']
+
+                                temp_html += `<blockquote>
+                                                <div class = "name">${name}</div>
+                                                <img src="${img_url}"/>
+                                                <div class="review">${review}</div>
+                                            </blockquote>`;
+                                temp_html += `</div>`;
+                              }
+
+                        $('#review-list').append(temp_html)
+                }
+            });
+        }
   </script>
   <style>
     img {
@@ -33,32 +64,21 @@
 <body>
   <h1><a href=./index.ejs>Steam Search Service</a></h1>
   <!--웹페이지 안에 스팀포유 띄움. 그리고 css 파일에 red함수를 가져와서 쓴다.-->
-  <form method="get" action="search">
-    <p><input type="text" placeholder="검색어를 입력하세요.." name="keyword" id="search" />
-      <select name='focus'>
-        <option value="game">game</option>
-        <option value="review">review</option>
-      </select>
-    </p>
+  <div class="search">
+    <p><input type="text" placeholder = "검색어를 입력하세요.." id="keyword"/>
+      <select name = 'language' id = 'language'>
+      <option value="koreana">korean</option>
+      <option value="english">english</option>
+  </select>
+  <select name = 'voted_up' id = 'voted_up'>
+    <option value="1">추천</option>
+    <option value="0">비추천</option>
+</select>
+</p>
     <input type="submit" value="검색" onclick="check()" />
-
-    <% for(var i=0; i<data.length; i++){ %>
-      <div
-        style="position: static; height: auto; width: 1000px; margin-top: 10px; top: 250px; border: 3px solid black; ">
-        <div style="position: relative; left: 350px; height: auto; width: 30%; border: 1px solid black;">
-          <b>
-            <%=data[i].name%>
-          </b>
-        </div>
-        <img src="<%=data[i].img_url%>">
-        <div style="position: relative; left: 10%; right: 65%; height: auto; width: 40%; border: 1px solid black;">
-          <b>
-            <%=data[i].total_positive%>
-          </b>
-        </div>
+    <div class="review-list" id="review-list">
       </div>
-      <%}%>
-  </form>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
     crossorigin="anonymous"></script>
