@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/index.css" />
-    <!--index.css 내용을 가져와서 내용을 꾸며준다.-->
-    <title>The search service</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
-      crossorigin="anonymous"
-    />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/index.css" />
+  <!--index.css 내용을 가져와서 내용을 꾸며준다.-->
+  <title>The search service</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
-    <style>
-      .review-card {
-        position: static;
-        float: center;
-        height: auto;
-        width: 1000px;
-        margin-top: 10px;
-        margin-left: 10px;
-        top: 250px;
-        border: 4px solid black;
-        overflow: auto;
-      }
-
+  <style>
+    .carousel {
+      width: 500px;
+      height: 300px;
+    }
+    .review-card {
+      position: static;
+      float: center;
+      height: auto;
+      width: 1000px;
+      margin-top: 10px;
+      margin-left: 10px;
+      top: 250px;
+      border: 4px solid black;
+      overflow: auto;
+     }
       .name {
         position: relative;
         text-align: center;
@@ -72,10 +71,12 @@
         margin-left: 10px;
       }
     </style>
+    
     <script type="text/javascript">
       $(document).ready(function () {
         isLogin();
       });
+
 
       function sign_out() {
         $.removeCookie("Bearer", { path: "/" });
@@ -170,41 +171,104 @@
           },
         });
       }
-    </script>
-  </head>
 
-  <body>
-    <h1 class="blue">Steam Search Service</h1>
-    <!--웹페이지 안에 스팀포유 띄움. 그리고 css 파일에 red함수를 가져와서 쓴다.-->
-    <div id="isLogin"></div>
-    <p></p>
-    <!-- <form method="get" action="search"> -->
-    <p>
-      <input
-        type="text"
-        placeholder="검색어를 입력하세요.."
-        name="keyword"
-        id="search"
-      />
-      <select name="language" id="language">
-        <option value="koreana">korean</option>
-        <option value="english">english</option>
-      </select>
-      <select name="voted_up" id="voted_up">
-        <option value="1">추천</option>
-        <option value="0">비추천</option>
-      </select>
-    </p>
-    <input type="submit" value="검색" onclick="check()" />
-    <!-- </form> -->
-    <div class="review-list" id="review-list"></div>
+    let showRecommendedGames = () => {
+      $.ajax({
+        type: "GET",
+        url: `/analyze/best`,
+        data: {},
+        success: function (response) {
+          // console.log(response);
+          const randomArray = response.best_list.sort(() => 0.5 - Math.random())
+          const array = []
+          for (let i = 0; i < 3; i++) {
+            array.push(randomArray[i])
+          }
+          // <p>${array[0].name}</p>
+          // <p>${array[0].genre}</p>
+          // <p>${array[0].review_score}</p>
+          // <p>${array[0].review_score_desc}</p>
+          console.log(randomArray)
+          let temp_html =
+            ` <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img src="${array[0].img_url}" class="d-block w-100" alt="...">
+                  <div class="carousel-caption">
+                  <h3>${array[0].name}</h3>
+                  <p>
+                    장르: ${array[0].genre} /
+                    리뷰 총점: ${array[0].review_score} /
+                    평가: ${array[0].review_score_desc} 
+                  </p>
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <img src="${array[1].img_url}" class="d-block w-100" alt="...">
+                  <div class="carousel-caption">
+                  <h3>${array[1].name}</h3>
+                  <p>
+                    장르: ${array[1].genre} /
+                    리뷰 총점: ${array[1].review_score} /
+                    평가: ${array[1].review_score_desc} 
+                  </p>
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <img src="${array[2].img_url}" class="d-block w-100" alt="...">
+                  <div class="carousel-caption">
+                  <h3>${array[2].name}</h3>
+                  <p>
+                    장르: ${array[2].genre} /
+                    리뷰 총점: ${array[2].review_score} /
+                    평가: ${array[2].review_score_desc} 
+                  </p>
+                  </div>
+                </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>`;
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+          $("#carouselExampleFade").append(temp_html);
+        },
+      });
+    }
+  </script>
+</head>
 
-  <script></script>
+<body>
+  <h1 class="blue">Steam Search Service</h1>
+  <!--웹페이지 안에 스팀포유 띄움. 그리고 css 파일에 red함수를 가져와서 쓴다.-->
+  <div id="isLogin"></div>
+  <p></p>
+  <!-- <form method="get" action="search"> -->
+  <p>
+    <input type="text" placeholder="검색어를 입력하세요.." name="keyword" id="search" />
+    <select name="language" id="language">
+      <option value="koreana">korean</option>
+      <option value="english">english</option>
+    </select>
+    <select name="voted_up" id="voted_up">
+      <option value="1">추천</option>
+      <option value="0">비추천</option>
+    </select>
+  </p>
+  <input type="submit" value="검색" onclick="check()" />
+  <div class="review-list" id="review-list"></div>
+  <p></p>
+  <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel"></div>
+  <!-- </form> -->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+    crossorigin="anonymous"></script>
+</body>
+
+<script></script>
+
 </html>

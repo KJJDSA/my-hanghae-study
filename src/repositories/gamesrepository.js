@@ -8,34 +8,7 @@ module.exports = class SteamSearchRepository {
     try {
       const game_list = await Games.findAll(options)
       // console.log(game_list)
-      const list = game_list.map(i => {
-        const index = i.Reviews.map(j => {
-          const data = {
-            appid: i.dataValues.appid,
-            name: i.dataValues.name,
-            review_score: i.dataValues.review_score,
-            review_score_desc: i.dataValues.review_score_desc,
-            total_positive: i.dataValues.total_positive,
-            total_negative: i.dataValues.total_negative,
-            img_url: i.dataValues.img_url,
-            Reviews: {
-              playtime_at_review: j.playtime_at_review,
-              language: j.language,
-              review: j.review,
-              timestamp_updated: j.timestamp_updated,
-              voted_up: j.voted_up,
-              votes_up: j.votes_up,
-              votes_funny: j.votes_funny,
-              weighted_vote_score: j.weighted_vote_score,
-            },
-            Metascores: i.Metascores
-          }
-          return data
-        })
-        // console.log(index)
-        return index
-      }).sort((a, b) => { return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"] })
-      return { list };
+      return { game_list };
     } catch (error) {
       throw error;
     }
@@ -60,4 +33,9 @@ module.exports = class SteamSearchRepository {
     }
   }
 
+  // 추천 게임 appid 에서 가져오기
+  findRecommendedGames = async ({ keyword }) => {
+    const data = await findOne({ raw: true, where: { appid: keyword } })
+    return data
+  }
 }
