@@ -32,6 +32,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     name: DataTypes.STRING,
+    genre: DataTypes.STRING(64),
+    genreid: DataTypes.INTEGER,
     review_score: DataTypes.INTEGER,
     review_score_desc: DataTypes.STRING,
     total_positive: DataTypes.INTEGER,

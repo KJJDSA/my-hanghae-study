@@ -16,6 +16,12 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
+      genre: {
+        type: Sequelize.STRING(64)
+      },
+      genreid: {
+        type: Sequelize.INTEGER
+      },
       review_score: {
         allowNull: true,
         type: Sequelize.INTEGER
