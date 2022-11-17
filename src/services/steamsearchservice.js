@@ -35,8 +35,9 @@ module.exports = class SteamSearchController {
                     }
                 ],
             }
+            console.log(options)
             const { game_list } = await this.gamesRepository.findGames({ options });
-
+            // console.log(game_list)
             // findAll 쓸데가 더 있어서 이사했어요
             const list = game_list.map(i => {
                 const index = i.Reviews.map(j => {
@@ -65,6 +66,7 @@ module.exports = class SteamSearchController {
                 // console.log(index)
                 return index
             }).sort((a, b) => { return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"] })
+            // console.log(list)
             return { list }
 
         } catch (error) {

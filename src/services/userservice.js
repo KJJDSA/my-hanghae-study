@@ -41,7 +41,7 @@ module.exports = class UserService {
         });
         return { status: 201, message: "success", token };
       } else {
-        throw ("로그인실패")
+        return { status: 400, message: "failed" };
       }
     } catch (error) {
       throw (error)

@@ -33,7 +33,7 @@ module.exports = class UserController {
 
       const response = await this.userService.loginUser({ user_id, password });
 
-      res.json({ 'result': 'success', 'token': response.token });
+      res.json({ 'result': response.message, 'token': response.token });
     } catch (error) {
       next(error)
     }
