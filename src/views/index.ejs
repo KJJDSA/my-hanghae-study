@@ -51,16 +51,16 @@
         show_reviews();
       }
     }
-    function show_reviews() {
+    function show_reviews(name) {
       $("#review-list").empty()
 
       let keyword = $("#search").val();
       let lanugage = $("#language").val();
       let voted_up = $("#voted_up").val();
-      console.log(`/search?keyword=${keyword}&language=${lanugage}&voted_up=${voted_up}`)
+      // console.log(`/search?keyword=${keyword}&language=${lanugage}&voted_up=${voted_up}`)
       $.ajax({
         type: "GET",
-        url: `/search?keyword=${keyword}&language=${lanugage}&voted_up=${voted_up}`,
+        url: name ? `/search?keyword=${name}` : `/search?keyword=${keyword}&language=${lanugage}&voted_up=${voted_up}`,
         data: {},
         success: function (response) {
           console.log(response);
@@ -106,7 +106,7 @@
           let temp_html =
             ` <div class="carousel-inner">
                 <div class="carousel-item active">
-                  <img src="${array[0].img_url}" class="d-block w-100" alt="...">
+                  <img src="${array[0].img_url}" class="d-block w-100" alt="..." onclick="show_reviews(${array[0].name})">
                   <div class="carousel-caption">
                   <h3>${array[0].name}</h3>
                   <p>
@@ -117,7 +117,7 @@
                   </div>
                 </div>
                 <div class="carousel-item">
-                  <img src="${array[1].img_url}" class="d-block w-100" alt="...">
+                  <img src="${array[1].img_url}" class="d-block w-100" alt="..." onclick="show_reviews(${array[1].name})">
                   <div class="carousel-caption">
                   <h3>${array[1].name}</h3>
                   <p>
@@ -128,7 +128,7 @@
                   </div>
                 </div>
                 <div class="carousel-item">
-                  <img src="${array[2].img_url}" class="d-block w-100" alt="...">
+                  <img src="${array[2].img_url}" class="d-block w-100" alt="..." onclick="show_reviews(${array[2].name})">
                   <div class="carousel-caption">
                   <h3>${array[2].name}</h3>
                   <p>
@@ -156,7 +156,7 @@
 </head>
 
 <body>
-  <h1 class="blue">Steam Search Service</h1>
+  <h1 class="blue"><a href="/">Steam Search Service</a></h1>
   <!--웹페이지 안에 스팀포유 띄움. 그리고 css 파일에 red함수를 가져와서 쓴다.-->
   <div id="isLogin"></div>
   <p></p>
