@@ -6,6 +6,6 @@ const authmiddleware = require("../middlewares/user/authmiddleware");
 const SteamSearchController = require("../controllers/steamsearchcontroller");
 const steamSearchController = new SteamSearchController();
 
-router.get("/", steamSearchController.steamSearch);
+router.get("/", authmiddleware,steamSearchController.steamSearch);
 
 module.exports = router;
