@@ -1,13 +1,13 @@
-name: Deploy main branch
+name: Deploy develop branch
 on:
   pull_request:
     branches:
-      - main
+      - develop
 jobs:
   deploy:
     runs-on: ubuntu-18.04
     steps:
-      - name: deploy main branch
+      - name: deploy develop branch
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -17,4 +17,4 @@ jobs:
           script: |
             cd /home/ubuntu/search
             npm install
-            sudo git pull origin main
+            sudo git pull origin develop
