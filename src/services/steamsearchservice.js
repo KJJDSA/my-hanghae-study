@@ -2,9 +2,11 @@ const GamesRepository = require("../repositories/gamesrepository");
 const ReviewsRepository = require("../repositories/reviewsrepository");
 const { Games, Reviews, Metascores } = require("../../models");
 const { Op } = require("sequelize");
-const fs = require("fs")
+let {errorLog} = require('../middlewares/log/errorlogger');
+const fs = require("fs").promises
 let { search } = require('../middlewares/log/searchlogger');
 const path = require("path");
+
 module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
     reviewsRepository = new ReviewsRepository();
@@ -74,10 +76,10 @@ module.exports = class SteamSearchController {
         }
     }
 
-    searchLogger = async ({ user_id, keywords, list }) => {
+    searchLogger = async ({ id, keywords, list }) => {
         try {
             let key = keywords.join(' ')
-            search.info({ label: 'GET:req /api/search/', message: user_id + "-" + key })
+            search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + key })
             // { name: { [Op.like]: "%keyword%" } } 각 키워드를 쿼리 형식으로 만들어주기
             const keywords_deformed = []
             // if (focus === "game") {
@@ -94,9 +96,10 @@ module.exports = class SteamSearchController {
                     date: today.toLocaleString(),
                     game_appid: appid_list.appid_list
                 }
-                fs.appendFileSync(file_path + user_id + ".log", JSON.stringify(search_result) + '\n', 'utf8')
+                await fs.appendFile(file_path + id + ".log", JSON.stringify(search_result) + '\n', 'utf8')
+                search.info({ label: 'GET:req /api/search/log', message: id + "-success" })
+                return;
             }
-            return;
         } catch (error) {
             throw error;
         }
