@@ -1,13 +1,13 @@
-name: Deploy develop branch
+name: Deploy main branch
 on:
   pull_request:
     branches:
-      - develop
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-18.04
     steps:
-      - name: main develop branch
+      - name: deploy main branch
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
