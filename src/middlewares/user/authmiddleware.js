@@ -14,7 +14,6 @@ module.exports = async (req, res, next) => {
     if (tokenType !== "Bearer") return res.send("Not-Exist-Token");
 
     const userInfo = jwt.verify(tokenValue, env.SECRETKEY);
-
     if (!userInfo.id) {
       throw { status: 400, message: "Wrong-Approach" }
     }
@@ -23,7 +22,7 @@ module.exports = async (req, res, next) => {
     if (!usercheck) {
       throw { status: 400, message: "Not-Exist-User" }
     } else {
-      res.locals.userId = userInfo.id;
+      res.locals.id = userInfo.id;
     }
   } catch (err) {
     next(err)

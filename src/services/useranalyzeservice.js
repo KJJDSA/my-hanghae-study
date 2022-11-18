@@ -13,6 +13,9 @@ module.exports = class UserAnalyzeService {
             let gameList = new Object();
             const dir = path.join(__dirname, '..', '..', 'logs', '/users/')
             let filelist = await fs.readdir(dir)// 하나의 데이터씩 나누어 출력
+            if(filelist.length===1){
+                return [];
+            }
             for (let file of filelist) {
                 let list = await fs.readFile(path.join(__dirname, '..', '..', 'logs', '/users/') + file, { encoding: 'utf8' });
                 for (let ele of list.split('\n')) {
