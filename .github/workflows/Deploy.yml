@@ -1,0 +1,19 @@
+name: Deploy develop branch
+on:
+  pull_request:
+    branches:
+      - develop
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: main develop branch
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/ubuntu/search
+            sudo git pull origin main
