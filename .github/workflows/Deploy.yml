@@ -12,7 +12,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.TEST_KEY }}
+          key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
             cd /home/ubuntu/search
