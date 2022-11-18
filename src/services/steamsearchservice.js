@@ -97,7 +97,6 @@ module.exports = class SteamSearchController {
                     game_appid: appid_list.appid_list
                 }
                 await fs.appendFile(file_path + id + ".log", JSON.stringify(search_result) + '\n', 'utf8')
-                search.info({ label: 'GET:req /api/search/log', message: id + "-success" })
                 return;
             }
         } catch (error) {
