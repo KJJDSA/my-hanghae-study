@@ -34,55 +34,63 @@ module.exports = class UserAnalyzeService {
                 }
             }
             let counting = new Object();
+            let sum=0;
             for (let i in gameList) {
                 if (counting[gameList[i]] === undefined) {
                     counting[gameList[i]] = new Array();
                     counting[gameList[i]].push(i);
+                    sum++;
                 } else {
                     counting[gameList[i]].push(i);
+                    sum++;
                 }
             }
             // 몇번 검색했는지 주려면 객체로 올려보내야해서 복잡해진다. 
             // 3개만 추려서 주고싶다.
             // 최상위가 3개 이하면 그 다음걸 주고싶다.
-            let array = []
-            for (const i in counting) {
-                array.push(i)
-            }
-            const max = Math.max(...array);
-            const keywords_deformed = []
-            if (counting[max].length < 3) {
-                // 가장 많이 클릭한 숫자의 배열을 찾아 return
-                for (const appid of counting[max]) { keywords_deformed.push({ appid }) }
+            // 예상해야하는 시나리오
+            // 1. 게임의 수가 3개 이하일때 / 게임의 수가 3개 이상일때
+            // 2. 가장 많이 검색된 게임이 3개 이하일때 / 3개 이상일때
+            // 이렇게 4가지의 경우의 수를 생각해야한다.
+            // Object.keys(counting) 키 배열
+            let key_arr=Object.keys(counting).reverse()
+            let list=[];
+            if(sum<=3){
+                for(let i of key_arr){
+                    counting[i].map(ele=>{
+                        list.push({appid:ele});
+                    })
+                }
+                console.log(list)
                 const options = {
                     where: {
                         [Op.and]: [
-                            { [Op.or]: keywords_deformed },
-                            // 이미지가 없으면 안뽑아옴
+                            { [Op.or]: list },
                             { img_url: { [Op.not]: null } }
                         ]
                     }
                 }
                 const { game_list } = await this.gamesRepository.findGames({ options });
                 return game_list
-            } else if (counting[max].length > 3) {
-                // 만약 최고 검색숫자의 배열이 3개를 안넘으면 두번째것도 표시
-                const arr = array.filter(x => {
-                    if (x !== (max + "")) return x
-                })
-                const max_secound = Math.max(...arr);
-                const first_second = [...counting[max], ...counting[max_secound]]
-                for (const appid of first_second) { keywords_deformed.push({ appid }); }
+            }else{
+                for(let i of key_arr){
+                    for(let j of counting[i]){
+                        list.push({appid:j})
+                        if(list.length>=3){
+                            break;
+                        }
+                    }
+                }
                 const options = {
                     where: {
                         [Op.and]: [
-                            { [Op.or]: keywords_deformed },
+                            { [Op.or]: list },
                             { img_url: { [Op.not]: null } }
                         ]
                     }
                 }
                 const { game_list } = await this.gamesRepository.findGames({ options });
-                return game_list
+                return game_list;
             }
         } catch (error) {
             throw (error)
