@@ -14,4 +14,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          script: whoami
+          script: |
+            cd /home/ubuntu/search
+            sudo git pull origin main
