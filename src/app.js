@@ -6,7 +6,7 @@ const path = require("path");
 const { error, error404 } = require("./middlewares/error/error");
 require("dotenv").config();
 const env = process.env;
-
+// 예아
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
