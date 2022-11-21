@@ -13,6 +13,7 @@ module.exports = class SteamSearchController {
 
       // console.log(keyword)
       const keywords = keyword.split(" ");
+      //  스페이스가 겹친다면 
       let filter =
         language && voted_up
           ? { language, voted_up }
