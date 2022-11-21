@@ -33,9 +33,9 @@ module.exports = class SteamSearchRepository {
     }
   }
 
-  // 추천 게임 appid 에서 가져오기
-  findRecommendedGames = async ({ keyword }) => {
-    const data = await findOne({ raw: true, where: { appid: keyword } })
-    return data
-  }
+  // // 추천 게임 appid 에서 가져오기
+  // findRecommendedGames = async ({ keyword }) => {
+  //   const data = await findOne({ raw: true, where: { appid: keyword } })
+  //   return data
+  // }
 }
