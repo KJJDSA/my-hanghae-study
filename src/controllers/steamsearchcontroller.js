@@ -4,6 +4,8 @@ module.exports = class SteamSearchController {
   steamSearchService = new SteamSearchService();
   steamSearch = async (req, res, next) => {
     try {
+      var sum = 0;
+      console.time('for');   // 시작
       //테스트코드
       const id = res.locals.id;
       // console.log(user_id);
@@ -20,7 +22,7 @@ module.exports = class SteamSearchController {
           : language
             ? { language }
             : { voted_up };
-      const { list } =
+      const list =
         language || voted_up
           ? await this.steamSearchService.steamSearch({ keywords, filter })
           : await this.steamSearchService.steamSearch({ keywords });
@@ -28,6 +30,7 @@ module.exports = class SteamSearchController {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
       // console.log(list)
+      console.timeEnd('for');
       res.json({ data: list });
     } catch (error) {
       next(error);

@@ -1,5 +1,6 @@
 const { Games, Reviews, Metascores } = require("../../models");
 const { Op } = require("sequelize");
+const Sequelize = require('sequelize')
 
 module.exports = class SteamSearchRepository {
   // 게임을 키워드로 찾고
