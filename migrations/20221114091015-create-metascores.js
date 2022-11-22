@@ -16,7 +16,7 @@ module.exports = {
           key: "appid", // 그 아이디 값을 참고합니다.
         },
       },
-      name: {
+      metacritic_name: {
         type: Sequelize.STRING
       },
       platform: {

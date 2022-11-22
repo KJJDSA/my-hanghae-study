@@ -140,6 +140,11 @@
         data: {},
         success: function (response) {
           console.log(response);
+          if (response.data === false) {
+            let temp_html = "<h3>~검색결과 없음~</h3>"
+            $("#review-list").append(temp_html);
+            return;
+          }
           for (let i = 0; i < response.data.length; i++) {
             for (let j = 0; j < response.data[i].length; j++) {
               let name = response.data[i][j]["name"];

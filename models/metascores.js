@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Metascores.init({
     appid: DataTypes.INTEGER,
-    name: DataTypes.STRING,
+    metacritic_name: DataTypes.STRING,
     platform: DataTypes.STRING,
     release_date: DataTypes.STRING,
     summary: DataTypes.TEXT,
