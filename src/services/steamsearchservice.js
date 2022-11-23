@@ -2,10 +2,11 @@ const GamesRepository = require("../repositories/gamesrepository");
 const ReviewsRepository = require("../repositories/reviewsrepository");
 const { Games, Reviews, Metascores } = require("../../models");
 const { Op } = require("sequelize");
-let {errorLog} = require('../middlewares/log/errorlogger');
+let { errorLog } = require('../middlewares/log/errorlogger');
 const fs = require("fs").promises
 let { search } = require('../middlewares/log/searchlogger');
 const path = require("path");
+const Sequelize = require('sequelize')
 
 module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
@@ -16,12 +17,15 @@ module.exports = class SteamSearchController {
             const keywords_deformed = []
             for (const keyword of keywords) {
                 keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
+                // keywords_deformed.push(Sequelize.literal(`MATCH (name) AGAINST ('${keyword}' )`))
             }
-            const options = {
+            let options = {
                 attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
-                where: {
+                where:
+                {
                     [Op.and]: [
-                        keywords_deformed,
+                        // ...keywords_deformed,
+                        Sequelize.literal(`MATCH (name) AGAINST ('${keywords}*' in boolean mode)`),
                         { review_score_desc: { [Op.not]: null } }
                     ]
                 },
@@ -33,13 +37,14 @@ module.exports = class SteamSearchController {
                     },
                     {
                         model: Metascores,
-                        attributes: ["name", "meta_score", "user_review"]
+                        attributes: ["metacritic_name", "meta_score", "user_review"]
                     }
                 ],
             }
-            console.log(options)
+            // console.log(options)
             const { game_list } = await this.gamesRepository.findGames({ options });
             // console.log(game_list)
+            if (!game_list.length) return false
             // findAll 쓸데가 더 있어서 이사했어요
             const list = game_list.map(i => {
                 const index = i.Reviews.map(j => {
@@ -69,7 +74,7 @@ module.exports = class SteamSearchController {
                 return index
             }).sort((a, b) => { return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"] })
             // console.log(list)
-            return { list }
+            return list
 
         } catch (error) {
             throw error;

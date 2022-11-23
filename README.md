@@ -43,5 +43,6 @@
 4. 유저별 게임추천 기능
 
 ## ERD
-  ![ERD](https://user-images.githubusercontent.com/113815932/202645884-58dd77dd-d7d1-4983-b9b3-df489394fab6.png)
+  ![ERD-2week](https://user-images.githubusercontent.com/113815932/202711210-9fe5c64a-2743-4816-a245-766565578b79.png)
+
 

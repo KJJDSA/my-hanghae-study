@@ -39,7 +39,7 @@ module.exports = class UserService {
         const token = jwt.sign({ id: login_user.id }, env.SECRETKEY, {
           expiresIn: "2h", //토큰 유효시간 2시간
         });
-        return { status: 201, message: "success", token };
+        return { status: 200, message: "success", token };
       } else {
         return { status: 400, message: "failed" };
       }
