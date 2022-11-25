@@ -8,7 +8,7 @@ module.exports = class UserController {
       const { id } = req.body;
 
       const response = await this.userService.checkUser({ id });
-      res.json({ 'result': "success", exists: response });
+      res.status(response.status).json({ 'result': response.result, exists: response.message });
     } catch (error) {
       next(error)
     }
@@ -21,7 +21,7 @@ module.exports = class UserController {
 
       const response = await this.userService.createUser({ user_id, password });
 
-      res.json({ 'result': 'success' });
+      res.status(response.status).json({ 'result': response.message });
     } catch (error) {
       next(error)
     }

@@ -12,9 +12,9 @@ module.exports = class UserService {
       const user = await this.userRepository.findOne({ id });
       // console.log(user)
       if (user) {
-        return user.userid === id ? true : false;
+        return {status:200,result:'success',message:user.userid === id ? true : false};
       } else {
-        return false
+        return {status:200,result:'faild',message:false}
       }
     } catch (error) {
       throw (error)
@@ -32,6 +32,8 @@ module.exports = class UserService {
       });
 
       if (login_user === undefined) {
+        const error=new Error("None_User_ID")
+        error.status=403;
         throw (error)
       }
       const match = bcrypt.compareSync(password, login_user.password);

@@ -75,7 +75,6 @@ module.exports = class SteamSearchController {
             }).sort((a, b) => { return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"] })
             // console.log(list)
             return list
-
         } catch (error) {
             throw error;
         }

@@ -10,7 +10,9 @@ module.exports = class ReviewsRepository {
       })
       return { result };
     } catch (error) {
-      throw error;
+      error.message="Sequlize_FindReviews_Error"
+      error.status=400;
+      throw (error)
     }
   }
 }

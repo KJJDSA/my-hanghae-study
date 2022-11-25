@@ -19,4 +19,26 @@ module.exports = class UserAnalyzeController {
             next(error)
         }
     }
+
+    userLikeGame=async(req, res,next)=>{
+        try {
+            const { user_id } = req.params;
+            const {appid}=req.body;
+            const result=await this.userAnalyzeService.userLikeGame({user_id,appid})
+            return res.status(200).json({ result })
+        } catch (error) {
+            next(error)
+        }
+
+    }
+
+    newUserBestList=async(req,res,next)=>{
+        try {
+            const { user_id } = req.params;
+            const game_list=await this.userAnalyzeService.newUserBestList({user_id})
+            return res.status(200).json({game_list})
+        } catch (error) {
+            
+        }
+    }
 };

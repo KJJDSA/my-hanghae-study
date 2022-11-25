@@ -14,8 +14,10 @@ module.exports = class SteamSearchController {
       const { keyword, language, voted_up } = req.query;
 
       // console.log(keyword)
+      //공백이 2개가 연속될경우 테스트
       const keywords = keyword.split(" ");
       //  스페이스가 겹친다면 
+      // 삼항 연삼자로 필터시 점차 조건이 늘어날때마다 힘들어질테니 수정
       let filter =
         language && voted_up
           ? { language, voted_up }
@@ -31,7 +33,7 @@ module.exports = class SteamSearchController {
       }
       // console.log(list)
       console.timeEnd('for');
-      res.json({ data: list });
+      res.status(200).json({ data: list });
     } catch (error) {
       next(error);
       res.status(400).json({ Type: error.name, Message: error.message });

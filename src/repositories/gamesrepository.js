@@ -11,7 +11,9 @@ module.exports = class SteamSearchRepository {
       // console.log(game_list)
       return { game_list };
     } catch (error) {
-      throw error;
+      error.message="Sequlize_FindGames_Error"
+      error.status=400;
+      throw (error)
     }
   }
 
@@ -30,7 +32,9 @@ module.exports = class SteamSearchRepository {
       })
       return { appid_list };
     } catch (error) {
-      throw error;
+      error.message="Sequlize_SearchGamesId_Error"
+      error.status=400;
+      throw (error)
     }
   }
 
