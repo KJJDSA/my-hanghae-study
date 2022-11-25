@@ -1,10 +1,10 @@
-const GamesRepository = require("../repositories/gamesrepository");
-const ReviewsRepository = require("../repositories/reviewsrepository");
+const GamesRepository = require("../repositories/games_repository");
+const ReviewsRepository = require("../repositories/reviews_repository");
 const { Games, Reviews, Metascores } = require("../../models");
 const { Op } = require("sequelize");
-let { errorLog } = require('../middlewares/log/errorlogger');
+let { errorLog } = require('../middlewares/log/error_logger');
 const fs = require("fs").promises
-let { search } = require('../middlewares/log/searchlogger');
+let { search } = require('../middlewares/log/search_logger');
 const path = require("path");
 const Sequelize = require('sequelize')
 
@@ -14,11 +14,10 @@ module.exports = class SteamSearchController {
 
     steamSearch = async ({ keywords, filter }) => {
         try {
-            const keywords_deformed = []
-            for (const keyword of keywords) {
-                keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
-                // keywords_deformed.push(Sequelize.literal(`MATCH (name) AGAINST ('${keyword}' )`))
-            }
+            // const keywords_deformed = []
+            // for (const keyword of keywords) {
+            //     keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
+            // }
             let options = {
                 attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
                 where:

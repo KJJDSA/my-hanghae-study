@@ -1,4 +1,4 @@
-const SteamSearchService = require("../services/steamsearchservice");
+const SteamSearchService = require("../services/steam_search_service");
 
 module.exports = class SteamSearchController {
   steamSearchService = new SteamSearchService();

@@ -1,4 +1,4 @@
-const UserService = require("../services/userservice");
+const UserService = require("../services/user_service");
 
 module.exports = class UserController {
   userService = new UserService();

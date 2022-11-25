@@ -1,5 +1,5 @@
 // const UserAnalyzeRepository = require("../repositories/useranalyzerepository");
-const GamesRepository = require("../repositories/gamesrepository");
+const GamesRepository = require("../repositories/games_repository");
 const fs = require('fs').promises;
 const path = require("path");
 const { Games, Reviews, Metascores } = require("../../models");
@@ -13,7 +13,7 @@ module.exports = class UserAnalyzeService {
             let gameList = new Object();
             const dir = path.join(__dirname, '..', '..', 'logs', '/users/')
             let filelist = await fs.readdir(dir)// 하나의 데이터씩 나누어 출력
-            if(filelist.length===1){
+            if (filelist.length === 1) {
                 return [];
             }
             for (let file of filelist) {
@@ -34,7 +34,7 @@ module.exports = class UserAnalyzeService {
                 }
             }
             let counting = new Object();
-            let sum=0;
+            let sum = 0;
             for (let i in gameList) {
                 if (counting[gameList[i]] === undefined) {
                     counting[gameList[i]] = new Array();
@@ -53,12 +53,12 @@ module.exports = class UserAnalyzeService {
             // 2. 가장 많이 검색된 게임이 3개 이하일때 / 3개 이상일때
             // 이렇게 4가지의 경우의 수를 생각해야한다.
             // Object.keys(counting) 키 배열
-            let key_arr=Object.keys(counting).reverse()
-            let list=[];
-            if(sum<=3){
-                for(let i of key_arr){
-                    counting[i].map(ele=>{
-                        list.push({appid:ele});
+            let key_arr = Object.keys(counting).reverse()
+            let list = [];
+            if (sum <= 3) {
+                for (let i of key_arr) {
+                    counting[i].map(ele => {
+                        list.push({ appid: ele });
                     })
                 }
                 console.log(list)
@@ -72,11 +72,11 @@ module.exports = class UserAnalyzeService {
                 }
                 const { game_list } = await this.gamesRepository.findGames({ options });
                 return game_list
-            }else{
-                for(let i of key_arr){
-                    for(let j of counting[i]){
-                        list.push({appid:j})
-                        if(list.length>=3){
+            } else {
+                for (let i of key_arr) {
+                    for (let j of counting[i]) {
+                        list.push({ appid: j })
+                        if (list.length >= 3) {
                             break;
                         }
                     }
