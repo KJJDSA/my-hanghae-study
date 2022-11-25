@@ -1,6 +1,6 @@
 // const UserAnalyzeRepository = require("../repositories/useranalyzerepository");
-const GamesRepository = require("../repositories/gamesrepository");
-const UserRepository = require("../repositories/userrepository");
+const GamesRepository = require("../repositories/games_repository");
+const UserRepository = require("../repositories/user_repository");
 const fs = require('fs').promises;
 const path = require("path");
 const { Games, Reviews, Metascores } = require("../../models");

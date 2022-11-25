@@ -1,10 +1,10 @@
-const GamesRepository = require("../repositories/gamesrepository");
-const ReviewsRepository = require("../repositories/reviewsrepository");
+const GamesRepository = require("../repositories/games_repository");
+const ReviewsRepository = require("../repositories/reviews_repository");
 const { Games, Reviews, Metascores } = require("../../models");
 const { Op } = require("sequelize");
-let { errorLog } = require('../middlewares/log/errorlogger');
+let { errorLog } = require('../middlewares/log/error_logger');
 const fs = require("fs").promises
-let { search } = require('../middlewares/log/searchlogger');
+let { search } = require('../middlewares/log/search_logger');
 const path = require("path");
 const Sequelize = require('sequelize')
 

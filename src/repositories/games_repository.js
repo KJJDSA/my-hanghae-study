@@ -1,4 +1,4 @@
-const { Games, Reviews, Metascores } = require("../../models");
+const { Games } = require("../../models");
 const { Op } = require("sequelize");
 const Sequelize = require('sequelize')
 

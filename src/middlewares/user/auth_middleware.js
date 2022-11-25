@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const UserRepository = require("../../repositories/userrepository");
+const UserRepository = require("../../repositories/user_repository");
 const env = process.env;
 
 module.exports = async (req, res, next) => {
