@@ -14,11 +14,10 @@ module.exports = class SteamSearchController {
 
     steamSearch = async ({ keywords, filter }) => {
         try {
-            const keywords_deformed = []
-            for (const keyword of keywords) {
-                keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
-                // keywords_deformed.push(Sequelize.literal(`MATCH (name) AGAINST ('${keyword}' )`))
-            }
+            // const keywords_deformed = []
+            // for (const keyword of keywords) {
+            //     keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
+            // }
             let options = {
                 attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
                 where:
