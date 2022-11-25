@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const UserRouter = require("./user");
-const SteamSearchRouter = require("./steamsearch");
-const UserAnalyzeRouter = require("./useranalyze");
+const SteamSearchRouter = require("./steam_search");
+const UserAnalyzeRouter = require("./user_analyze");
 
 //회원 관련 라우터(회원가입,로그인)
 router.use("/user", UserRouter);
