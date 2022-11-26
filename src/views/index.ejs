@@ -140,12 +140,20 @@
       showRecommendedGames()
     });
 
+    // 엔터키가 눌렸을 때 실행할 내용
+    function enterkey() {
+      if (window.event.keyCode == 13) {
+        check();
+      }
+    }
+
 
     function sign_out() {
       $.removeCookie("Bearer", { path: "/" });
       alert("로그아웃");
       window.location.href = "/";
     }
+
 
     function isLogin() {
       const cookie = $.cookie("Bearer");
@@ -158,6 +166,7 @@
       $("#isLogin").append(temp_html);
     }
 
+
     function check() {
       var search = document.querySelector("#search").value;
 
@@ -168,66 +177,97 @@
         show_reviews();
       }
     }
-    function show_reviews(name) {
+
+
+    function show_reviews() {
+      console.time('for');
       $("#review-list").empty();
       let keyword = $("#search").val();
-      let lanugage = $("#language").val();
+      let language = $("#language").val();
       let voted_up = $("#voted_up").val();
       $.ajax({
-        type: "GET",
-        url: name ? `/search?keyword=${name}&language=koreana` : `/search?keyword=${keyword}&language=${lanugage}&voted_up=${voted_up}`,
-        data: {},
+        type: "POST",
+        url: `/search`,
+        data: {
+          'keyword': `${keyword}`,
+          'filterExists': `${language === 'none' && voted_up === 'none' ? false : true}`,
+          'filter': {
+            'language': `${language}`,
+            'voted_up': `${voted_up}`,
+          }
+        },
+        // type: "GET",
+        // url: `/search?keyword=${keyword}`,
+        // data: {},
         success: function (response) {
-          console.log(response);
+          response = response.data
+
           if (response.data === false) {
             let temp_html = "<h3>~검색결과 없음~</h3>"
             $("#review-list").append(temp_html);
             return;
           }
-          for (let i = 0; i < response.data.length; i++) {
-            for (let j = 0; j < response.data[i].length; j++) {
-              let name = response.data[i][j]["name"];
-              let img_url = response.data[i][j]["img_url"] || "http://localhost:3000/images/ready.jpg "
-              let appid = response.data[i][j]["appid"]
+          for (let i = 0; i < response.length; i++) {
+            // 토글기능이 있는 부트스트랩 아코디언
+            $("#review-list").append(`
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="flush-headingOne">
+                  <button class="accordion-button collapsed" style="width: 1010px; font-size: 38px" type="button" data-bs-toggle="collapse" data-bs-target="#review_${i}" aria-expanded="false" aria-controls="review_${i}">
+                    <img src="${response[i][0]['img_url'] || "http://localhost:3000/images/ready.jpg"}" style='height: 100px; width: auto; margin-right: 15px' />
+                    ${response[i][0]["name"]}
+                  </button>
+                </h2>
+                <div id="review_${i}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                </div>
+              </div>
+            </div>`)
+            for (let j = 0; j < response[i].length; j++) {
+              let name = response[i][j]["name"];
+              let img_url = response[i][j]["img_url"] || "http://localhost:3000/images/ready.jpg "
+              let appid = response[i][j]["appid"]
+              let review = response[i][j]["Reviews"]["review"].replace(/(?:\r\n|\r|\n)/g, '<br />');
+              let playtime = response[i][j]["Reviews"]["playtime_at_review"];
+              let review_score = response[i][j]["review_score"];
+              let votes_funny = response[i][j]["Reviews"]["votes_funny"];
+              let votes_up = response[i][j]["Reviews"]["votes_up"];
+              let total_positive = response[i][j]["total_positive"];
 
-              let review = response.data[i][j]["Reviews"]["review"];
-              let playtime =
-                response.data[i][j]["Reviews"]["playtime_at_review"];
-              let review_score = response.data[i][j]["review_score"];
-              let votes_funny = response.data[i][j]["Reviews"]["votes_funny"];
-              let votes_up = response.data[i][j]["Reviews"]["votes_up"];
-              let total_positive = response.data[i][j]["total_positive"];
+              let temp_html = `
+              <div class="review-card">
+                <blockquote class="blockquote mb-0">
+                  <div class="name">${name}
+                    <br>total review score: ${review_score}/ num of positive: ${total_positive}
+                    <div class="playtime">playtime:${playtime}h</div>
+                    <div class="votes_up">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up" viewBox="0 0 16 16">
+                      <path d="M8.864.046C7.908-.193 7.02.53 6.956 1.466c-.072 1.051-.23 2.016-.428 2.59-.125.36-.479 1.013-1.04 1.639-.557.623-1.282 1.178-2.131 1.41C2.685 7.288 2 7.87 2 8.72v4.001c0 .845.682 1.464 1.448 1.545 1.07.114 1.564.415 2.068.723l.048.03c.272.165.578.348.97.484.397.136.861.217 1.466.217h3.5c.937 0 1.599-.477 1.934-1.064a1.86 1.86 0 0 0 .254-.912c0-.152-.023-.312-.077-.464.201-.263.38-.578.488-.901.11-.33.172-.762.004-1.149.069-.13.12-.269.159-.403.077-.27.113-.568.113-.857 0-.288-.036-.585-.113-.856a2.144 2.144 0 0 0-.138-.362 1.9 1.9 0 0 0 .234-1.734c-.206-.592-.682-1.1-1.2-1.272-.847-.282-1.803-.276-2.516-.211a9.84 9.84 0 0 0-.443.05 9.365 9.365 0 0 0-.062-4.509A1.38 1.38 0 0 0 9.125.111L8.864.046zM11.5 14.721H8c-.51 0-.863-.069-1.14-.164-.281-.097-.506-.228-.776-.393l-.04-.024c-.555-.339-1.198-.731-2.49-.868-.333-.036-.554-.29-.554-.55V8.72c0-.254.226-.543.62-.65 1.095-.3 1.977-.996 2.614-1.708.635-.71 1.064-1.475 1.238-1.978.243-.7.407-1.768.482-2.85.025-.362.36-.594.667-.518l.262.066c.16.04.258.143.288.255a8.34 8.34 0 0 1-.145 4.725.5.5 0 0 0 .595.644l.003-.001.014-.003.058-.014a8.908 8.908 0 0 1 1.036-.157c.663-.06 1.457-.054 2.11.164.175.058.45.3.57.65.107.308.087.67-.266 1.022l-.353.353.353.354c.043.043.105.141.154.315.048.167.075.37.075.581 0 .212-.027.414-.075.582-.05.174-.111.272-.154.315l-.353.353.353.354c.047.047.109.177.005.488a2.224 2.224 0 0 1-.505.805l-.353.353.353.354c.006.005.041.05.041.17a.866.866 0 0 1-.121.416c-.165.288-.503.56-1.066.56z" />
+                      </svg> ${votes_up}
+                    </div>
+                    <div class="votes_funny">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-laughing" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                        <path d="M12.331 9.5a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zM7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5z" />
+                      </svg> ${votes_funny}
+                    </div>
+                  </div>
+                  <div class="img" onclick="show_reviews_appid('${appid}')" style="cursor:pointer"><img src="${img_url}" style='height: 215px; width: 460px;' /></div>
+                  <div class="review">${review}</div>
+                </blockquote>
+              </div>`;
 
-              let temp_html = `<div class="review-card">
-                        <blockquote class="blockquote mb-0">
-                          <div class="name">${name}
-                            <br>total review score: ${review_score}/ num of positive: ${total_positive}
-                            <div class="playtime">playtime:${playtime}h</div>
-                            <div class="votes_up">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up" viewBox="0 0 16 16">
-                            <path d="M8.864.046C7.908-.193 7.02.53 6.956 1.466c-.072 1.051-.23 2.016-.428 2.59-.125.36-.479 1.013-1.04 1.639-.557.623-1.282 1.178-2.131 1.41C2.685 7.288 2 7.87 2 8.72v4.001c0 .845.682 1.464 1.448 1.545 1.07.114 1.564.415 2.068.723l.048.03c.272.165.578.348.97.484.397.136.861.217 1.466.217h3.5c.937 0 1.599-.477 1.934-1.064a1.86 1.86 0 0 0 .254-.912c0-.152-.023-.312-.077-.464.201-.263.38-.578.488-.901.11-.33.172-.762.004-1.149.069-.13.12-.269.159-.403.077-.27.113-.568.113-.857 0-.288-.036-.585-.113-.856a2.144 2.144 0 0 0-.138-.362 1.9 1.9 0 0 0 .234-1.734c-.206-.592-.682-1.1-1.2-1.272-.847-.282-1.803-.276-2.516-.211a9.84 9.84 0 0 0-.443.05 9.365 9.365 0 0 0-.062-4.509A1.38 1.38 0 0 0 9.125.111L8.864.046zM11.5 14.721H8c-.51 0-.863-.069-1.14-.164-.281-.097-.506-.228-.776-.393l-.04-.024c-.555-.339-1.198-.731-2.49-.868-.333-.036-.554-.29-.554-.55V8.72c0-.254.226-.543.62-.65 1.095-.3 1.977-.996 2.614-1.708.635-.71 1.064-1.475 1.238-1.978.243-.7.407-1.768.482-2.85.025-.362.36-.594.667-.518l.262.066c.16.04.258.143.288.255a8.34 8.34 0 0 1-.145 4.725.5.5 0 0 0 .595.644l.003-.001.014-.003.058-.014a8.908 8.908 0 0 1 1.036-.157c.663-.06 1.457-.054 2.11.164.175.058.45.3.57.65.107.308.087.67-.266 1.022l-.353.353.353.354c.043.043.105.141.154.315.048.167.075.37.075.581 0 .212-.027.414-.075.582-.05.174-.111.272-.154.315l-.353.353.353.354c.047.047.109.177.005.488a2.224 2.224 0 0 1-.505.805l-.353.353.353.354c.006.005.041.05.041.17a.866.866 0 0 1-.121.416c-.165.288-.503.56-1.066.56z"/>
-                          </svg> ${votes_up}</div>
-                          <div class="votes_funny">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-laughing" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                            <path d="M12.331 9.5a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zM7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5z"/>
-                          </svg> ${votes_funny}</div>
-                          </div>
-                          <div class="img" onclick="show_reviews_appid('${appid}')" style="cursor:pointer"><img src="${img_url}" style='height: 215px; width: 460px;'/></div>
-                          <div class="review">${review}</div>
-
-
-                        </blockquote>
-                      </div>`;
-
-              $("#review-list").append(temp_html);
+              $(`#review_${i}`).append(temp_html);
             }
           }
+
+          console.timeEnd('for');
         },
       });
     }
 
-    function show_reviews_appid(appid) {
+
+    function show_reviews_appid(appid, name) {
+      console.log(name)
       $("#review-list").empty();
       let keyword = $("#search").val();
       let lanugage = $("#language").val();
@@ -238,17 +278,21 @@
         data: {},
         success: function (response) {
           console.log(response);
+          // 게임이름을 검색어에 넣음
+          $('input[name=keyword]').attr('value', `${response.data[0]["name"]}`);
+
           if (response.data === false) {
             let temp_html = "<h3>~검색결과 없음~</h3>"
             $("#review-list").append(temp_html);
             return;
           }
+
           for (let i = 0; i < response.data.length; i++) {
             let name = response.data[i]["name"];
             let img_url = response.data[i]["img_url"] || "http://localhost:3000/images/ready.jpg "
             let appid = response.data[i]["appid"]
 
-            let review = response.data[i]["Reviews"]["review"];
+            let review = response.data[i]["Reviews"]["review"].replace(/(?:\r\n|\r|\n)/g, '<br />');
             let playtime =
               response.data[i]["Reviews"]["playtime_at_review"];
             let review_score = response.data[i]["review_score"];
@@ -256,32 +300,30 @@
             let votes_up = response.data[i]["Reviews"]["votes_up"];
             let total_positive = response.data[i]["total_positive"];
             let temp_html = `<div class="review-card">
-                        <blockquote class="blockquote mb-0">
-                          <div class="name">${name}
-                            <br>total review score: ${review_score}/ num of positive: ${total_positive}
-                            <div class="playtime">playtime:${playtime}h</div>
-                            <div class="votes_up">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up" viewBox="0 0 16 16">
-                            <path d="M8.864.046C7.908-.193 7.02.53 6.956 1.466c-.072 1.051-.23 2.016-.428 2.59-.125.36-.479 1.013-1.04 1.639-.557.623-1.282 1.178-2.131 1.41C2.685 7.288 2 7.87 2 8.72v4.001c0 .845.682 1.464 1.448 1.545 1.07.114 1.564.415 2.068.723l.048.03c.272.165.578.348.97.484.397.136.861.217 1.466.217h3.5c.937 0 1.599-.477 1.934-1.064a1.86 1.86 0 0 0 .254-.912c0-.152-.023-.312-.077-.464.201-.263.38-.578.488-.901.11-.33.172-.762.004-1.149.069-.13.12-.269.159-.403.077-.27.113-.568.113-.857 0-.288-.036-.585-.113-.856a2.144 2.144 0 0 0-.138-.362 1.9 1.9 0 0 0 .234-1.734c-.206-.592-.682-1.1-1.2-1.272-.847-.282-1.803-.276-2.516-.211a9.84 9.84 0 0 0-.443.05 9.365 9.365 0 0 0-.062-4.509A1.38 1.38 0 0 0 9.125.111L8.864.046zM11.5 14.721H8c-.51 0-.863-.069-1.14-.164-.281-.097-.506-.228-.776-.393l-.04-.024c-.555-.339-1.198-.731-2.49-.868-.333-.036-.554-.29-.554-.55V8.72c0-.254.226-.543.62-.65 1.095-.3 1.977-.996 2.614-1.708.635-.71 1.064-1.475 1.238-1.978.243-.7.407-1.768.482-2.85.025-.362.36-.594.667-.518l.262.066c.16.04.258.143.288.255a8.34 8.34 0 0 1-.145 4.725.5.5 0 0 0 .595.644l.003-.001.014-.003.058-.014a8.908 8.908 0 0 1 1.036-.157c.663-.06 1.457-.054 2.11.164.175.058.45.3.57.65.107.308.087.67-.266 1.022l-.353.353.353.354c.043.043.105.141.154.315.048.167.075.37.075.581 0 .212-.027.414-.075.582-.05.174-.111.272-.154.315l-.353.353.353.354c.047.047.109.177.005.488a2.224 2.224 0 0 1-.505.805l-.353.353.353.354c.006.005.041.05.041.17a.866.866 0 0 1-.121.416c-.165.288-.503.56-1.066.56z"/>
-                          </svg> ${votes_up}</div>
-                          <div class="votes_funny">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-laughing" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                            <path d="M12.331 9.5a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zM7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5z"/>
-                          </svg> ${votes_funny}</div>
-                          </div>
-                          <div class="img" onclick="location.href='${img_url}'" style="cursor:pointer"><img src="${img_url}" style='height: 215px; width: 460px;'/></div>
-                          <div class="review">${review}</div>
-                        </blockquote>
-                      </div>`;
-            $("#review-list").append(temp_html);
+                <blockquote class="blockquote mb-0">
+                  <div class="name">${name}
+                    <br>total review score: ${review_score}/ num of positive: ${total_positive}
+                      <div class="playtime">playtime:${playtime}h</div>
+                      <div class="votes_up">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-thumbs-up" viewBox="0 0 16 16">
+                          <path d="M8.864.046C7.908-.193 7.02.53 6.956 1.466c-.072 1.051-.23 2.016-.428 2.59-.125.36-.479 1.013-1.04 1.639-.557.623-1.282 1.178-2.131 1.41C2.685 7.288 2 7.87 2 8.72v4.001c0 .845.682 1.464 1.448 1.545 1.07.114 1.564.415 2.068.723l.048.03c.272.165.578.348.97.484.397.136.861.217 1.466.217h3.5c.937 0 1.599-.477 1.934-1.064a1.86 1.86 0 0 0 .254-.912c0-.152-.023-.312-.077-.464.201-.263.38-.578.488-.901.11-.33.172-.762.004-1.149.069-.13.12-.269.159-.403.077-.27.113-.568.113-.857 0-.288-.036-.585-.113-.856a2.144 2.144 0 0 0-.138-.362 1.9 1.9 0 0 0 .234-1.734c-.206-.592-.682-1.1-1.2-1.272-.847-.282-1.803-.276-2.516-.211a9.84 9.84 0 0 0-.443.05 9.365 9.365 0 0 0-.062-4.509A1.38 1.38 0 0 0 9.125.111L8.864.046zM11.5 14.721H8c-.51 0-.863-.069-1.14-.164-.281-.097-.506-.228-.776-.393l-.04-.024c-.555-.339-1.198-.731-2.49-.868-.333-.036-.554-.29-.554-.55V8.72c0-.254.226-.543.62-.65 1.095-.3 1.977-.996 2.614-1.708.635-.71 1.064-1.475 1.238-1.978.243-.7.407-1.768.482-2.85.025-.362.36-.594.667-.518l.262.066c.16.04.258.143.288.255a8.34 8.34 0 0 1-.145 4.725.5.5 0 0 0 .595.644l.003-.001.014-.003.058-.014a8.908 8.908 0 0 1 1.036-.157c.663-.06 1.457-.054 2.11.164.175.058.45.3.57.65.107.308.087.67-.266 1.022l-.353.353.353.354c.043.043.105.141.154.315.048.167.075.37.075.581 0 .212-.027.414-.075.582-.05.174-.111.272-.154.315l-.353.353.353.354c.047.047.109.177.005.488a2.224 2.224 0 0 1-.505.805l-.353.353.353.354c.006.005.041.05.041.17a.866.866 0 0 1-.121.416c-.165.288-.503.56-1.066.56z" />
+                        </svg> ${votes_up}</div>
+                      <div class="votes_funny">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-laughing" viewBox="0 0 16 16">
+                          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                          <path d="M12.331 9.5a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zM7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5z" />
+                        </svg> ${votes_funny}</div>
+                  </div>
+                  <div class="img" onclick="location.href='https://store.steampowered.com/app/${appid}'" style="cursor:pointer"><img src="${img_url}" style='height: 215px; width: 460px;' /></div>
+                  <div class="review">${review}</div>
+                </blockquote>
+              </div>`;
+            $(`#review-list`).append(temp_html);
 
           }
         },
       });
     }
-
-
 
 
     let showRecommendedGames = () => {
@@ -360,19 +402,23 @@
 
     <!-- <form method="get" action="search"> -->
     <p>
-      <input type="text" placeholder="검색어를 입력하세요.." name="keyword" id="search" />
+      <input type="text" placeholder="검색어를 입력하세요.." name="keyword" id="search" onkeyup="enterkey();"
+        style="width: 500px;" />
       <select name="language" id="language">
+        <option value="none">언어: ALL</option>
         <option value="koreana">korean</option>
         <option value="english">english</option>
       </select>
       <select name="voted_up" id="voted_up">
+        <option value="none">추천여부: ALL</option>
         <option value="1">추천</option>
         <option value="0">비추천</option>
       </select>
-      <input type="submit" value="검색" onclick="check()" />
+      <input id="submit" type="submit" value="검색" onclick="check()" />
   </section>
   <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;">
-    <div class="review-list" id="review-list"></div>
+    <div class="review-list" id="review-list">
+    </div>
     <p></p>
     <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
     </div>

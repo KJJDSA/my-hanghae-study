@@ -6,30 +6,18 @@ module.exports = class SteamSearchController {
     try {
       var sum = 0;
       console.time('for');   // 시작
-      //테스트코드
       const id = res.locals.id;
-      // console.log(user_id);
-      // 쿼리스트링으로 받음
 
-      const { keyword, language, voted_up } = req.query;
-
-      // console.log(keyword)
+      // post가 좀더 빠름
+      const { filterExists, filter, keyword } = req.body;
       const keywords = keyword.split(" ");
-      //  스페이스가 겹친다면 
-      let filter =
-        language && voted_up
-          ? { language, voted_up }
-          : language
-            ? { language }
-            : { voted_up };
-      const list =
-        language || voted_up
-          ? await this.steamSearchService.steamSearch({ keywords, filter })
-          : await this.steamSearchService.steamSearch({ keywords });
+      const list = filterExists === 'true'
+        ? await this.steamSearchService.steamSearch({ keywords, filter })
+        : await this.steamSearchService.steamSearch({ keywords });
+
       if (id !== undefined) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
-      // console.log(list)
       console.timeEnd('for');
       res.json({ data: list });
     } catch (error) {
@@ -39,18 +27,21 @@ module.exports = class SteamSearchController {
   };
 
   steamAppidSearch = async (req, res, next) => {
+    console.time('for');   // 시작
     try {
       const id = res.locals.id;
 
       const { keyword } = req.query;
-      console.log(keyword)
-      let filter = { language: 'koreana' }
-      const list = await this.steamSearchService.steamAppidSearch({ keyword, filter });
+      // keyword is appid
+      const list = await this.steamSearchService.steamAppidSearch({ keyword });
 
-      // if (id !== undefined) {
-      //   await this.steamSearchService.searchLogger({ id, keywords, list });
-      // }
+      let keywords = { type: 'onething', value: keyword }
+      // appid로 검색하는 경우라 키워드를 저장하지 못함.
+      if (id !== undefined) {
+        await this.steamSearchService.searchLogger({ id, keywords, list });
+      }
 
+      console.timeEnd('for');
       res.json({ data: list });
     } catch (error) {
       next(error);

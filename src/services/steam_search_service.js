@@ -14,16 +14,11 @@ module.exports = class SteamSearchController {
 
     steamSearch = async ({ keywords, filter }) => {
         try {
-            // const keywords_deformed = []
-            // for (const keyword of keywords) {
-            //     keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
-            // }
             let options = {
                 attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
                 where:
                 {
                     [Op.and]: [
-                        // ...keywords_deformed,
                         Sequelize.literal(`MATCH (name) AGAINST ('${keywords}*' in boolean mode)`),
                         { review_score_desc: { [Op.not]: null } }
                     ]
@@ -46,8 +41,8 @@ module.exports = class SteamSearchController {
             if (!game_list.length) return false
             // findAll 쓸데가 더 있어서 이사했어요
             const list = game_list.map(i => {
-                const index = i.Reviews.map(j => {
-                    const data = {
+                return i.Reviews.map(j => {
+                    return {
                         appid: i.dataValues.appid,
                         name: i.dataValues.name,
                         review_score: i.dataValues.review_score,
@@ -67,11 +62,8 @@ module.exports = class SteamSearchController {
                         },
                         Metascores: i.Metascores
                     }
-                    return data
-                })
-                // console.log(index)
-                return index
-            }).sort((a, b) => { return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"] })
+                }).sort((a, b) => { return b.Reviews["weighted_vote_score"] - a["weighted_vote_score"] })
+            }).sort((a, b) => { return b[0].total_positive - a[0].total_positive })
             // console.log(list)
             return list
 
@@ -80,9 +72,8 @@ module.exports = class SteamSearchController {
         }
     }
 
-    steamAppidSearch = async ({ keyword, filter }) => {
+    steamAppidSearch = async ({ keyword }) => {
         try {
-            console.log('서비스 오다')
             let options = {
                 attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
                 where: { appid: keyword },
@@ -90,7 +81,6 @@ module.exports = class SteamSearchController {
                     {
                         model: Reviews,
                         attributes: ["playtime_at_review", "language", "review", "timestamp_updated", "voted_up", "votes_up", "votes_funny", "weighted_vote_score"],
-                        where: filter
                     },
                     {
                         model: Metascores,
@@ -99,6 +89,8 @@ module.exports = class SteamSearchController {
                 ],
             }
             const { game_list } = await this.gamesRepository.findOneGames({ options });
+            if (!game_list) return false
+            // console.log(game_list)
             const list = game_list.Reviews.map(j => {
                 const data = {
                     appid: game_list.dataValues.appid,
@@ -129,33 +121,45 @@ module.exports = class SteamSearchController {
             throw error;
         }
     }
-}
 
-searchLogger = async ({ id, keywords, list }) => {
-    try {
-        let key = keywords.join(' ')
-        search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + key })
-        // { name: { [Op.like]: "%keyword%" } } 각 키워드를 쿼리 형식으로 만들어주기
-        const keywords_deformed = []
-        // if (focus === "game") {
-        // 검색하는 종류가 게임일경우 Games에서 finder
-        for (const keyword of keywords) {
-            keywords_deformed.push({ name: { [Op.like]: "%" + keyword + "%" } })
-        }
-        const appid_list = await this.gamesRepository.searchGamesId({ keywords_deformed });
-        if (list !== undefined || appid_list !== undefined) {
-            //로깅 txt
-            const file_path = path.join(__dirname, '..', '..', 'logs', '/users/')
-            let today = new Date();
-            const search_result = {
-                date: today.toLocaleString(),
-                game_appid: appid_list.appid_list
+    searchLogger = async ({ id, keywords, list }) => {
+        try {
+            // 배너를 통하거나 이미지를 클릭해 검색했을 경우 배열이 아닌 객체형태
+            if (!Array.isArray(keywords)) {
+                // 검색된 appid는 딱 하나뿐
+                // 차별화되는 데이터가 될 수 있으므로 유저가 only one 검색했다는 field를 추가해봄 
+                const file_path = path.join(__dirname, '..', '..', 'logs', '/users/')
+                let today = new Date();
+                const search_result = {
+                    date: today.toLocaleString(),
+                    search_type: keywords.type,
+                    game_appid: keywords.value
+                }
+                await fs.appendFile(file_path + id + ".log", JSON.stringify(search_result) + '\n', 'utf8')
+                search.info({ label: 'GET:req /api/search/log', message: id + "-success" })
+                return;
+            } else {
+                let key = keywords.join(' ')
+                search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + key })
+                // fulltext 쿼리로 변경
+                const appid_list = await this.gamesRepository.searchGamesId({ keywords });
+                if (list !== undefined || appid_list !== undefined) {
+                    //로깅 txt
+                    const file_path = path.join(__dirname, '..', '..', 'logs', '/users/')
+                    let today = new Date();
+                    const search_result = {
+                        date: today.toLocaleString(),
+                        search_type: 'keywords',
+                        game_appid: appid_list.appid_list
+                    }
+                    await fs.appendFile(file_path + id + ".log", JSON.stringify(search_result) + '\n', 'utf8')
+                    search.info({ label: 'GET:req /api/search/log', message: id + "-success" })
+                    return;
+                }
             }
-            await fs.appendFile(file_path + id + ".log", JSON.stringify(search_result) + '\n', 'utf8')
-            search.info({ label: 'GET:req /api/search/log', message: id + "-success" })
-            return;
+        } catch (error) {
+            throw error;
         }
-    } catch (error) {
-        throw error;
     }
 }
+

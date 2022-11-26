@@ -18,13 +18,14 @@ module.exports = class SteamSearchRepository {
   findOneGames = async ({ options }) => {
     try {
       const game_list = await Games.findOne(options)
+      // console.log(game_list)
       return { game_list };
     } catch (error) {
       throw error;
     }
   }
 
-  searchGamesId = async ({ keywords_deformed }) => {
+  searchGamesId = async ({ keywords }) => {
     try {
       // 띄어쓰기한 모든 키워드가 존재하는 정확한 검색결과를 표시함
       const appid_list = await Games.findAll({
@@ -32,7 +33,7 @@ module.exports = class SteamSearchRepository {
         attributes: ["appid"],
         where: {
           [Op.and]: [
-            keywords_deformed,
+            Sequelize.literal(`MATCH (name) AGAINST ('${keywords}*' in boolean mode)`),
             { review_score_desc: { [Op.not]: null } }
           ]
         }
