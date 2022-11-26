@@ -37,4 +37,24 @@ module.exports = class SteamSearchController {
       res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
+
+  steamAppidSearch = async (req, res, next) => {
+    try {
+      const id = res.locals.id;
+
+      const { keyword } = req.query;
+      console.log(keyword)
+      let filter = { language: 'koreana' }
+      const list = await this.steamSearchService.steamAppidSearch({ keyword, filter });
+
+      // if (id !== undefined) {
+      //   await this.steamSearchService.searchLogger({ id, keywords, list });
+      // }
+
+      res.json({ data: list });
+    } catch (error) {
+      next(error);
+      res.status(400).json({ Type: error.name, Message: error.message });
+    }
+  };
 };

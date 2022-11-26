@@ -7,5 +7,6 @@ const SteamSearchController = require("../controllers/steam_search_controller");
 const steamSearchController = new SteamSearchController();
 
 router.get("/", authmiddleware, steamSearchController.steamSearch);
+router.get("/appid", authmiddleware, steamSearchController.steamAppidSearch);
 
 module.exports = router;

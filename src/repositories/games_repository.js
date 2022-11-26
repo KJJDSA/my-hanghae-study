@@ -15,6 +15,15 @@ module.exports = class SteamSearchRepository {
     }
   }
 
+  findOneGames = async ({ options }) => {
+    try {
+      const game_list = await Games.findOne(options)
+      return { game_list };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   searchGamesId = async ({ keywords_deformed }) => {
     try {
       // 띄어쓰기한 모든 키워드가 존재하는 정확한 검색결과를 표시함
@@ -34,6 +43,10 @@ module.exports = class SteamSearchRepository {
     }
   }
 
+
+  steamAppidSearch = async ({ }) => {
+
+  }
   // // 추천 게임 appid 에서 가져오기
   // findRecommendedGames = async ({ keyword }) => {
   //   const data = await findOne({ raw: true, where: { appid: keyword } })
