@@ -4,23 +4,24 @@ module.exports = class SteamSearchController {
   steamSearchService = new SteamSearchService();
   steamSearch = async (req, res, next) => {
     try {
-      var sum = 0;
       console.time('for');   // 시작
       const id = res.locals.id;
-
       // post가 좀더 빠름
-      const { filterExists, filter, keyword } = req.body;
-      const keywords = keyword.split(" ");
+      const { filterExists, filter, keyword, slice_start } = req.body;
+      let keywords = keyword
+      // 풀텍스트 쿼리에 + - "" * < > ( ) 등이 검색어로 있으면 오류를 일으킴
+      if (keywords.includes('(' || ')')) keywords = keywords.replace('(', '').replace(')', '')
       const list = filterExists === 'true'
-        ? await this.steamSearchService.steamSearch({ keywords, filter })
-        : await this.steamSearchService.steamSearch({ keywords });
+        ? await this.steamSearchService.steamSearch({ keywords, filter, slice_start })
+        : await this.steamSearchService.steamSearch({ keywords, slice_start });
 
-      if (id !== undefined) {
+      if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
       console.timeEnd('for');
       res.json({ data: list });
     } catch (error) {
+      console.log(error)
       next(error);
       res.status(400).json({ Type: error.name, Message: error.message });
     }
@@ -40,7 +41,6 @@ module.exports = class SteamSearchController {
       if (id !== undefined) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
-
       console.timeEnd('for');
       res.json({ data: list });
     } catch (error) {
