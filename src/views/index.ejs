@@ -135,26 +135,39 @@
   </style>
 
   <script type="text/javascript">
+    // 페이지 로딩하자마자 실행할 함수
     $(document).ready(function () {
+      // 로그인
       isLogin();
-      showRecommendedGames()
+      // 추천배너
+      showRecommendedGames();
+      // 스크롤인식(무한스크롤)
+      // $(document).scroll(function () {
+      //   let maxHeight = $(document).height();
+      //   let currentScroll = $(window).scrollTop() + $(window).height();
+      //   console.log(maxHeight, currentScroll)
+      //   if (maxHeight <= (currentScroll)) {
+      //     let count = document.querySelectorAll('#accordionFlushExample').length
+      //     show_reviews(count)
+      //   }
+      // })
     });
 
-    // 엔터키가 눌렸을 때 실행할 내용
+    // 검색 엔터키로 가능하게 하기
     function enterkey() {
       if (window.event.keyCode == 13) {
         check();
       }
     }
 
-
+    // 로그아웃
     function sign_out() {
       $.removeCookie("Bearer", { path: "/" });
       alert("로그아웃");
       window.location.href = "/";
     }
 
-
+    // 로그인 상태에 따라 로그인, 로그아웃 버튼 다르게 만들기
     function isLogin() {
       const cookie = $.cookie("Bearer");
       let temp_html;
@@ -166,7 +179,7 @@
       $("#isLogin").append(temp_html);
     }
 
-
+    // 넣은 키워드가 있는지 검사
     function check() {
       var search = document.querySelector("#search").value;
 
@@ -178,10 +191,19 @@
       }
     }
 
-
-    function show_reviews() {
-      console.time('for');
-      $("#review-list").empty();
+    // 키워드 검색
+    function show_reviews(count) {
+      // console.time('for');
+      if (!count) $("#review-list").empty();
+      $("#bundle").empty();
+      $("#bundle").append(`
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      `)
+      if (!count) count = 0
       let keyword = $("#search").val();
       let language = $("#language").val();
       let voted_up = $("#voted_up").val();
@@ -194,31 +216,31 @@
           'filter': {
             'language': `${language}`,
             'voted_up': `${voted_up}`,
-          }
+          },
+          'slice_start': `${count}`
         },
-        // type: "GET",
-        // url: `/search?keyword=${keyword}`,
-        // data: {},
         success: function (response) {
+          $("#carouselExampleFade").empty();
+          $("#bundle").empty();
           response = response.data
-
-          if (response.data === false) {
+          if (response === false) {
             let temp_html = "<h3>~검색결과 없음~</h3>"
             $("#review-list").append(temp_html);
             return;
           }
+          console.log(response)
           for (let i = 0; i < response.length; i++) {
             // 토글기능이 있는 부트스트랩 아코디언
             $("#review-list").append(`
             <div class="accordion accordion-flush" id="accordionFlushExample">
               <div class="accordion-item">
                 <h2 class="accordion-header" id="flush-headingOne">
-                  <button class="accordion-button collapsed" style="width: 1010px; font-size: 38px" type="button" data-bs-toggle="collapse" data-bs-target="#review_${i}" aria-expanded="false" aria-controls="review_${i}">
+                  <button class="accordion-button collapsed" style="width: 1010px; font-size: 38px" type="button" data-bs-toggle="collapse" data-bs-target="#review_${i + count}" aria-expanded="false" aria-controls="review_${i + count}">
                     <img src="${response[i][0]['img_url'] || "http://localhost:3000/images/ready.jpg"}" style='height: 100px; width: auto; margin-right: 15px' />
                     ${response[i][0]["name"]}
                   </button>
                 </h2>
-                <div id="review_${i}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                <div id="review_${i + count}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                 </div>
               </div>
             </div>`)
@@ -256,19 +278,28 @@
                 </blockquote>
               </div>`;
 
-              $(`#review_${i}`).append(temp_html);
+              $(`#review_${i + count}`).append(temp_html);
             }
           }
-
-          console.timeEnd('for');
+          if (response.length >= 30) {
+            let count = document.querySelectorAll('#accordionFlushExample').length
+            $("#bundle").append(
+              `<div class="d-grid gap-2">
+                <button class="btn btn-dark" type="button" onclick="show_reviews(${count})" style="margin-bottom: 20px">30개 더보기</button>
+              </div>`)
+          }
         },
+
       });
     }
 
-
+    // 이미지를 클릭시 해당 게임 검색
     function show_reviews_appid(appid, name) {
-      console.log(name)
       $("#review-list").empty();
+      $("#review-list").append(`
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>`)
       let keyword = $("#search").val();
       let lanugage = $("#language").val();
       let voted_up = $("#voted_up").val();
@@ -277,9 +308,10 @@
         url: `/search/appid?keyword=${appid}`,
         data: {},
         success: function (response) {
+          $("#review-list").empty();
           console.log(response);
-          // 게임이름을 검색어에 넣음
-          $('input[name=keyword]').attr('value', `${response.data[0]["name"]}`);
+
+          document.getElementById("search").value = `${response.data[0]["name"]}`;
 
           if (response.data === false) {
             let temp_html = "<h3>~검색결과 없음~</h3>"
@@ -325,7 +357,7 @@
       });
     }
 
-
+    // 추천게임 배너
     let showRecommendedGames = () => {
       $.ajax({
         type: "GET",
@@ -390,6 +422,7 @@
         },
       });
     }
+
   </script>
 </head>
 
@@ -417,13 +450,11 @@
       <input id="submit" type="submit" value="검색" onclick="check()" />
   </section>
   <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;">
-    <div class="review-list" id="review-list">
-    </div>
-    <p></p>
-    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
-    </div>
+    <div class="review-list" id="review-list"></div>
+    <div id="bundle" style="width: 1010px"></div>
+    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel"
+      style="margin-bottom: 20px;"></div>
   </section>
-
   <!-- </form> -->
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"

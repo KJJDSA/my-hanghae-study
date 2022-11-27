@@ -12,34 +12,35 @@ module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
     reviewsRepository = new ReviewsRepository();
 
-    steamSearch = async ({ keywords, filter }) => {
+    steamSearch = async ({ keywords, filter, slice_start }) => {
         try {
-            let options = {
-                attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
-                where:
-                {
-                    [Op.and]: [
-                        Sequelize.literal(`MATCH (name) AGAINST ('${keywords}*' in boolean mode)`),
-                        { review_score_desc: { [Op.not]: null } }
-                    ]
-                },
-                include: [
-                    {
-                        model: Reviews,
-                        attributes: ["playtime_at_review", "language", "review", "timestamp_updated", "voted_up", "votes_up", "votes_funny", "weighted_vote_score"],
-                        where: filter
-                    },
-                    {
-                        model: Metascores,
-                        attributes: ["metacritic_name", "meta_score", "user_review"]
-                    }
-                ],
+            let option =
+            {
+                [Op.and]: [
+                    Sequelize.literal(`MATCH (name) AGAINST ('${keywords}*' IN BOOLEAN MODE) `),
+                    { review_score_desc: { [Op.not]: null } }
+                ]
             }
-            // console.log(options)
-            const { game_list } = await this.gamesRepository.findGames({ options });
-            // console.log(game_list)
+            const slice_end = Number(slice_start) + 30
+            let options = (option) => {
+                return {
+                    attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
+                    where: option,
+                    include: [
+                        {
+                            model: Reviews,
+                            attributes: ["playtime_at_review", "language", "review", "timestamp_updated", "voted_up", "votes_up", "votes_funny", "weighted_vote_score"],
+                            where: filter
+                        },
+                        {
+                            model: Metascores,
+                            attributes: ["metacritic_name", "meta_score", "user_review"]
+                        }
+                    ],
+                }
+            }
+            const game_list = await this.gamesRepository.findGames(options(option));
             if (!game_list.length) return false
-            // findAll 쓸데가 더 있어서 이사했어요
             const list = game_list.map(i => {
                 return i.Reviews.map(j => {
                     return {
@@ -62,9 +63,11 @@ module.exports = class SteamSearchController {
                         },
                         Metascores: i.Metascores
                     }
-                }).sort((a, b) => { return b.Reviews["weighted_vote_score"] - a["weighted_vote_score"] })
-            }).sort((a, b) => { return b[0].total_positive - a[0].total_positive })
-            // console.log(list)
+                })
+                    .sort((a, b) => { return b.Reviews["weighted_vote_score"] - a["weighted_vote_score"] })
+            })
+                .sort((a, b) => { return b[0].total_positive - a[0].total_positive })
+                .slice(slice_start, slice_end) // 30개씩 끊어주기 - es 적용 전이라 db에 적용 안함
             return list
 
         } catch (error) {
@@ -88,7 +91,7 @@ module.exports = class SteamSearchController {
                     }
                 ],
             }
-            const { game_list } = await this.gamesRepository.findOneGames({ options });
+            const game_list = await this.gamesRepository.findOneGames(options);
             if (!game_list) return false
             // console.log(game_list)
             const list = game_list.Reviews.map(j => {
@@ -113,8 +116,8 @@ module.exports = class SteamSearchController {
                     Metascores: game_list.Metascores
                 }
                 return data
-            }).sort((a, b) => { return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"] })
-            // console.log(list)
+            })
+                .sort((a, b) => { return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"] })
             return list
 
         } catch (error) {
@@ -139,10 +142,13 @@ module.exports = class SteamSearchController {
                 search.info({ label: 'GET:req /api/search/log', message: id + "-success" })
                 return;
             } else {
-                let key = keywords.join(' ')
-                search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + key })
-                // fulltext 쿼리로 변경
-                const appid_list = await this.gamesRepository.searchGamesId({ keywords });
+                // list === [[게임1 리뷰][게임2 리뷰]. . .] map으로 검색결과 가져올 수 있음
+                const appids = list.map(game => {
+                    return game[0].appid
+                })
+                search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + keywords })
+                // fulltext 쿼리로 변경 --- 사용x list에서 가져올 수 있음
+                // const appid_list = await this.gamesRepository.searchGamesId({ keywords });
                 if (list !== undefined || appid_list !== undefined) {
                     //로깅 txt
                     const file_path = path.join(__dirname, '..', '..', 'logs', '/users/')
@@ -150,7 +156,7 @@ module.exports = class SteamSearchController {
                     const search_result = {
                         date: today.toLocaleString(),
                         search_type: 'keywords',
-                        game_appid: appid_list.appid_list
+                        game_appid: appids
                     }
                     await fs.appendFile(file_path + id + ".log", JSON.stringify(search_result) + '\n', 'utf8')
                     search.info({ label: 'GET:req /api/search/log', message: id + "-success" })
