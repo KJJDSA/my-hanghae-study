@@ -5,26 +5,28 @@ const Sequelize = require('sequelize')
 module.exports = class SteamSearchRepository {
   // 게임을 키워드로 찾고
   // 게임 리뷰를 각각 찾아오고
-  findGames = async ({ options }) => {
+  findGames = async (options) => {
     try {
       const game_list = await Games.findAll(options)
       // console.log(game_list)
-      return { game_list };
+      return game_list;
     } catch (error) {
       throw error;
     }
   }
 
-  findOneGames = async ({ options }) => {
+  findOneGames = async (options) => {
     try {
       const game_list = await Games.findOne(options)
       // console.log(game_list)
-      return { game_list };
+      return game_list;
     } catch (error) {
       throw error;
     }
   }
 
+
+  // 사용하지 않음 - 삭제 논의 
   searchGamesId = async ({ keywords }) => {
     try {
       // 띄어쓰기한 모든 키워드가 존재하는 정확한 검색결과를 표시함
