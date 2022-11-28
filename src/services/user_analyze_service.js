@@ -106,7 +106,7 @@ module.exports = class UserAnalyzeService {
                         ]
                     }
                 }
-                const { game_list } = await this.gamesRepository.findGames({ options });
+                const game_list = await this.gamesRepository.findGames(options);
                 return game_list
             }else{
                 for(let i of key_arr){
@@ -125,7 +125,7 @@ module.exports = class UserAnalyzeService {
                         ]
                     }
                 }
-                const { game_list } = await this.gamesRepository.findGames({ options });
+                const game_list = await this.gamesRepository.findGames(options);
                 return game_list;
             }
         } catch (error) {
