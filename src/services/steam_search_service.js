@@ -5,6 +5,7 @@ const { Op } = require("sequelize");
 let { errorLog } = require('../middlewares/log/error_logger');
 const fs = require("fs").promises
 let { search } = require('../middlewares/log/search_logger');
+let { search_result } = require('../middlewares/log/search_result_logger');
 const path = require("path");
 const Sequelize = require('sequelize')
 
@@ -68,7 +69,7 @@ module.exports = class SteamSearchController {
             })
                 .sort((a, b) => { return b[0].total_positive - a[0].total_positive })
                 .slice(slice_start, slice_end) // 30개씩 끊어주기 - es 적용 전이라 db에 적용 안함
-            return list
+            return list;
 
         } catch (error) {
             throw error;
@@ -126,41 +127,21 @@ module.exports = class SteamSearchController {
 
     searchLogger = async ({ id, keywords, list }) => {
         try {
+            const appids = list.map(game => {
+                return game[0].appid
+            })
+            search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + keywords })
+            search_result.info({label:'GET:req /api/search/list', message:"userid:"+id+' appids:'+appids})
             // 배너를 통하거나 이미지를 클릭해 검색했을 경우 배열이 아닌 객체형태
-            if (!Array.isArray(keywords)) {
-                // 검색된 appid는 딱 하나뿐
-                // 차별화되는 데이터가 될 수 있으므로 유저가 only one 검색했다는 field를 추가해봄 
-                const file_path = path.join(__dirname, '..', '..', 'logs', '/users/')
-                let today = new Date();
-                const search_result = {
-                    date: today.toLocaleString(),
-                    search_type: keywords.type,
-                    game_appid: keywords.value
-                }
-                await fs.appendFile(file_path + id + ".log", JSON.stringify(search_result) + '\n', 'utf8')
-                return;
-            } else {
-                // list === [[게임1 리뷰][게임2 리뷰]. . .] map으로 검색결과 가져올 수 있음
-                const appids = list.map(game => {
-                    return game[0].appid
-                })
-                search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + keywords })
-                // fulltext 쿼리로 변경 --- 사용x list에서 가져올 수 있음
-                // const appid_list = await this.gamesRepository.searchGamesId({ keywords });
-                if (list !== undefined || appid_list !== undefined) {
-                    //로깅 txt
-                    const file_path = path.join(__dirname, '..', '..', 'logs', '/users/')
-                    let today = new Date();
-                    const search_result = {
-                        date: today.toLocaleString(),
-                        search_type: 'keywords',
-                        game_appid: appids
-                    }
-                    await fs.appendFile(file_path + id + ".log", JSON.stringify(search_result) + '\n', 'utf8')
-                    search.info({ label: 'GET:req /api/search/log', message: id + "-success" })
-                    return;
-                }
-            }
+            // if (!Array.isArray(keywords)) {
+            //     // 검색된 appid는 딱 하나뿐
+                
+            //     // 차별화되는 데이터가 될 수 있으므로 유저가 only one 검색했다는 field를 추가해봄 
+            //     search_result.info({label:'GET:req /api/search/only_one', message:appids})
+            //     return;
+            // } else {
+            //     search_result.info({label:'GET:req /api/search/only_one', message:appids})
+            // }
         } catch (error) {
             throw error;
         }

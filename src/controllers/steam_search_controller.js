@@ -11,20 +11,19 @@ module.exports = class SteamSearchController {
       let keywords = keyword
       // 풀텍스트 쿼리에 + - " ' * < > ( ) 등이 검색어로 있으면 오류를 일으킴
       keywords = keywords.replace('(', '').replace(')', '').replace('"', '').replace("'", '').replace("'", '')
-      console.log(keywords)
       const list = filterExists === 'true'
         ? await this.steamSearchService.steamSearch({ keywords, filter, slice_start })
         : await this.steamSearchService.steamSearch({ keywords, slice_start });
 
-      if (id !== undefined && list.length) {
+      if (id !== undefined && list !== false) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
       console.timeEnd('for');
-      res.json({ data: list });
+      
+      return res.json({ data: list });
     } catch (error) {
       console.log(error)
       next(error);
-      res.json({ data: false });
     }
   };
 
@@ -46,7 +45,6 @@ module.exports = class SteamSearchController {
       res.status(200).json({ data: list });
     } catch (error) {
       next(error);
-      res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
 };
