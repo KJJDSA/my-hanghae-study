@@ -14,7 +14,8 @@ module.exports = class SteamSearchController {
       //   await this.steamSearchService.searchLogger({ id, keywords, list });
       // }
       console.timeEnd('for');
-      res.json({ data: list });
+      
+      return res.json({ data: list });
     } catch (error) {
       console.log(error)
       next(error);
@@ -69,7 +70,6 @@ module.exports = class SteamSearchController {
       console.timeEnd('for');
     } catch (error) {
       next(error);
-      res.status(400).json({ Type: error.name, Message: error.message });
     }
   };
 

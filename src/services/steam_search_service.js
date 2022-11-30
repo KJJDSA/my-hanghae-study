@@ -5,6 +5,7 @@ const { Op } = require("sequelize");
 let { errorLog } = require('../middlewares/log/error_logger');
 const fs = require("fs").promises
 let { search } = require('../middlewares/log/search_logger');
+let { search_result } = require('../middlewares/log/search_result_logger');
 const path = require("path");
 const Sequelize = require('sequelize')
 
@@ -84,7 +85,13 @@ module.exports = class SteamSearchController {
 
     searchLogger = async ({ id, keywords, list }) => {
         try {
+            const appids = list.map(game => {
+                return game[0].appid
+            })
+            search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + keywords })
+            search_result.info({label:'GET:req /api/search/list', message:"userid:"+id+' appids:'+appids})
             // 배너를 통하거나 이미지를 클릭해 검색했을 경우 배열이 아닌 객체형태
+
             if (typeof keywords === 'object') {
                 // 검색된 appid는 딱 하나뿐
                 // 차별화되는 데이터가 될 수 있으므로 유저가 only one 검색했다는 field를 추가해봄 
