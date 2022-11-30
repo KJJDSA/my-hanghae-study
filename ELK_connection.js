@@ -1,27 +1,19 @@
-const { Client } = require("elasticsearch");
+const { Client } = require('@elastic/elasticsearch')
+require("dotenv").config();
 const env = process.env;
 
 const client = new Client({
   cloud: {
-    id: env.CLOUD_ID,
+    id: env.CLOUD_ID
   },
   auth: {
     username: env.USER_NAME,
-    password: env.PASSWORD,
-  },
-});
-
-client.ping(
-  {
-    requestTimeout: 30000,
-  },
-  function (error) {
-    if (error) {
-      console.log("Elasticsearch Database is down...");
-    } else {
-      console.log("All is well");
-    }
+    password: env.PASSWORD
   }
-);
+})
+
+// client.info()
+//   .then(response => console.log(`Elasticsearch success - version ${response.version.number}`))
+//   .catch(error => console.error(error))
 
 module.exports = client;
