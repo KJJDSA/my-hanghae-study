@@ -73,7 +73,6 @@ module.exports = class SteamSearchController {
                 }
                 option_appid.body.query.bool["filter"] = array
             }
-            console.log(option_appid.body.query.bool.filter)
 
             const review_list = await this.gamesRepository.findWithES(option_appid);
             // console.log(review_list.hits.hits)
@@ -92,6 +91,7 @@ module.exports = class SteamSearchController {
                 })
             }
             search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + keywords })
+
             if (typeof keywords === 'object') {
                 search_result.info({label:'GET:req /api/search/list', message:"userid:"+id+' appids:'+appids+" only:true"})
             }else{

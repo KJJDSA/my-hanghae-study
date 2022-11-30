@@ -200,11 +200,6 @@
         url: `/search`,
         data: {
           'keyword': `${Data.keyword}`,
-          'filterExists': `${Data.filterExists}`,
-          'filter': {
-            'language': `${Data.language}`,
-            'voted_up': Data.voted_up,
-          },
           'slice_start': `0`
         },
         success: function (response) {
@@ -366,8 +361,7 @@
 
     <!-- <form method="get" action="search"> -->
     <p>
-      <input type="text" placeholder="검색어를 입력하세요.." id="search" value="call of duty" onkeyup="enterkey();"
-        style="width: 500px;" />
+      <input type="text" placeholder="검색어를 입력하세요.." id="search" onkeyup="enterkey();" style="width: 500px;" />
       <input id="submit" type="submit" value="검색" onclick="check()" />
   </section>
   <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;">

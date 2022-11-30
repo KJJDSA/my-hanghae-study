@@ -9,12 +9,12 @@ module.exports = class SteamSearchController {
       const { keyword, slice_start } = req.body;
       let keywords = keyword
       const list = await this.steamSearchService.steamSearch({ keywords, slice_start })
+
       
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
       console.timeEnd('for');
-      
       return res.json({ data: list });
     } catch (error) {
       console.log(error)
@@ -26,11 +26,9 @@ module.exports = class SteamSearchController {
     try {
       console.time('for');   // 시작
       const id = res.locals.id;
-      const { filterExists, filter, keyword, slice_start } = req.body;
+      const { keyword, slice_start } = req.body;
 
       let keywords = keyword
-      const filter_whether = filterExists == true ? filter : false;
-      filter.voted_up = filter.voted_up === 'true' ? true : false;
       const list = await this.steamSearchService.steamSearch({ keywords, filter_whether, slice_start })
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
