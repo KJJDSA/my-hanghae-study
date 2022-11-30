@@ -1,21 +1,22 @@
 const { Games } = require("../../models");
 const { Op } = require("sequelize");
 const Sequelize = require('sequelize')
+const client = require("../../ELK_connection");
 
 module.exports = class SteamSearchRepository {
-  // 게임을 키워드로 찾고
-  // 게임 리뷰를 각각 찾아오고
-  findGames = async (options) => {
+
+
+  findWithES = async (options) => {
     try {
-      const game_list = await Games.findAll(options)
-      // console.log(game_list)
-      return game_list;
+      const list = await client.search(options);
+      // console.log(review_list, "레포지");
+      return list;
     } catch (error) {
       error.message="Sequlize_FindGames_Error"
       error.status=400;
       throw (error)
     }
-  }
+  };
 
   findOneGames = async (options) => {
     try {
