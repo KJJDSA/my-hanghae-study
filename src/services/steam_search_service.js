@@ -90,11 +90,11 @@ module.exports = class SteamSearchController {
                     return game._source.appid
                 })
             }
-            search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + keywords })
-
             if (typeof keywords === 'object') {
+                search.info({ label: 'GET:req /api/search/keyword', message: id + "-appid:" + keywords.value })
                 search_result.info({label:'GET:req /api/search/list', message:"userid:"+id+' appids:'+appids+" only:true"})
             }else{
+                search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + keywords })
                 search_result.info({label:'GET:req /api/search/list', message:"userid:"+id+' appids:'+appids+" only:false"})
             }
         } catch (error) {

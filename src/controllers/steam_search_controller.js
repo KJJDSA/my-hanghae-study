@@ -63,7 +63,7 @@ module.exports = class SteamSearchController {
       let keywords = { type: 'onething', value: appid }
       // appid로 검색하는 경우라 키워드를 저장하지 못함.
       if (id !== undefined) {
-        await this.steamSearchService.searchLogger({ id, appid, list });
+        await this.steamSearchService.searchLogger({ id, keywords, list:appid });
       }
       console.timeEnd('for');
     } catch (error) {
@@ -81,7 +81,7 @@ module.exports = class SteamSearchController {
       const slice_start = 0
       const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start });
 
-      let keywords = { type: 'onething', value: list[0]._source.name }
+      let keywords = { type: 'onething', value: appid }
       // appid로 검색하는 경우라 키워드를 저장하지 못함.
       if (id !== undefined) {
         await this.steamSearchService.searchLogger({ id, keywords, list:appid });
