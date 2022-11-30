@@ -194,16 +194,9 @@
     // 검색 페이지로 이동
     function show_games() {
       let keyword = $("#search").val();
-      let language = $("#language").val();
-      let voted_up = $("#voted_up").val();
       const filterExists = language === 'none' && voted_up === 'none' ? false : true
       const data = {
         'keyword': keyword,
-        'filterExists': filterExists,
-        'filter': {
-          'language': language,
-          'voted_up': voted_up,
-        },
         'slice_start': '0'
       }
       localStorage.setItem("data", JSON.stringify(data));

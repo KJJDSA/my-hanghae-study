@@ -73,7 +73,6 @@ module.exports = class SteamSearchController {
                 }
                 option_appid.body.query.bool["filter"] = array
             }
-            console.log(option_appid.body.query.bool.filter)
 
             const review_list = await this.gamesRepository.findWithES(option_appid);
             // console.log(review_list.hits.hits)
@@ -89,7 +88,7 @@ module.exports = class SteamSearchController {
                 return game[0].appid
             })
             search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + keywords })
-            search_result.info({label:'GET:req /api/search/list', message:"userid:"+id+' appids:'+appids})
+            search_result.info({ label: 'GET:req /api/search/list', message: "userid:" + id + ' appids:' + appids })
             // 배너를 통하거나 이미지를 클릭해 검색했을 경우 배열이 아닌 객체형태
 
             if (typeof keywords === 'object') {
