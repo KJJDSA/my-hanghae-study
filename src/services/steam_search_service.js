@@ -12,114 +12,71 @@ module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
     reviewsRepository = new ReviewsRepository();
 
-    steamSearch = async ({ keywords, filter, slice_start }) => {
+    steamSearch = async ({ keywords, slice_start }) => {
         try {
-            let option =
-            {
-                [Op.and]: [
-                    Sequelize.literal(`MATCH (name) AGAINST ('${keywords}*' IN BOOLEAN MODE) `),
-                    { review_score_desc: { [Op.not]: null } }
-                ]
-            }
-            const slice_end = Number(slice_start) + 30
-            let options = (option) => {
-                return {
-                    attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
-                    where: option,
-                    include: [
-                        {
-                            model: Reviews,
-                            attributes: ["playtime_at_review", "language", "review", "timestamp_updated", "voted_up", "votes_up", "votes_funny", "weighted_vote_score"],
-                            where: filter
-                        },
-                        {
-                            model: Metascores,
-                            attributes: ["metacritic_name", "meta_score", "user_review"]
+            // 게임 옵션
+            let option_keywords = {
+                from: slice_start, size: 30,
+                index: "game_data",
+                body: {
+                    query: {
+                        bool: {
+                            must: [
+                                { match: { name: keywords } },
+                                { exists: { field: "short_description" } },
+                            ],
                         }
-                    ],
+                    }
                 }
             }
-            const game_list = await this.gamesRepository.findGames(options(option));
-            if (!game_list.length) return false
-            const list = game_list.map(i => {
-                return i.Reviews.map(j => {
-                    return {
-                        appid: i.dataValues.appid,
-                        name: i.dataValues.name,
-                        review_score: i.dataValues.review_score,
-                        review_score_desc: i.dataValues.review_score_desc,
-                        total_positive: i.dataValues.total_positive,
-                        total_negative: i.dataValues.total_negative,
-                        img_url: i.dataValues.img_url,
-                        Reviews: {
-                            playtime_at_review: j.playtime_at_review,
-                            language: j.language,
-                            review: j.review,
-                            timestamp_updated: j.timestamp_updated,
-                            voted_up: j.voted_up,
-                            votes_up: j.votes_up,
-                            votes_funny: j.votes_funny,
-                            weighted_vote_score: j.weighted_vote_score,
-                        },
-                        Metascores: i.Metascores
-                    }
-                })
-                    .sort((a, b) => { return b.Reviews["weighted_vote_score"] - a["weighted_vote_score"] })
-            })
-                .sort((a, b) => { return b[0].total_positive - a[0].total_positive })
-                .slice(slice_start, slice_end) // 30개씩 끊어주기 - es 적용 전이라 db에 적용 안함
-            return list
-
+            // console.log(option_keywords)
+            const game_list = await this.gamesRepository.findWithES(option_keywords);
+            // let games = [];
+            // for (let i = 0; i < game_list.hits.hits.length; i++) {
+            //     games.push(game_list.hits.hits[i]._source.appid + "");
+            // }
+            return game_list.hits.hits
         } catch (error) {
+            console.log(error)
             throw error;
         }
     }
 
-    steamAppidSearch = async ({ keyword }) => {
+    steamAppidSearch = async ({ appid, slice_start, filter, filterExists }) => {
         try {
-            let options = {
-                attributes: ["appid", "name", "review_score", "review_score_desc", "total_positive", 'total_negative', "img_url"],
-                where: { appid: keyword },
-                include: [
-                    {
-                        model: Reviews,
-                        attributes: ["playtime_at_review", "language", "review", "timestamp_updated", "voted_up", "votes_up", "votes_funny", "weighted_vote_score"],
-                    },
-                    {
-                        model: Metascores,
-                        attributes: ["metacritic_name", "meta_score", "user_review"]
+            const option_appid = {
+                from: slice_start, size: 30,
+                index: "review_data",
+                body: {
+                    query: {
+                        bool: {
+                            must: [
+                                { match: { appid } }
+                            ],
+                        }
                     }
-                ],
-            }
-            const game_list = await this.gamesRepository.findOneGames(options);
-            if (!game_list) return false
-            // console.log(game_list)
-            const list = game_list.Reviews.map(j => {
-                const data = {
-                    appid: game_list.dataValues.appid,
-                    name: game_list.dataValues.name,
-                    review_score: game_list.dataValues.review_score,
-                    review_score_desc: game_list.dataValues.review_score_desc,
-                    total_positive: game_list.dataValues.total_positive,
-                    total_negative: game_list.dataValues.total_negative,
-                    img_url: game_list.dataValues.img_url,
-                    Reviews: {
-                        playtime_at_review: j.playtime_at_review,
-                        language: j.language,
-                        review: j.review,
-                        timestamp_updated: j.timestamp_updated,
-                        voted_up: j.voted_up,
-                        votes_up: j.votes_up,
-                        votes_funny: j.votes_funny,
-                        weighted_vote_score: j.weighted_vote_score,
-                    },
-                    Metascores: game_list.Metascores
                 }
-                return data
-            })
-                .sort((a, b) => { return b["Reviews.weighted_vote_score"] - a["Reviews.weighted_vote_score"] })
-            return list
+            }
+            // 필터 넣어주기
+            if (filterExists) {
+                let array = []
+                for (let key in filter) {
+                    // key 는 []로 감싸야 한다.
+                    if (filter[key] !== 'none') {
+                        let obj1 = {}
+                        let obj2 = {}
+                        obj2[key] = filter[key]
+                        obj1["match"] = obj2
+                        array.push(obj1)
+                    }
+                }
+                option_appid.body.query.bool["filter"] = array
+            }
+            console.log(option_appid.body.query.bool.filter)
 
+            const review_list = await this.gamesRepository.findWithES(option_appid);
+            // console.log(review_list.hits.hits)
+            return review_list.hits.hits
         } catch (error) {
             throw error;
         }
@@ -128,7 +85,7 @@ module.exports = class SteamSearchController {
     searchLogger = async ({ id, keywords, list }) => {
         try {
             // 배너를 통하거나 이미지를 클릭해 검색했을 경우 배열이 아닌 객체형태
-            if (!Array.isArray(keywords)) {
+            if (typeof keywords === 'object') {
                 // 검색된 appid는 딱 하나뿐
                 // 차별화되는 데이터가 될 수 있으므로 유저가 only one 검색했다는 field를 추가해봄 
                 const file_path = path.join(__dirname, '..', '..', 'logs', '/users/')
@@ -169,3 +126,12 @@ module.exports = class SteamSearchController {
     }
 }
 
+
+let options = (option, index) => {
+    return {
+        index: index,
+        body: {
+            query: option
+        },
+    }
+}
