@@ -187,12 +187,12 @@
         alert("검색어를 입력해주세요");
         event.preventDefault();
       } else {
-        show_games();
+        render_games();
       }
     }
 
     // 검색 페이지로 이동
-    function show_games() {
+    function render_games() {
       let keyword = $("#search").val();
       const filterExists = language === 'none' && voted_up === 'none' ? false : true
       const data = {
@@ -203,7 +203,7 @@
       location.href = '/search'
     }
 
-    // 이미지를 클릭시 해당 게임 검색
+    // 리뷰 페이지네이션
     function show_reviews_appid(appid) {
       $("#bundle").empty()
       $("#spinner").append(spinner)
@@ -336,7 +336,7 @@
     <div class="name">
       <input type="text" placeholder="검색어를 입력하세요.." id="search" onkeyup="enterkey();" style="width: 500px;"
         value="<%= result? name : '' %>" />
-      <input id="submit" type="submit" value="검색" onclick="show_games()" />
+      <input id="submit" type="submit" value="검색" onclick="render_games()" />
     </div>
 
     <div class="name">

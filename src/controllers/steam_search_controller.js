@@ -10,7 +10,7 @@ module.exports = class SteamSearchController {
       let keywords = keyword
       const list = await this.steamSearchService.steamSearch({ keywords, slice_start })
 
-      
+
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
@@ -53,6 +53,7 @@ module.exports = class SteamSearchController {
       else request = req.body;
       const { appid, slice_start, filterExists, filter } = request;
       console.log(appid, slice_start, filterExists, filter)
+
       if (filterExists === undefined) {
         const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filterExists });
         res.json({ data: list });
@@ -60,12 +61,13 @@ module.exports = class SteamSearchController {
         const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filter, filterExists });
         res.json({ data: list });
       }
+
       let keywords = { type: 'onething', value: appid }
       // appid로 검색하는 경우라 키워드를 저장하지 못함.
       if (id !== undefined) {
-        await this.steamSearchService.searchLogger({ id, keywords, list:appid });
+        await this.steamSearchService.searchLogger({ id, keywords, list: appid });
       }
-      console.timeEnd('for');
+      console.timeEnd('for'); s
     } catch (error) {
       next(error);
     }
@@ -77,6 +79,7 @@ module.exports = class SteamSearchController {
       const id = res.locals.id;
 
       const { appid, name } = req.query;
+      console.log(appid,)
       // keyword is appid
       const slice_start = 0
       const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start });
@@ -84,7 +87,7 @@ module.exports = class SteamSearchController {
       let keywords = { type: 'onething', value: appid }
       // appid로 검색하는 경우라 키워드를 저장하지 못함.
       if (id !== undefined) {
-        await this.steamSearchService.searchLogger({ id, keywords, list:appid });
+        await this.steamSearchService.searchLogger({ id, keywords, list: appid });
       }
       // console.timeEnd('for');
       return res.render('search', {
