@@ -54,16 +54,20 @@ module.exports = class SteamSearchController {
       const { appid, slice_start, filterExists, filter } = request;
       console.log(appid, slice_start, filterExists, filter)
 
-      if (filterExists === undefined) list = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filterExists });
-      else list = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filter, filterExists });
+      if (filterExists === undefined) {
+        const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filterExists });
+        res.json({ data: list });
+      } else {
+        const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filter, filterExists });
+        res.json({ data: list });
+      }
 
       let keywords = { type: 'onething', value: appid }
       // appid로 검색하는 경우라 키워드를 저장하지 못함.
       if (id !== undefined) {
-        await this.steamSearchService.searchLogger({ id, keywords: keywords.value, list: appid });
+        await this.steamSearchService.searchLogger({ id, keywords, list: appid });
       }
-      console.timeEnd('for');
-      res.json({ data: list });
+      console.timeEnd('for'); s
     } catch (error) {
       next(error);
     }
@@ -75,11 +79,12 @@ module.exports = class SteamSearchController {
       const id = res.locals.id;
 
       const { appid, name } = req.query;
+      console.log(appid,)
       // keyword is appid
       const slice_start = 0
       const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start });
 
-      let keywords = { type: 'onething', value: list[0]._source.name }
+      let keywords = { type: 'onething', value: appid }
       // appid로 검색하는 경우라 키워드를 저장하지 못함.
       if (id !== undefined) {
         await this.steamSearchService.searchLogger({ id, keywords, list: appid });

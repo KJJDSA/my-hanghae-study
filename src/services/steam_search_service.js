@@ -24,8 +24,13 @@ module.exports = class SteamSearchController {
                         bool: {
                             must: [
                                 { match: { name: keywords } },
-                                { exists: { field: "short_description" } },
+                                { exists: { field: "review_score_desc" } },
                             ],
+                            should: [
+                                { match_phrase: { name: keywords } }, // 키워드 전체 구문이 있으면 +
+                                { match: { name: keywords } }, // 각 요소가 맞는게 있으면 +
+                                { match: { type: 'game' } }, // type이 game이면 + 
+                            ]
                         }
                     }
                 }
@@ -84,31 +89,21 @@ module.exports = class SteamSearchController {
 
     searchLogger = async ({ id, keywords, list }) => {
         try {
-            let appids=list
-            if(typeof(list)==='object'){
+            let appids = list
+            if (typeof (list) === 'object') {
                 appids = list.map(game => {
                     return game._source.appid
                 })
             }
-            search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + keywords })
-
             if (typeof keywords === 'object') {
-                search_result.info({label:'GET:req /api/search/list', message:"userid:"+id+' appids:'+appids+" only:true"})
-            }else{
-                search_result.info({label:'GET:req /api/search/list', message:"userid:"+id+' appids:'+appids+" only:false"})
+                search.info({ label: 'GET:req /api/search/keyword', message: id + "-appid:" + keywords.value })
+                search_result.info({ label: 'GET:req /api/search/list', message: "userid:" + id + ' appids:' + appids + " only:true" })
+            } else {
+                search.info({ label: 'GET:req /api/search/keyword', message: id + "-" + keywords })
+                search_result.info({ label: 'GET:req /api/search/list', message: "userid:" + id + ' appids:' + appids + " only:false" })
             }
         } catch (error) {
             throw error;
         }
-    }
-}
-
-
-let options = (option, index) => {
-    return {
-        index: index,
-        body: {
-            query: option
-        },
     }
 }
