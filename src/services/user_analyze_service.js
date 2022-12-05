@@ -348,8 +348,6 @@ module.exports = class UserAnalyzeService {
                 let knn_value=0.8;
                 //코사인 유사도 계산
                 let cosin=await vectorSimilarity.cosinSimilarity(mine_vector.hits.hits[0]._source.unit_vector,target.unit_vector,knn_value);
-                console.log(target.userid)
-                console.log(cosin)
                 if(cosin===false){
                     continue;
                 }
@@ -360,7 +358,6 @@ module.exports = class UserAnalyzeService {
                 })
                 let appid_list=target.appid_list;
                 for(let appid of appid_list){
-                    console.log(appid)
                     if(like_games[appid]===undefined|| like_games[appid]===null){
                         like_games[appid]=cosin;
                     }else{
@@ -368,10 +365,35 @@ module.exports = class UserAnalyzeService {
                     }
                 }
             }
-            
-            console.log(like_games)
-        
-            return like_games;
+            let result =[];
+            for(let appid in like_games){
+                result.push([appid,like_games[appid]])
+            }
+            result.sort((a,b)=>{
+                return b[1]-a[1]
+            })
+            if(result.length>10){
+                result=result.filter((ele,index)=>{
+                    return index<10
+                })
+            }
+            let game_list=[];
+            for(let appid of result){
+                const option_appid = {
+                    index: "game_data",
+                    body: {
+                        query: {
+                            bool: {
+                                must: [
+                                    { match: { appid:appid[0] } }
+                                ],
+                            }
+                        }
+                    }
+                }
+                game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]._source);
+            }
+            return game_list;
         } catch (error) {
             throw(error)
         }
