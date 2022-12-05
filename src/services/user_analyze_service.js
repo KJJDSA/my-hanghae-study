@@ -8,11 +8,14 @@ const date = new Date();
 // 임시 코드 repository 
 
 class VectorSimilarity{
-    cosinSimilarity=async(unit_vec1,unit_vec2)=>{
+    cosinSimilarity=async(unit_vec1,unit_vec2,value)=>{
         let cosin=0;
         for(let i in unit_vec1){
             if(unit_vec2[i]!==undefined){
                 cosin+=unit_vec1[i]*unit_vec2[i];
+            }
+            if(cosin>value){
+                return false;
             }
         }
         return cosin;
@@ -111,41 +114,7 @@ module.exports = class UserAnalyzeService {
             throw (error)
         }
     }
-    userBestGameList = async ({ user_id }) => {
-        try {
-            let gameList = new Object();
-            let list = await fs.readFile(path.join(__dirname, '..', '..', 'logs', '/users/') + user_id + '.log', { encoding: 'utf8' });
-            for (let ele of list.split('\n')) {
-                if (ele !== "") {
-                    let id_json = JSON.parse(ele)
-                    if (id_json['game_appid'] !== undefined) {
-                        for (let id of id_json.game_appid) {
-                            if (gameList[id.appid] === undefined) {
-                                gameList[id.appid] = 1
-                            } else {
-                                gameList[id.appid]++;
-                            }
-                        }
-                    }
-                }
-            }
-            let counting = new Object();
-            for (let i in gameList) {
-                if (counting[gameList[i]] === undefined) {
-                    counting[gameList[i]] = new Array();
-                    counting[gameList[i]].push(i);
-                } else {
-                    counting[gameList[i]].push(i);
-                }
-            }
-            return counting;
-        } catch (error) {
-            throw (error)
-        }
-    }
 
-
-    //선호하는 유저 저장
     userLikeGame=async({user_id})=>{
         try {
             const option_user={
@@ -174,7 +143,7 @@ module.exports = class UserAnalyzeService {
 
             if(today<=updatedAt){
                 //업데이트를 이미 실행하여 데이터가 업데이트됨
-                return;
+                return  {status:400,message:"faild"}
             }
             const option = {
                 index: "users_logs",
@@ -198,7 +167,7 @@ module.exports = class UserAnalyzeService {
             const list=await this.userRepository.findWithES(option);
             if(list.hits.hits.length===0){
                 //log를 이용해서 유저의 검색기록을 찾아올때 검색된 로그가 없을경우
-                return;
+                return  {status:400,message:"faild"}
             }
             const game_list=[];
             const appid_list=[];
@@ -322,9 +291,9 @@ module.exports = class UserAnalyzeService {
         }
     }
 
-    newUserBestList=async({user_id})=>{
+    UserBestList=async({user_id})=>{
         try {
-            const option_userid = {
+            let option_userid = {
                 index: "user_info",
                 body: {
                     query: {
@@ -337,40 +306,62 @@ module.exports = class UserAnalyzeService {
                 }
             }
             let mine_vector=await this.userRepository.findWithES(option_userid)
-
+            if(mine_vector.hits.hits.length===0){
+                //분석데이터가 없을때 업데이트
+                if(userLikeGame({user_id}).status!==200){
+                    //해당로그 없음으로
+                    return false;
+                }
+            }
             //자신을 뺀 유저 리스트(범위 축소)
-            let target_list=await this.userRepository.findWithES({option_userid})
-
+            option_userid = {
+                index: "user_info",
+                body: {
+                    query: {
+                        bool: {
+                            must_not: [
+                                { match: { userid:user_id } },
+                            ],
+                        }
+                    }
+                }
+            }
+            let target_list=await this.userRepository.findWithES(option_userid)
             //각 유저의 벡터 정보를 받아온다.
             const vectorSimilarity=new VectorSimilarity();
             let cosin_similarity=[];
             let like_games={};
-            for(let i in target_list){
+            if(target_list.hits.hits.length===0){
+                return false;
+            }
+            for(let target_info of target_list.hits.hits){
+                let target=target_info._source
+                let knn_value=0.8;
                 //코사인 유사도 계산
-                let cosin=vectorSimilarity.cosinSimilarity(mine_vector.unit_vector,target_list[i].unit_vector);
-                
-                if(cosin>=0.8){
-                    cosin=Math.round(i.cosin*100)/100;
-                    cosin_similarity.push({
-                        userid:target_list[i].userid,
-                        cosin
-                    })
-                    let like_game=await this.userLikeGameRepository.findOneUser({userid:target_list[i].userid,});
-                    for(let i of like_game){
-                        if(like_games[i.appid]===undefined|| like_games[i.appid]===null){
-                            like_games[i.appid]=cosin;
-                        }else{
-                            like_games[i.appid]+=cosin;
-                        }
-                    }
-                }else{
+                let cosin=await vectorSimilarity.cosinSimilarity(mine_vector.hits.hits[0]._source.unit_vector,target.unit_vector,knn_value);
+                if(cosin===false){
                     continue;
                 }
+                cosin=Math.round(cosin*100)/100;
+                cosin_similarity.push({
+                    userid:target.userid,
+                    cosin
+                })
+                let appid_list=target.appid_list;
+                for(let appid of appid_list){
+                    if(like_games[appid]===undefined|| like_games[appid]===null){
+                        like_games[appid]=cosin;
+                    }else{
+                        like_games[appid]+=cosin;
+                    }
+                }
             }
+            
+            console.log(like_games)
         
             return like_games;
         } catch (error) {
-            
+            throw(error)
         }
     }
 };

@@ -6,8 +6,8 @@ const userAnalyzeController = new UserAnalyzeController();
 
 router.get('/best', userAnalyzeController.bestGame);
 
-router.get('/:user_id', userAnalyzeController.userBestGame);
+router.get('/',authmiddleware,userAnalyzeController.userLikeGame)
 
-router.post('/like/:user_id',userAnalyzeController.userLikeGame)
+router.get('/like',authmiddleware,userAnalyzeController.UserBestList)
 
 module.exports = router;
