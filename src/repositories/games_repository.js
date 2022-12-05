@@ -12,8 +12,8 @@ module.exports = class SteamSearchRepository {
       // console.log(review_list, "레포지");
       return list;
     } catch (error) {
-      error.message="Sequlize_FindGames_Error"
-      error.status=400;
+      error.message = "Sequlize_FindGames_Error"
+      error.status = 400;
       throw (error)
     }
   };
@@ -45,8 +45,8 @@ module.exports = class SteamSearchRepository {
       })
       return { appid_list };
     } catch (error) {
-      error.message="Sequlize_SearchGamesId_Error"
-      error.status=400;
+      error.message = "Sequlize_SearchGamesId_Error"
+      error.status = 400;
       throw (error)
     }
   }

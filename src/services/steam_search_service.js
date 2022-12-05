@@ -14,9 +14,16 @@ module.exports = class SteamSearchController {
 
             // let tokens = keywords.split(' '),
             let ngrams = [];
+            // for (let i = 0; i < ((keywords_patched.length - 2) + 1); i++) {
+            //     let subset = [];
+            //     for (let j = i; j < (i + 3); j++) {
+            //         subset.push(keywords_patched[j]);
+            //     }
+            //     ngrams.push(subset.join(''))
+            // }
             for (let i = 0; i < ((keywords_patched.length - 2) + 1); i++) {
                 let subset = [];
-                for (let j = i; j < (i + 2); j++) {
+                for (let j = i; j < (i + 4); j++) {
                     subset.push(keywords_patched[j]);
                 }
                 ngrams.push(subset.join(''))
@@ -25,28 +32,27 @@ module.exports = class SteamSearchController {
             let option_keywords = {
                 from: slice_start, size: 30,
                 index: "games_data",
-                // index: "game_data",
                 body: {
                     query: {
                         bool: {
                             must: [
-                                { match: { "name.standard": keywords } },
-                                { match: { "name.ngrams": ngrams.join(' ') } },
+                                { match: { "name.ngrams": keywords } },
                                 { exists: { field: "img_url" } },
                             ],
                             should: [
-                                { match_phrase: { "name.standard": keywords } }, // 키워드 전체 구문이 있으면 +
-                                { match_phrase_prefix: { "name.standard": keywords } },
-                                { match: { "name.standard": keywords } },
-                                { match: { "name.ngrams": ngrams.join(' ') } }, // 각 요소가 맞는게 있으면 +
+                                { match_phrase: { "name.standard": keywords } }, // 구문 검색 up
+                                // { match_phrase_prefix: { "name.standard": keywords } }, // 구문검색을 하지만 마지막 요소는 접두사 
+                                { match: { "name.standard": keywords } }, // 노말 검색 up
+                                // { match: { "name.ngrams": keywords } }, // ngram 은 점수에는 아닌듯
                                 { match: { type: 'game' } }, // type이 game이면 + 
                             ]
                         }
                     }
                 }
             }
-            // console.log(option_keywords)
+            console.log()
             const game_list = await this.gamesRepository.findWithES(option_keywords);
+            console.log(game_list)
             return game_list.hits.hits
         } catch (error) {
             console.log(error)
