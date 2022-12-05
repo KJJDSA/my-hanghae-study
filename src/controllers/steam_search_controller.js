@@ -67,8 +67,9 @@ module.exports = class SteamSearchController {
       if (id !== undefined) {
         await this.steamSearchService.searchLogger({ id, keywords, list: appid });
       }
-      console.timeEnd('for'); s
+      console.timeEnd('for');
     } catch (error) {
+      console.log(error)
       next(error);
     }
   };

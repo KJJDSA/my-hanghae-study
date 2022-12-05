@@ -1,46 +1,37 @@
 const GamesRepository = require("../repositories/games_repository");
 const ReviewsRepository = require("../repositories/reviews_repository");
-const { Games, Reviews, Metascores } = require("../../models");
-const { Op } = require("sequelize");
-let { errorLog } = require('../middlewares/log/error_logger');
-const fs = require("fs").promises
 let { search } = require('../middlewares/log/search_logger');
 let { search_result } = require('../middlewares/log/search_result_logger');
-const path = require("path");
-const Sequelize = require('sequelize')
-
 module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
     reviewsRepository = new ReviewsRepository();
 
     steamSearch = async ({ keywords, slice_start }) => {
         try {
-            // 게임 옵션
             let option_keywords = {
                 from: slice_start, size: 30,
-                index: "game_data",
+                index: "games_data",
                 body: {
                     query: {
                         bool: {
                             must: [
-                                { match: { name: keywords } },
-                                { exists: { field: "review_score_desc" } },
+                                { match: { "name.ngrams": keywords } },
+                                { exists: { field: "img_url" } },
                             ],
                             should: [
-                                { match_phrase: { name: keywords } }, // 키워드 전체 구문이 있으면 +
-                                { match: { name: keywords } }, // 각 요소가 맞는게 있으면 +
+                                { match_phrase: { "name.standard": keywords } }, // 구문 검색 up
+                                // { match_phrase_prefix: { "name.standard": keywords } }, // 구문검색을 하지만 마지막 요소는 접두사 
+                                { match: { "name.standard": keywords } }, // 노말 검색 up
+                                // { match: { "name.ngrams": keywords } }, // ngram 은 점수에는 아닌듯
                                 { match: { type: 'game' } }, // type이 game이면 + 
                             ]
                         }
                     }
                 }
             }
-            // console.log(option_keywords)
+            console.log()
             const game_list = await this.gamesRepository.findWithES(option_keywords);
-            // let games = [];
-            // for (let i = 0; i < game_list.hits.hits.length; i++) {
-            //     games.push(game_list.hits.hits[i]._source.appid + "");
-            // }
+            console.log(game_list)
             return game_list.hits.hits
         } catch (error) {
             console.log(error)
