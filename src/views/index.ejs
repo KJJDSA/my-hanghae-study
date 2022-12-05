@@ -6,15 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/index.css" />
   <!--index.css 내용을 가져와서 내용을 꾸며준다.-->
+
+
   <title>The search service</title>
+
+  <!-- 부트스트랩 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- ajax 및 jquery -->
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+  <!-- 구글폰트 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
-
   <style>
     body {
       background-color: RGBA;
@@ -143,6 +148,26 @@
         </div>
       </div>
       `
+    var locList = [
+      '영등포본동',
+      '영등포동',
+      '여의동',
+      '당산1동',
+      '당산2동',
+      '도림동',
+      '문래동',
+      '양평1동',
+      '양평2동',
+      '신길1동',
+      '신길2동',
+      '신길3동',
+      '신길4동',
+      '신길5동',
+      '신길6동',
+      '신길7동',
+      '대림1동',
+      '대림2동',
+    ];
     $(document).ready(function () {
       // 로그인
       isLogin();
@@ -154,6 +179,17 @@
       if (localStorage.getItem('data')) {
         render_games()
       }
+      // input필드에 자동완성 기능을 걸어준다
+      $('#search').autocomplete({
+        source: locList,
+        focus: function (event, ui) {
+          return false;
+        },
+        select: function (event, ui) { },
+        minLength: 1,
+        delay: 100,
+        autoFocus: true,
+      });
     });
 
     // Enter key to search
@@ -184,8 +220,8 @@
     // check input
     function check() {
       var search = document.querySelector("#search").value;
-      if (search == "") {
-        alert("검색어를 입력해주세요");
+      if (search.length < 2) {
+        alert("두글자 이상 입력해주세요");
         event.preventDefault();
       } else {
         show_games();
@@ -194,6 +230,7 @@
     // search -> index
     function render_games() {
       const Data = JSON.parse(localStorage.getItem('data'))
+      if (Data) $('input[name=keyword]').attr('value', `${Data.keyword}`);
       console.log(Data)
       $.ajax({
         type: "POST",
@@ -349,6 +386,8 @@
     //   });
     // }
 
+
+
   </script>
 </head>
 
@@ -361,7 +400,8 @@
 
     <!-- <form method="get" action="search"> -->
     <p>
-      <input type="text" placeholder="검색어를 입력하세요.." id="search" onkeyup="enterkey();" style="width: 500px;" />
+      <input type="text" placeholder="검색어를 입력하세요.." id="search" name="keyword" onkeyup="enterkey();"
+        style="width: 500px;" />
       <input id="submit" type="submit" value="검색" onclick="check()" />
   </section>
   <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;">

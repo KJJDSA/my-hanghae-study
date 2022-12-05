@@ -1,14 +1,7 @@
 const GamesRepository = require("../repositories/games_repository");
 const ReviewsRepository = require("../repositories/reviews_repository");
-const { Games, Reviews, Metascores } = require("../../models");
-const { Op } = require("sequelize");
-let { errorLog } = require('../middlewares/log/error_logger');
-const fs = require("fs").promises
 let { search } = require('../middlewares/log/search_logger');
 let { search_result } = require('../middlewares/log/search_result_logger');
-const path = require("path");
-const Sequelize = require('sequelize')
-
 module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
     reviewsRepository = new ReviewsRepository();
@@ -16,19 +9,36 @@ module.exports = class SteamSearchController {
     steamSearch = async ({ keywords, slice_start }) => {
         try {
             // 게임 옵션
+            var reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
+            const keywords_patched = keywords.replace(reg, '').replace(/\s/g, '');
+
+            // let tokens = keywords.split(' '),
+            let ngrams = [];
+            for (let i = 0; i < ((keywords_patched.length - 2) + 1); i++) {
+                let subset = [];
+                for (let j = i; j < (i + 2); j++) {
+                    subset.push(keywords_patched[j]);
+                }
+                ngrams.push(subset.join(''))
+            }
+            console.log(ngrams.join(' '))
             let option_keywords = {
                 from: slice_start, size: 30,
-                index: "game_data",
+                index: "games_data",
+                // index: "game_data",
                 body: {
                     query: {
                         bool: {
                             must: [
-                                { match: { name: keywords } },
-                                { exists: { field: "review_score_desc" } },
+                                { match: { "name.standard": keywords } },
+                                { match: { "name.ngrams": ngrams.join(' ') } },
+                                { exists: { field: "img_url" } },
                             ],
                             should: [
-                                { match_phrase: { name: keywords } }, // 키워드 전체 구문이 있으면 +
-                                { match: { name: keywords } }, // 각 요소가 맞는게 있으면 +
+                                { match_phrase: { "name.standard": keywords } }, // 키워드 전체 구문이 있으면 +
+                                { match_phrase_prefix: { "name.standard": keywords } },
+                                { match: { "name.standard": keywords } },
+                                { match: { "name.ngrams": ngrams.join(' ') } }, // 각 요소가 맞는게 있으면 +
                                 { match: { type: 'game' } }, // type이 game이면 + 
                             ]
                         }
@@ -37,10 +47,6 @@ module.exports = class SteamSearchController {
             }
             // console.log(option_keywords)
             const game_list = await this.gamesRepository.findWithES(option_keywords);
-            // let games = [];
-            // for (let i = 0; i < game_list.hits.hits.length; i++) {
-            //     games.push(game_list.hits.hits[i]._source.appid + "");
-            // }
             return game_list.hits.hits
         } catch (error) {
             console.log(error)
