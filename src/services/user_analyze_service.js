@@ -173,7 +173,16 @@ module.exports = class UserAnalyzeService {
             const appid_list=[];
             for(let ele of list.hits.hits){
                 const appid=ele._source.appids
-                appid_list.push(appid)
+                //appid 중첩 확인
+                let appid_check=true;
+                appid_list.map(ele=>{
+                    if(ele==appid){
+                        appid_check=false
+                    }
+                })
+                if(appid_check){
+                    appid_list.push(appid)
+                }
                 const option_appid = {
                     index: "game_data",
                     body: {
@@ -339,6 +348,8 @@ module.exports = class UserAnalyzeService {
                 let knn_value=0.8;
                 //코사인 유사도 계산
                 let cosin=await vectorSimilarity.cosinSimilarity(mine_vector.hits.hits[0]._source.unit_vector,target.unit_vector,knn_value);
+                console.log(target.userid)
+                console.log(cosin)
                 if(cosin===false){
                     continue;
                 }
@@ -349,6 +360,7 @@ module.exports = class UserAnalyzeService {
                 })
                 let appid_list=target.appid_list;
                 for(let appid of appid_list){
+                    console.log(appid)
                     if(like_games[appid]===undefined|| like_games[appid]===null){
                         like_games[appid]=cosin;
                     }else{
