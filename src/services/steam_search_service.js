@@ -8,27 +8,6 @@ module.exports = class SteamSearchController {
 
     steamSearch = async ({ keywords, slice_start }) => {
         try {
-            // 게임 옵션
-            var reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
-            const keywords_patched = keywords.replace(reg, '').replace(/\s/g, '');
-
-            // let tokens = keywords.split(' '),
-            let ngrams = [];
-            // for (let i = 0; i < ((keywords_patched.length - 2) + 1); i++) {
-            //     let subset = [];
-            //     for (let j = i; j < (i + 3); j++) {
-            //         subset.push(keywords_patched[j]);
-            //     }
-            //     ngrams.push(subset.join(''))
-            // }
-            for (let i = 0; i < ((keywords_patched.length - 2) + 1); i++) {
-                let subset = [];
-                for (let j = i; j < (i + 4); j++) {
-                    subset.push(keywords_patched[j]);
-                }
-                ngrams.push(subset.join(''))
-            }
-            console.log(ngrams.join(' '))
             let option_keywords = {
                 from: slice_start, size: 30,
                 index: "games_data",
