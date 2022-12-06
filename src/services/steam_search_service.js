@@ -97,4 +97,37 @@ module.exports = class SteamSearchController {
             throw error;
         }
     }
+
+    searchAutocomplete = async ({ value }) => {
+        try {
+            let option_keywords = {
+                from: 0, size: 10,
+                _source: ['appid', 'name'],
+                index: "games_data",
+                body: {
+                    query: {
+                        bool: {
+                            must: [
+                                { match: { "name.edge_ngrams": value } },
+                                { exists: { field: "img_url" } },
+                                { exists: { field: "review_score_desc" } },
+                            ],
+                            should: [
+                                { match_phrase: { "name.standard": value } }, // 구문 검색 up
+                                // { match_phrase_prefix: { "name.standard": keywords } }, // 구문검색을 하지만 마지막 요소는 접두사 
+                                { match: { "name.standard": value } }, // 노말 검색 up
+                                // { match: { "name.ngrams": keywords } }, // ngram 은 점수에는 아닌듯
+                                { match: { type: 'game' } }, // type이 game이면 + 
+                            ]
+                        }
+                    }
+                }
+            }
+            const game_list = await this.gamesRepository.findWithES(option_keywords);
+            // console.log(game_list.hits.hits)
+            return game_list.hits.hits
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }

@@ -15,6 +15,6 @@ router.post("/", authmiddleware, steamSearchController.steamSearch);
 router.get("/appid", authmiddleware, steamSearchController.steamAppidSearch);
 router.post("/appid", authmiddleware, steamSearchController.steamAppidSearch);
 
-
+router.post("/autocomplete", steamSearchController.searchAutocomplete);
 
 module.exports = router;
