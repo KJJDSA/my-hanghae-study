@@ -235,6 +235,7 @@
         }
       });
     }
+
     function show_with_Filter(appid, isfirst) {
       // 30개 버튼 없애준다? 스피너랑 다른 div 쓰면 되지않나
       $("#bundle").empty()
@@ -350,9 +351,11 @@
         <option value=true>추천</option>
         <option value=false>비추천</option>
       </select>
-      <button id="submit_filter" type="submit" onclick="show_with_Filter('<%= data[0]._source.appid %>', true)">
-        필터로 보기
-      </button>
+      <% if (data.length) { %>
+        <button id="submit_filter" type="submit" onclick="show_with_Filter('<%= data[0]._source.appid %>', true)">
+          필터로 보기
+        </button>
+        <% } %>
     </div>
 
   </section>
