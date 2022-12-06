@@ -9,11 +9,11 @@ module.exports = class SteamSearchRepository {
   findWithES = async (options) => {
     try {
       const list = await client.search(options);
-      // console.log(review_list, "레포지");
+      // console.log(list, "레포지");
       return list;
     } catch (error) {
-      error.message="ES_FindGames_Error"
-      error.status=400;
+      error.message = "ES_FindGames_Error"
+      error.status = 400;
       throw (error)
     }
   };
@@ -45,8 +45,8 @@ module.exports = class SteamSearchRepository {
       })
       return { appid_list };
     } catch (error) {
-      error.message="ES_SearchGamesId_Error"
-      error.status=400;
+      error.message = "ES_SearchGamesId_Error"
+      error.status = 400;
       throw (error)
     }
   }

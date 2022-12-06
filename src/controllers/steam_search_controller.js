@@ -105,4 +105,11 @@ module.exports = class SteamSearchController {
       });
     }
   }
+
+  searchAutocomplete = async (req, res) => {
+    const { value } = req.body
+    // console.log(value)
+    const list = await this.steamSearchService.searchAutocomplete({ value });
+    res.json(list)
+  }
 };
