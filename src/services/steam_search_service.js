@@ -17,6 +17,7 @@ module.exports = class SteamSearchController {
                             must: [
                                 { match: { "name.ngrams": keywords } },
                                 { exists: { field: "img_url" } },
+                                { exists: { field: "review_score_desc" } },
                             ],
                             should: [
                                 { match_phrase: { "name.standard": keywords } }, // 구문 검색 up
@@ -29,9 +30,8 @@ module.exports = class SteamSearchController {
                     }
                 }
             }
-            console.log()
             const game_list = await this.gamesRepository.findWithES(option_keywords);
-            console.log(game_list)
+            // console.log(game_list)
             return game_list.hits.hits
         } catch (error) {
             console.log(error)

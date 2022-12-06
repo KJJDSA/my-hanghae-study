@@ -148,48 +148,17 @@
         </div>
       </div>
       `
-    var locList = [
-      '영등포본동',
-      '영등포동',
-      '여의동',
-      '당산1동',
-      '당산2동',
-      '도림동',
-      '문래동',
-      '양평1동',
-      '양평2동',
-      '신길1동',
-      '신길2동',
-      '신길3동',
-      '신길4동',
-      '신길5동',
-      '신길6동',
-      '신길7동',
-      '대림1동',
-      '대림2동',
-    ];
     $(document).ready(function () {
       // 로그인
       isLogin();
 
       // 추천배너
-      // showRecommendedGames();
+      showRecommendedGames();
 
       // search -> index 돌아올때 localStorge 읽기
       if (localStorage.getItem('data')) {
         render_games()
       }
-      // input필드에 자동완성 기능을 걸어준다
-      $('#search').autocomplete({
-        source: locList,
-        focus: function (event, ui) {
-          return false;
-        },
-        select: function (event, ui) { },
-        minLength: 1,
-        delay: 100,
-        autoFocus: true,
-      });
     });
 
     // Enter key to search
@@ -276,6 +245,7 @@
           $("#carouselExampleFade").empty();
           $("#bundle").empty();
           response = response.data
+          console.log(response)
           if (!response.length) {
             let temp_html = `
             <div class="name">
@@ -304,8 +274,23 @@
                         <div class="col-md-8">
                           <div class="card-body">
                             <h5 class="card-title">${response[i]["_source"]["name"]}</h5>
-                            <p class="card-text">평가: ${response[i]["_source"]["review_score_desc"]}</p>
-                            <p class="card-text"><small class="text-muted">${response[i]["_source"]["short_description"]}</small></p>
+                            <p class="card-text">
+                              STEAM 평가: ${response[i]["_source"]["review_score_desc"]} / 
+                              Metacritic: ${response[i]["_source"]["metacritic"] ? response[i]["_source"]["metacritic"]["score"] + "점" : "없음"}
+                            </p>
+                            <p class="card-text"><small class="text-muted">
+                              ${response[i]["_source"]["short_description"] ? response[i]["_source"]["short_description"] : "미공개"}
+                              <br><br>
+                              <b>플랫폼</b>: ${response[i]["_source"]["platforms"] ? findPlatform(response[i]["_source"]["platforms"]) : "미공개"}
+                              <br>
+                              <b>출시일</b>: ${response[i]["_source"]["release_date"] ? response[i]["_source"]["release_date"]["date"] : "미공개"}
+                              <br>
+                              <b>장르</b>: ${response[i]["_source"]["genres"] ? findGenresOrCategories(response[i]["_source"]["genres"]) : "미공개"}
+                              <br>
+                              <b>카테고리</b>: ${response[i]["_source"]["categories"] ? findGenresOrCategories(response[i]["_source"]["categories"]) : "미공개"}
+                              <br>
+                              <b>언어</b>: ${response[i]["_source"]["supported_languages"] ? response[i]["_source"]["supported_languages"] : "미공개"}
+                              </small></p>
                           </div>
                         </div>
                       </div>
@@ -320,71 +305,89 @@
               </div>`)
       }
     }
-    // 추천게임 배너
-    // let showRecommendedGames = () => {
-    //   $.ajax({
-    //     type: "GET",
-    //     url: `/analyze/best`,
-    //     data: {},
-    //     success: function (response) {
-    //       if (!response) return;
-    //       const randomArray = response.best_list.sort(() => 0.5 - Math.random())
-    //       const array = []
-    //       for (let i = 0; i < 3; i++) {
-    //         array.push(randomArray[i])
-    //       }
-    //       let temp_html =
-    //         ` <div class="carousel-inner">
-    //             <div class="carousel-item active">
-    //               <h3 style="float: right; margin-right: 10px;">추천게임</h3>
-    //               <img onclick="show_reviews_appid('${array[0].appid}')" src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
-    //               <div style="text-align: center;">
-    //                 <h3 onclick="show_reviews_appid('${array[0].appid}')" style="cursor:pointer;">${array[0].name}</h3>
-    //                 <p>
-    //                   장르: ${array[0].genre} /
-    //                   리뷰 총점: ${array[0].review_score} /
-    //                   평가: ${array[0].review_score_desc}
-    //                 </p>
-    //               </div>
-    //                 </div>
-    //             <div class="carousel-item">
-    //               <h3 style="float: right; margin-right: 10px;">추천게임</h3>
-    //               <img onclick="show_reviews_appid('${array[1].appid}')" src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
-    //               <div style="text-align: center;">
-    //                 <h3 onclick="show_reviews_appid('${array[1].appid}')" style="cursor:pointer;">${array[1].name}</h3>
-    //                 <p>
-    //                   장르: ${array[1].genre} /
-    //                   리뷰 총점: ${array[1].review_score} /
-    //                   평가: ${array[1].review_score_desc}
-    //                 </p>
-    //               </div>
-    //                 </div>
-    //             <div class="carousel-item">
-    //               <h3 style="float: right; margin-right: 10px;">추천게임</h3>
-    //               <img onclick="show_reviews_appid('${array[2].appid}')" src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
-    //               <div style="text-align: center;">
-    //                 <h3 onclick="show_reviews_appid('${array[2].appid}')" style="cursor:pointer;">${array[2].name}</h3>
-    //                 <p>
-    //                   장르: ${array[2].genre} /
-    //                   리뷰 총점: ${array[2].review_score} /
-    //                   평가: ${array[2].review_score_desc}
-    //                 </p>
-    //               </div>
-    //                 </div>
-    //           </div>
-    //           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
-    //             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    //             <span class="visually-hidden">Previous</span>
-    //           </button>
-    //           <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
-    //             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    //             <span class="visually-hidden">Next</span>
-    //           </button>`;
 
-    //       $("#carouselExampleFade").append(temp_html);
-    //     },
-    //   });
-    // }
+    function findGenresOrCategories(element) {
+      let arr = [];
+      for (let i = 0; i < element.length; i++) {
+        arr.push(element[i].description)
+      }
+      return arr.join(", ")
+    }
+
+    function findPlatform(platforms) {
+      let arr = [];
+      for (const platform in platforms) {
+        const check = platforms[platform] ? "지원" : "미지원"
+        arr.push(`${platform}: ${check}`)
+      }
+      return arr.join("/ ")
+    }
+
+    // 추천게임 배너
+    let showRecommendedGames = () => {
+      $.ajax({
+        type: "GET",
+        url: `/analyze/best`,
+        data: {},
+        success: function (response) {
+          if (!response) return;
+          const randomArray = response.best_list.sort(() => 0.5 - Math.random())
+          const array = []
+          for (let i = 0; i < 3; i++) {
+            array.push(randomArray[i])
+          }
+          let temp_html =
+            ` <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <h3 style="float: right; margin-right: 10px;">추천게임</h3>
+                  <img onclick="location.href='/search/render/appid?appid=${array[0].appid}&name=${array[0].name}'" src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <div style="text-align: center;">
+                    <h3 onclick="location.href='/search/render/appid?appid=${array[0].appid}&name=${array[0].name}'" style="cursor:pointer;">${array[0].name}</h3>
+                    <p>
+                      장르: ${array[0].genre} /
+                      리뷰 총점: ${array[0].review_score} /
+                      평가: ${array[0].review_score_desc}
+                    </p>
+                  </div>
+                    </div>
+                <div class="carousel-item">
+                  <h3 style="float: right; margin-right: 10px;">추천게임</h3>
+                  <img onclick="location.href='/search/render/appid?appid=${array[1].appid}&name=${array[1].name}'" src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <div style="text-align: center;">
+                    <h3 onclick="location.href='/search/render/appid?appid=${array[1].appid}&name=${array[1].name}'" style="cursor:pointer;">${array[1].name}</h3>
+                    <p>
+                      장르: ${array[1].genre} /
+                      리뷰 총점: ${array[1].review_score} /
+                      평가: ${array[1].review_score_desc}
+                    </p>
+                  </div>
+                    </div>
+                <div class="carousel-item">
+                  <h3 style="float: right; margin-right: 10px;">추천게임</h3>
+                  <img onclick="location.href='/search/render/appid?appid=${array[2].appid}&name=${array[2].name}'" src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <div style="text-align: center;">
+                    <h3 onclick="location.href='/search/render/appid?appid=${array[2].appid}&name=${array[2].name}'" style="cursor:pointer;">${array[2].name}</h3>
+                    <p>
+                      장르: ${array[2].genre} /
+                      리뷰 총점: ${array[2].review_score} /
+                      평가: ${array[2].review_score_desc}
+                    </p>
+                  </div>
+                    </div>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>`;
+
+          $("#carouselExampleFade").append(temp_html);
+        },
+      });
+    }
 
 
 
