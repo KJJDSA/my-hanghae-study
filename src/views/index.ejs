@@ -349,9 +349,9 @@
             ` <div class="carousel-inner">
                 <div class="carousel-item active">
                   <h3 style="float: right; margin-right: 10px;">추천게임</h3>
-                  <img onclick="location.href='/search/render/appid?appid=${array[0].appid}&name=${array[0].name}'" src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick="movePage('${array[0].appid}', '${name}')" src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div style="text-align: center;">
-                    <h3 onclick="location.href='/search/render/appid?appid=${array[0].appid}&name=${array[0].name}'" style="cursor:pointer;">${array[0].name}</h3>
+                    <h3 onclick="movePage('${array[0].appid}', '${name}')" style="cursor:pointer;">${array[0].name}</h3>
                     <p>
                       장르: ${array[0].genre} /
                       리뷰 총점: ${array[0].review_score} /
@@ -361,9 +361,9 @@
                     </div>
                 <div class="carousel-item">
                   <h3 style="float: right; margin-right: 10px;">추천게임</h3>
-                  <img onclick="location.href='/search/render/appid?appid=${array[1].appid}&name=${array[1].name}'" src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick="movePage('${array[1].appid}', '${name}')" src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div style="text-align: center;">
-                    <h3 onclick="location.href='/search/render/appid?appid=${array[1].appid}&name=${array[1].name}'" style="cursor:pointer;">${array[1].name}</h3>
+                    <h3 onclick="movePage('${array[1].appid}', '${name}')" style="cursor:pointer;">${array[1].name}</h3>
                     <p>
                       장르: ${array[1].genre} /
                       리뷰 총점: ${array[1].review_score} /
@@ -373,9 +373,9 @@
                     </div>
                 <div class="carousel-item">
                   <h3 style="float: right; margin-right: 10px;">추천게임</h3>
-                  <img onclick="location.href='/search/render/appid?appid=${array[2].appid}&name=${array[2].name}'" src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick="movePage('${array[2].appid}', '${name}')" src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div style="text-align: center;">
-                    <h3 onclick="location.href='/search/render/appid?appid=${array[2].appid}&name=${array[2].name}'" style="cursor:pointer;">${array[2].name}</h3>
+                    <h3 onclick="movePage('${array[2].appid}', '${name}')" style="cursor:pointer;">${array[2].name}</h3>
                     <p>
                       장르: ${array[2].genre} /
                       리뷰 총점: ${array[2].review_score} /
