@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Document</title>
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+  <!-- jquery-ui -->
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <!-- jquery-ui css -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+
+<body>
+  <input type="text" id="inputBox">
+</body>
+
+</html>
+<script>
+  $(document).ready(function () {
+    var inputSource = ['서울', '대전', '대구', '부산', '제주', '강릉',
+      '원주', '인천', '광주', '울산', '평창', '천안'];
+
+    $('#inputBox').autocomplete({
+      source: inputSource,
+      minLength: 1
+    });
+
+  });
+</script>

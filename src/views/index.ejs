@@ -15,6 +15,10 @@
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
   <!-- ajax 및 jquery -->
   <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <!-- jquery-ui -->
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <!-- jquery-ui css -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
   <!-- 구글폰트 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -159,6 +163,38 @@
       if (localStorage.getItem('data')) {
         render_games()
       }
+
+      $('#inputBox').autocomplete({
+        // source: inputSource,
+        // minLength: 2
+        source: function (request, response) {
+          var search = document.querySelector("#inputBox").value;
+          $.ajax({
+            type: 'post',
+            url: `/search/autocomplete`,
+            dataType: 'json',
+            data: { value: request.term },
+            success: function (data) {
+              // 서버에서 json 데이터 response 후 목록 추가
+              response(
+                $.map(data, function (item) {
+                  return {
+                    label: item._source.name,
+                    appid: item._source.appid,
+                  }
+                })
+              );
+            }
+          });
+        },
+        minLength: 2,
+        delay: 300,
+        select: function (event, ui) {
+          // 만약 검색리스트에서 선택하였을때 선택한 데이터에 의한 이벤트발생
+          console.log(ui)
+          movePage(ui.item.appid, ui.item.label)
+        }
+      })
     });
 
     // Enter key to search
@@ -188,7 +224,7 @@
 
     // check input
     function check() {
-      var search = document.querySelector("#search").value;
+      var search = document.querySelector("#inputBox").value;
       if (search.length < 2) {
         alert("두글자 이상 입력해주세요");
         event.preventDefault();
@@ -241,7 +277,7 @@
       $("#bundle").empty();
       $("#bundle").append(spinner)
       if (!count) count = 0
-      let keyword = $("#search").val();
+      let keyword = $("#inputBox").val();
       $.ajax({
         type: "POST",
         url: `/search`,
@@ -326,10 +362,10 @@
     function findPlatform(platforms) {
       let arr = [];
       for (const platform in platforms) {
-        const check = platforms[platform] ? "지원" : "미지원"
-        arr.push(`${platform}: ${check}`)
+        const check = platforms[platform] ? platform : ""
+        arr.push(check)
       }
-      return arr.join("/ ")
+      return arr.join(" ")
     }
 
     // 추천게임 배너
@@ -412,7 +448,7 @@
 
     <!-- <form method="get" action="search"> -->
     <p>
-      <input type="text" placeholder="검색어를 입력하세요.." id="search" name="keyword" onkeyup="enterkey();"
+      <input type="text" placeholder="검색어를 입력하세요.." id="inputBox" name="keyword" onkeyup="enterkey();"
         style="width: 500px;" />
       <input id="submit" type="submit" value="검색" onclick="check()" />
   </section>
