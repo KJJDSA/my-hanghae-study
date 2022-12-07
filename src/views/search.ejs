@@ -41,21 +41,21 @@
       });
 
       // 검색 엔터키로 가능하게 하기
-      function enterkey() {
+      const enterkey = () => {
         if (window.event.keyCode == 13) {
           check();
         }
       }
 
       // 로그아웃
-      function sign_out() {
+      const sign_out = () => {
         $.removeCookie("Bearer", { path: "/" });
         alert("로그아웃");
         window.location.href = "/";
       }
 
       // 로그인 상태에 따라 로그인, 로그아웃 버튼 다르게 만들기
-      function isLogin() {
+      const isLogin = () => {
         const cookie = $.cookie("Bearer");
         let temp_html;
         if (cookie) {
@@ -66,7 +66,7 @@
         $("#isLogin").append(temp_html);
       }
 
-      function autocompletaion() {
+      const autocompletaion = () => {
         $('#inputBox').autocomplete({
           source: function (request, response) {
             $.ajax({
@@ -111,7 +111,7 @@
       }
 
       // 넣은 키워드가 있는지 검사
-      function check() {
+      const check = () => {
         var search = document.querySelector("#inputBox").value;
 
         if (search == "") {
@@ -123,7 +123,7 @@
       }
 
       // 검색 페이지로 이동
-      function render_games() {
+      const render_games = () => {
         let keyword = $("#inputBox").val();
         const filterExists = language === 'none' && voted_up === 'none' ? false : true
         const data = {
@@ -135,7 +135,7 @@
       }
 
       // 리뷰 페이지네이션
-      function show_reviews_appid(appid) {
+      const show_reviews_appid = (appid) => {
         $("#bundle").empty()
         $("#spinner").append(spinner)
         let count = document.querySelectorAll('#game').length
@@ -145,8 +145,7 @@
           url: `/search/appid?appid=${appid}&slice_start=${count}`,
           data: {},
           success: function (response) {
-            response = response.data
-            if (!response.length) {
+            if (!response.data.length) {
               let temp_html = `
             <div class="name">
               <h3 style="color: #eeecea;">~검색결과 없음~</h3>
@@ -155,23 +154,22 @@
               $("#spinner").empty();
               return;
             }
-            appendingSearch(response)
+            appendingReviews(response)
             // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
-            if (response.length >= 30) {
+            if (response.data.length >= 30) {
               $("#bundle").append(
                 `<div class="d-grid gap-2">
-                <button class="btn btn-dark" type="button" onclick="show_reviews_appid(${response[0]._source.appid})" style="margin-bottom: 20px">30개 더보기</button>
+                <button class="btn btn-dark" type="button" onclick="show_reviews_appid(${response.data[0]._source.appid})" style="margin-bottom: 20px">30개 더보기</button>
               </div>`)
             }
           }
         });
       }
 
-      function show_with_Filter(appid, isfirst) {
-        // 30개 버튼 없애준다? 스피너랑 다른 div 쓰면 되지않나
+      const show_with_Filter = (appid, isfirst) => {
         $("#bundle").empty()
-        if (isfirst == true) $("#game-list").empty();
         $("#spinner").append(spinner)
+        if (isfirst == true) $("#game-list").empty();
         let language = $("#language").val();
         let voted_up = $("#voted_up").val();
         let count = document.querySelectorAll('#game').length
@@ -188,8 +186,7 @@
             'slice_start': `${count}`
           },
           success: function (response) {
-            response = response.data
-            if (!response.length) {
+            if (!response.data.length) {
               let temp_html = `
             <div class="name">
               <h3 style="color: #eeecea;">~검색결과 없음~</h3>
@@ -198,30 +195,73 @@
               $("#spinner").empty();
               return;
             }
-            appendingSearch(response)
+            if (isfirst == true) appendingGameDoc(response)
+            appendingReviews(response)
             // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
-            if (response.length >= 30) {
+            if (response.data.length >= 30) {
               $("#bundle").append(
                 `<div class="d-grid gap-2">
-                <button class="btn btn-dark" type="button" onclick="show_with_Filter(${response[0]._source.appid}, false)" style="margin-bottom: 20px">30개 더보기</button>
+                <button class="btn btn-dark" type="button" onclick="show_with_Filter(${response.game_doc.appid}, false)" style="margin-bottom: 20px">30개 더보기</button>
               </div>`)
             }
           }
         });
       }
-      function appendingSearch(response) {
+
+      const appendingGameDoc = (response) => {
+
         $("#spinner").empty();
-        for (let i = 0; i < response.length; i++) {
+        let game_doc = response.game_doc;
+
+        let temp_html_game =
+          `<div style="width: 1010px" id="game-list">
+            <div class="card mb-3 game_card" style="max-width: 1010px; " id="game">
+              <div class="row g-0">
+                <div class="col-md-4" 
+                onclick="location.href='${game_doc['img_url'] || "http://localhost:3000/images/ready.jpg"}'" 
+                style="cursor:pointer;display:flex;justify-content: center;align-items: center">
+                  <img style="height: 156px" src="${game_doc['img_url'] || "http://localhost:3000/images/ready.jpg"}" class="img-fluid rounded-start" alt="..." >
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">${game_doc["name"]}</h5>
+                    <p class="card-text">
+                      STEAM 평가: ${game_doc["review_score_desc"]} / 
+                      Metacritic: ${game_doc["metacritic"] ? game_doc["metacritic"]["score"] + "점" : "없음"}
+                    </p>
+                    <p class="card-text"><small class="text-muted">
+                      ${game_doc["short_description"] ? game_doc["short_description"] : "미공개"}
+                      <br><br>
+                      <b>플랫폼</b>: ${game_doc["platforms"] ? findPlatform(game_doc["platforms"]) : "미공개"}
+                      <br>
+                      <b>출시일</b>: ${game_doc["release_date"] ? game_doc["release_date"]["date"] : "미공개"}
+                      <br>
+                      <b>장르</b>: ${game_doc["genres"] ? findGenresOrCategories(game_doc["genres"]) : "미공개"}
+                      <br>
+                      <b>카테고리</b>: ${game_doc["categories"] ? findGenresOrCategories(game_doc["categories"]) : "미공개"}
+                      <br>
+                      <b>언어</b>: ${game_doc["supported_languages"] ? game_doc["supported_languages"] : "미공개"}
+                      </small></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>`
+
+        $(`#game-list`).append(temp_html_game);
+      }
+
+      const appendingReviews = (response) => {
+
+        let reviews = response.data;
+        for (let i = 0; i < reviews.length; i++) {
           let temp_html = `<div class="review-card" id="game">
             <blockquote class="blockquote mb-0">
               <div class="name">
-                <h1 style="cursor:pointer;" onclick='location.href="https://store.steampowered.com/app/${response[i]._source.appid}/"'>
-                  스팀 바로가기
-                </h1>
                 <br>
-                ${Date(response[i]._source.timestamp_updated)}
-                  / ${response[i]._source.voted_up == true ? '추천' : '추천안함'}
-                    <div class="playtime">playtime: ${response[i]._source.playtime_at_review} 시간
+                playtime: ${reviews[i]._source.playtime_at_review} 시간
+                  / ${reviews[i]._source.voted_up == true ? '추천' : '추천안함'}
+                    <div class="playtime">${timestampToDate(reviews[i]._source.timestamp_updated)}
                     </div>
                     <div class="votes_up">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -229,7 +269,7 @@
                         <path
                           d="M8.864.046C7.908-.193 7.02.53 6.956 1.466c-.072 1.051-.23 2.016-.428 2.59-.125.36-.479 1.013-1.04 1.639-.557.623-1.282 1.178-2.131 1.41C2.685 7.288 2 7.87 2 8.72v4.001c0 .845.682 1.464 1.448 1.545 1.07.114 1.564.415 2.068.723l.048.03c.272.165.578.348.97.484.397.136.861.217 1.466.217h3.5c.937 0 1.599-.477 1.934-1.064a1.86 1.86 0 0 0 .254-.912c0-.152-.023-.312-.077-.464.201-.263.38-.578.488-.901.11-.33.172-.762.004-1.149.069-.13.12-.269.159-.403.077-.27.113-.568.113-.857 0-.288-.036-.585-.113-.856a2.144 2.144 0 0 0-.138-.362 1.9 1.9 0 0 0 .234-1.734c-.206-.592-.682-1.1-1.2-1.272-.847-.282-1.803-.276-2.516-.211a9.84 9.84 0 0 0-.443.05 9.365 9.365 0 0 0-.062-4.509A1.38 1.38 0 0 0 9.125.111L8.864.046zM11.5 14.721H8c-.51 0-.863-.069-1.14-.164-.281-.097-.506-.228-.776-.393l-.04-.024c-.555-.339-1.198-.731-2.49-.868-.333-.036-.554-.29-.554-.55V8.72c0-.254.226-.543.62-.65 1.095-.3 1.977-.996 2.614-1.708.635-.71 1.064-1.475 1.238-1.978.243-.7.407-1.768.482-2.85.025-.362.36-.594.667-.518l.262.066c.16.04.258.143.288.255a8.34 8.34 0 0 1-.145 4.725.5.5 0 0 0 .595.644l.003-.001.014-.003.058-.014a8.908 8.908 0 0 1 1.036-.157c.663-.06 1.457-.054 2.11.164.175.058.45.3.57.65.107.308.087.67-.266 1.022l-.353.353.353.354c.043.043.105.141.154.315.048.167.075.37.075.581 0 .212-.027.414-.075.582-.05.174-.111.272-.154.315l-.353.353.353.354c.047.047.109.177.005.488a2.224 2.224 0 0 1-.505.805l-.353.353.353.354c.006.005.041.05.041.17a.866.866 0 0 1-.121.416c-.165.288-.503.56-1.066.56z" />
                       </svg>
-                      ${response[i]._source.votes_up}
+                      ${reviews[i]._source.votes_up}
                     </div>
                     <div class="votes_funny">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -238,11 +278,11 @@
                         <path
                           d="M12.331 9.5a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zM7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5z" />
                       </svg>
-                      ${response[i]._source.votes_funny}
+                      ${reviews[i]._source.votes_funny}
                     </div>
               </div>
               <div class="review">
-                ${response[i]["_source"]["review"].replace(/(?:\r\n|\r|\n)/g, "<br>")}
+                ${reviews[i]["_source"]["review"].replace(/(?:\r\n|\r|\n)/g, "<br>")}
               </div>
             </blockquote>
           </div>`;
@@ -251,8 +291,54 @@
         // 30개버튼은 안없애다가 오는 양이 적어지면 없애는걸로
         // 아 근데 그러면 갯수를 못세내...가 아니라 그냥 여기와서 세면 안되나?
       }
-  // 추천배너 없음
 
+
+      const findGenresOrCategories = (element) => {
+        let arr = [];
+        for (let i = 0; i < element.length; i++) {
+          arr.push(element[i].description)
+        }
+        return arr.join(", ")
+      };
+
+
+      const findPlatform = (platforms) => {
+        let arr = [];
+        for (const platform in platforms) {
+          const check = platforms[platform] ? platform : ""
+          arr.push(check)
+        }
+        return arr.join(" ")
+      }
+
+      const timestampToDate = (timestamp) => {
+        let date = new Date(timestamp * 1000)
+        let today = new Date()
+        let time = (today - date) / 1000 / 60  // 분
+        let YMD = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+
+        if (time < 60) {
+          return parseInt(time) + "분 전"
+          //parseInt는 파라미터 안을 정수로 바꿔주는 파이썬 함수같은 거구나.
+        }
+        time = time / 60  // 시간
+        if (time < 24) {
+          return parseInt(time) + "시간 전"
+        }
+        time = time / 24
+        if (time < 7) {
+          return parseInt(time) + "일 전"
+        }
+        time = time / 7
+        if (time < 30) {
+          return parseInt(time) + "주 전"
+        }
+        time = time / 30
+        if (time < 12) {
+          return parseInt(time) + "개월 전"
+        }
+        return YMD
+      }
     </script>
 </head>
 
@@ -294,17 +380,59 @@
   <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;">
     <div class="game-list" id="game-list">
       <% if (data.length) { %>
+        <div style="width: 1010px" id="game-list">
+          <div class="card mb-3 game_card" style="max-width: 1010px; " id="game">
+            <div class="row g-0">
+              <div class="col-md-4"
+                onclick="location.href='<%= game_doc.img_url || `http://localhost:3000/images/ready.jpg` %>'"
+                style="cursor:pointer;display:flex ;justify-content: center; align-items: center">
+                <img style="height: 156px" src="<%= game_doc['img_url'] || 'http://localhost:3000/images/ready.jpg'  %>"
+                  class="img-fluid rounded-start" alt="...">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <%= game_doc["name"] %>
+                  </h5>
+                  <p class="card-text">
+                    STEAM 평가: <%= game_doc["review_score_desc"] %> /
+                      Metacritic: <%= game_doc["metacritic"] ? game_doc["metacritic"]["score"] + "점" : "없음" %>
+                  </p>
+                  <p class="card-text"><small class="text-muted">
+                      <%= game_doc["short_description"] ? game_doc["short_description"] :"미공개" %>
+                        <br><br>
+                        <b>플랫폼</b>: <%= game_doc["platforms"] ?func.findPlatform(game_doc["platforms"]) : "미공개" %>
+                          <br>
+                          <b>출시일</b>: <%= game_doc["release_date"] ?game_doc["release_date"]["date"] : "미공개" %>
+                            <br>
+                            <b>장르</b>: <%= game_doc["genres"] ? func.findGenresOrCategories(game_doc["genres"]) : "미공개"
+                              %>
+                              <br>
+                              <b>카테고리</b>: <%= game_doc["categories"]
+                                ?func.findGenresOrCategories(game_doc["categories"]): "미공개" %>
+                                <br>
+                                <b>언어</b>: <%= game_doc["supported_languages"] ? game_doc["supported_languages"]: "미공개"
+                                  %>
+                                  <h5 style="cursor:pointer;"
+                                    onclick='location.href="https://store.steampowered.com/app/<%= game_doc.appid %>/"'>
+                                    스팀 바로가기
+                                  </h5>
+                    </small></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
         <% for (let i=0; i < data.length; i++) { %>
           <div class="review-card" id="game">
             <blockquote class="blockquote mb-0">
               <div class="name">
-                <h1 style="cursor:pointer;" onclick='location.href="https://store.steampowered.com/app/<%= appid %>/"'>
-                  스팀 바로가기
-                </h1>
                 <br>
-                <%= Date(data[i]._source.timestamp_updated) %>
+                playtime: <%= data[i]._source.playtime_at_review %> 시간
                   / <%= data[i]._source.voted_up==true ? '추천' : '추천안함' %>
-                    <div class="playtime">playtime: <%= data[i]._source.playtime_at_review %> 시간
+                    <div class="playtime">
+                      <%= func.timestampToDate(data[i]._source.timestamp_updated) %>
                     </div>
                     <div class="votes_up">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
