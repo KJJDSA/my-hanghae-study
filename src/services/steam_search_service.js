@@ -49,14 +49,10 @@ module.exports = class SteamSearchController {
     steamAppidSearch = async ({ appid, slice_start, filter, filterExists }) => {
         try {
             const game_option = {
-                size: 1,
                 index: "games_data",
-                body: {
-                    query: {
-                        match: { appid }
-                    }
-                }
+                id: appid,
             }
+            const game_doc = await this.gamesRepository.getWithES(game_option);
             const review_option = {
                 from: slice_start, size: 30,
                 index: "review_data",
@@ -87,8 +83,7 @@ module.exports = class SteamSearchController {
             }
 
             const review_list = await this.gamesRepository.findWithES(review_option);
-            // console.log(review_list.hits.hits)
-            return review_list.hits.hits
+            return { reviews: review_list.hits.hits, game_doc: game_doc._source }
         } catch (error) {
             throw error;
         }

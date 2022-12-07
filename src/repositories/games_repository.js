@@ -12,11 +12,22 @@ module.exports = class SteamSearchRepository {
       // console.log(list, "레포지");
       return list;
     } catch (error) {
-      error.message = "ES_FindGames_Error"
+      error.message = "ES_findWithES_Error"
       error.status = 400;
       throw (error)
     }
   };
+
+  getWithES = async (options) => {
+    try {
+      const list = await client.get(options);
+      return list;
+    } catch (error) {
+      error.message = "ES_getWithES_Error"
+      error.status = 400;
+      throw (error)
+    }
+  }
 
   findOneGames = async (options) => {
     try {

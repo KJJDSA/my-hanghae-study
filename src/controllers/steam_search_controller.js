@@ -1,7 +1,9 @@
 const SteamSearchService = require("../services/steam_search_service");
+const Func = require('../routes/func');
 
 module.exports = class SteamSearchController {
   steamSearchService = new SteamSearchService();
+  func = new Func();
   steamSearch = async (req, res, next) => {
     try {
       console.time('for');   // 시작
@@ -54,11 +56,12 @@ module.exports = class SteamSearchController {
       const { appid, slice_start, filterExists, filter } = request;
 
       if (filterExists === undefined) {
-        const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filterExists });
-        res.json({ data: list });
+        const { reviews, game_doc } = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filterExists });
+
+        res.json({ game_doc, data: reviews });
       } else {
-        const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filter, filterExists });
-        res.json({ data: list });
+        const { reviews, game_doc } = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filter, filterExists });
+        res.json({ game_doc, data: reviews });
       }
 
       let keywords = { type: 'onething', value: appid }
@@ -75,25 +78,25 @@ module.exports = class SteamSearchController {
 
   steamAppidSearchRender = async (req, res, next) => {
     try {
-      // console.time('for');   // 시작
+      console.time('for');   // 시작
       const id = res.locals.id;
 
       const { appid, name } = req.query;
       // keyword is appid
       const slice_start = 0
-      const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start });
-
+      const { reviews, game_doc } = await this.steamSearchService.steamAppidSearch({ appid, slice_start });
       let keywords = { type: 'onething', value: appid }
       // appid로 검색하는 경우라 키워드를 저장하지 못함.
       if (id !== undefined) {
         await this.steamSearchService.searchLogger({ id, keywords, list: appid });
       }
-      // console.timeEnd('for');
+      console.timeEnd('for');
       return res.render('search', {
         result: true,
-        data: list,
+        data: reviews,
+        game_doc,
         name,
-        appid
+        func: this.func,
       });
     } catch (error) {
       console.log(error)
