@@ -11,7 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
   <!-- ajax 및 jquery -->
-  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="http://code.jquery.com/jquery-3.2.1.js"></script>
   <!-- jquery-ui -->
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <!-- jquery-ui css -->
@@ -72,9 +72,32 @@
             // 만약 검색리스트에서 선택하였을때 선택한 데이터에 의한 이벤트발생
             movePage(ui.item.appid, ui.item.label)
           }
-        })
+        }) // style:pointer-events: none;
+          .data("ui-autocomplete")._renderItem = function (ul, item) {
+            return $("<li style=''></li>").data("item.autocomplete", item)
+              .append(`
+            <a class="match">
+              <div class="match_name ">
+                ${item.label}
+              </div>
+              <div class="match_img">
+                <img src="${item.img_url}" style="width: 120px; height: 45px;">
+              </div>
+              <div class=""></div>
+            </a>
+          `)
+              .appendTo(ul);
+          };
       })
-
+      // < a class="match" >
+      //         <div class="match_name ">
+      //           ${item.label}
+      //         </div>
+      //         <div class="match_img">
+      //           <img src="${item.img_url}" style="width: 120px; height: 45px;">
+      //         </div>
+      //         <div class=""></div>
+      //       </a >
       // Enter key to search
       function enterkey() {
         if (window.event.keyCode == 13) {
