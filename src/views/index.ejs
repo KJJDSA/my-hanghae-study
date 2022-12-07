@@ -45,60 +45,8 @@
           render_games()
         }
 
-        $('#inputBox').autocomplete({
-          source: function (request, response) {
-            $.ajax({
-              type: 'post',
-              url: `/search/autocomplete`,
-              dataType: 'json',
-              data: { value: request.term },
-              success: function (data) {
-                // 서버에서 json 데이터 response 후 목록 추가
-                response(
-                  $.map(data, function (item) {
-                    return {
-                      label: item._source.name,
-                      appid: item._source.appid,
-                      img_url: item._source.img_url,
-                    }
-                  })
-                );
-              }
-            });
-          },
-          minLength: 2,
-          delay: 350,
-          select: function (event, ui) {
-            // 만약 검색리스트에서 선택하였을때 선택한 데이터에 의한 이벤트발생
-            movePage(ui.item.appid, ui.item.label)
-          }
-        }) // style:pointer-events: none;
-          .data("ui-autocomplete")._renderItem = function (ul, item) {
-            return $("<li style=''></li>").data("item.autocomplete", item)
-              .append(`
-            <a class="match">
-              <div class="match_name ">
-                ${item.label}
-              </div>
-              <div class="match_img">
-                <img src="${item.img_url}" style="width: 120px; height: 45px;">
-              </div>
-              <div class=""></div>
-            </a>
-          `)
-              .appendTo(ul);
-          };
+        autocompletaion()
       })
-      // < a class="match" >
-      //         <div class="match_name ">
-      //           ${item.label}
-      //         </div>
-      //         <div class="match_img">
-      //           <img src="${item.img_url}" style="width: 120px; height: 45px;">
-      //         </div>
-      //         <div class=""></div>
-      //       </a >
-      // Enter key to search
       function enterkey() {
         if (window.event.keyCode == 13) {
           check();
@@ -123,6 +71,51 @@
         $("#isLogin").append(temp_html);
       }
 
+      function autocompletaion() {
+        $('#inputBox').autocomplete({
+          source: function (request, response) {
+            $.ajax({
+              type: 'post',
+              url: `/search/autocomplete`,
+              dataType: 'json',
+              data: { value: request.term },
+              success: function (data) {
+                // 서버에서 json 데이터 response 후 목록 추가
+                response(
+                  $.map(data, function (item) {
+                    return {
+                      label: item._source.name,
+                      appid: item._source.appid,
+                      img_url: item._source.img_url,
+                    }
+                  })
+                );
+              }
+            });
+          },
+          minLength: 2,
+          delay: 350,
+          select: function (event, ui) {
+            // 리뷰검색 이벤트
+            // movePage(ui.item.appid, ui.item.label)
+            // 키워드 검색 이벤트
+            $('#inputBox').val(`${ui.item.label}`);
+            show_games()
+          }
+        }).autocomplete("instance")._renderItem = function (ul, item) {
+          return $("<li class='match_li'>").append(
+            `<a class="match">
+          <div class="match_name">
+              ${item.label}
+          </div>
+          <div class="match_img">
+            <img src="${item.img_url}" style="width: 120px; height: 52px;">
+          </div>
+          <div></div>
+        </a>`).appendTo(ul);
+        };
+      }
+
       // check input
       function check() {
         var search = document.querySelector("#inputBox").value;
@@ -144,7 +137,7 @@
       // search -> index
       function render_games() {
         const Data = JSON.parse(localStorage.getItem('data'))
-        if (Data) $('input[name=keyword]').attr('value', `${Data.keyword}`);
+        if (Data) $('#inputBox').val(`${Data.keyword}`);
         console.log(Data)
         $.ajax({
           type: "POST",
@@ -160,13 +153,13 @@
             if (!response.length) {
               let temp_html = `
             <div class="name">
-              <h3>~검색결과 없음~</h3>
+              <h3  style="color: #eeecea;">~검색결과 없음~</h3>
             </div>
             `
               $("#game-list").append(temp_html);
               return;
             }
-            appending(response)
+            appendingIndex(response)
             localStorage.removeItem("data");
           },
         });
@@ -190,23 +183,22 @@
             $("#carouselExampleFade").empty();
             $("#bundle").empty();
             response = response.data
-            console.log(response)
             if (!response.length) {
               let temp_html = `
             <div class="name">
-              <h3>~검색결과 없음~</h3>
+              <h3  style="color: #eeecea;">~검색결과 없음~</h3>
             </div>
             `
               $("#game-list").append(temp_html);
               return;
             }
-            appending(response)
+            appendingIndex(response)
           },
         });
       }
 
 
-      function appending(response) {
+      function appendingIndex(response) {
         for (let i = 0; i < response.length; i++) {
           let name = response[i]["_source"]["name"].replace("'", "#quote#") // 홀따옴표 문제
           let temp_html = `
@@ -286,9 +278,9 @@
               ` <div class="carousel-inner">
                 <div class="carousel-item active">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick="movePage('${array[0].appid}', '${name}')" src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick="movePage('${array[0].appid}', '${array[0].name}')" src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick="movePage('${array[0].appid}', '${name}')" style="cursor:pointer;">${array[0].name}</h3>
+                    <h3 onclick="movePage('${array[0].appid}', '${array[0].name}')" style="cursor:pointer;">${array[0].name}</h3>
                     <p>
                       장르: ${array[0].genre} /
                       리뷰 총점: ${array[0].review_score} /
@@ -298,9 +290,9 @@
                     </div>
                 <div class="carousel-item">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick="movePage('${array[1].appid}', '${name}')" src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick="movePage('${array[1].appid}', '${array[1].name}')" src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick="movePage('${array[1].appid}', '${name}')" style="cursor:pointer;">${array[1].name}</h3>
+                    <h3 onclick="movePage('${array[1].appid}', '${array[1].name}')" style="cursor:pointer;">${array[1].name}</h3>
                     <p>
                       장르: ${array[1].genre} /
                       리뷰 총점: ${array[1].review_score} /
@@ -310,9 +302,9 @@
                     </div>
                 <div class="carousel-item">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick="movePage('${array[2].appid}', '${name}')" src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick="movePage('${array[2].appid}', '${array[2].name}')" src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick="movePage('${array[2].appid}', '${name}')" style="cursor:pointer;">${array[2].name}</h3>
+                    <h3 onclick="movePage('${array[2].appid}', '${array[2].name}')" style="cursor:pointer;">${array[2].name}</h3>
                     <p>
                       장르: ${array[2].genre} /
                       리뷰 총점: ${array[2].review_score} /

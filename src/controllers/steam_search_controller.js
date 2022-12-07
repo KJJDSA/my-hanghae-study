@@ -52,7 +52,6 @@ module.exports = class SteamSearchController {
       if (req.query.appid) request = req.query;
       else request = req.body;
       const { appid, slice_start, filterExists, filter } = request;
-      console.log(appid, slice_start, filterExists, filter)
 
       if (filterExists === undefined) {
         const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filterExists });
