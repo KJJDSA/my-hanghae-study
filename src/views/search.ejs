@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/index.css" />
+
   <!--index.css 내용을 가져와서 내용을 꾸며준다.-->
   <title>The search service</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -15,273 +15,184 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-  <style>
-    body {
-      background-color: RGBA;
-      min-height: 100vh;
-    }
 
-    .title {
-      font-weight: 800;
-      font-size: 5rem;
-      font-family: 'Black Han Sans', sans-serif;
-    }
+  <%- include('./style'); %>
 
-    a:link {
-      text-decoration: none;
-      color: rgb(31, 1, 58);
-    }
-
-    a:visited {
-      text-decoration: none;
-      color: rgb(31, 1, 58);
-    }
-
-    a:hover {
-      text-decoration: none;
-      color: black;
-    }
-
-    a:active {
-      text-decoration: none;
-      color: rgb(31, 1, 58);
-    }
-
-    .carousel {
-      width: 650px;
-      height: 400px;
-    }
-
-    .imageblock {
-      max-width: 100%;
-      height: auto;
-      border: 2px solid #eaeaea;
-      padding: 0px;
-
-      cursor: pointer
-    }
-
-    .review-card {
-      position: static;
-      float: center;
-      height: auto;
-      width: 1000px;
-      margin-top: 10px;
-      margin-left: 10px;
-      padding: 10px 10px 10px 10px;
-      top: 250px;
-      border: 4px solid black;
-      border-radius: 7px;
-      overflow: auto;
-    }
-
-    .name {
-      position: relative;
-      text-align: right;
-      font-weight: bolder;
-      margin: 10px auto;
-      height: auto;
-      width: auto;
-    }
-
-    .img {
-      position: relative;
-      float: right;
-      margin-top: 10px;
-      margin-right: 10px;
-      margin-bottom: 10px;
-      height: auto;
-      width: auto;
-    }
-
-    .review {
-      position: relative;
-      float: left;
-      padding: 10px 10px 10px 10px;
-      height: auto;
-      width: 70%;
-      border: 2px solid black;
-      border-radius: 7px;
-      margin: 10px 10px 10px 10px;
-    }
-
-    .playtime {
-      float: right;
-      font-weight: normal;
-      margin-right: 10px;
-    }
-
-    .votes_up {
-      float: left;
-      font-weight: normal;
-      margin-left: 10px;
-    }
-
-    .votes_funny {
-      float: left;
-      font-weight: normal;
-      margin-left: 10px;
-    }
-
-    .textbox {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      z-index: 2;
-      background-color: rgba(0, 0, 0, 0.8);
-    }
-
-    .login_button {
-      float: right;
-      margin: 20px 20px auto auto;
-    }
-  </style>
-
-  <script type="text/javascript">
-    const spinner = `
+    <script type="text/javascript">
+      const spinner = `
       <div class="d-flex justify-content-center">
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
       `
-    // 페이지 로딩하자마자 실행할 함수
-    $(document).ready(function () {
-      // 로그인
-      isLogin();
-      // 추천배너
-      // showRecommendedGames();
-    });
+      // 페이지 로딩하자마자 실행할 함수
+      $(document).ready(function () {
+        // 로그인
+        isLogin();
+        // 추천배너
+        // showRecommendedGames();
+        $('#inputBox').autocomplete({
+          // source: inputSource,
+          // minLength: 2
+          source: function (request, response) {
+            $.ajax({
+              type: 'post',
+              url: `/search/autocomplete`,
+              dataType: 'json',
+              data: { value: request.term },
+              success: function (data) {
+                // 서버에서 json 데이터 response 후 목록 추가
+                response(
+                  $.map(data, function (item) {
+                    return {
+                      label: item._source.name,
+                      appid: item._source.appid,
+                      img_url: item._source.img_url,
+                    }
+                  })
+                );
+              }
+            });
+          },
+          minLength: 2,
+          delay: 350,
+          select: function (event, ui) {
+            // 만약 검색리스트에서 선택하였을때 선택한 데이터에 의한 이벤트발생
+            movePage(ui.item.appid, ui.item.label)
+          }
+        })
+      });
 
-    // 검색 엔터키로 가능하게 하기
-    function enterkey() {
-      if (window.event.keyCode == 13) {
-        check();
+      // 검색 엔터키로 가능하게 하기
+      function enterkey() {
+        if (window.event.keyCode == 13) {
+          check();
+        }
       }
-    }
 
-    // 로그아웃
-    function sign_out() {
-      $.removeCookie("Bearer", { path: "/" });
-      alert("로그아웃");
-      window.location.href = "/";
-    }
-
-    // 로그인 상태에 따라 로그인, 로그아웃 버튼 다르게 만들기
-    function isLogin() {
-      const cookie = $.cookie("Bearer");
-      let temp_html;
-      if (cookie) {
-        temp_html = `<input type="submit" value="로그아웃" onclick="sign_out()" class="login_button">`;
-      } else {
-        temp_html = `<input type="submit" value="로그인" onclick="location.href='/user/login'" class="login_button">`;
+      // 로그아웃
+      function sign_out() {
+        $.removeCookie("Bearer", { path: "/" });
+        alert("로그아웃");
+        window.location.href = "/";
       }
-      $("#isLogin").append(temp_html);
-    }
 
-    // 넣은 키워드가 있는지 검사
-    function check() {
-      var search = document.querySelector("#search").value;
-
-      if (search == "") {
-        alert("검색어를 입력해주세요");
-        event.preventDefault();
-      } else {
-        render_games();
+      // 로그인 상태에 따라 로그인, 로그아웃 버튼 다르게 만들기
+      function isLogin() {
+        const cookie = $.cookie("Bearer");
+        let temp_html;
+        if (cookie) {
+          temp_html = `<input type="submit" value="로그아웃" onclick="sign_out()" class="login_button">`;
+        } else {
+          temp_html = `<input type="submit" value="로그인" onclick="location.href='/user/login'" class="login_button">`;
+        }
+        $("#isLogin").append(temp_html);
       }
-    }
 
-    // 검색 페이지로 이동
-    function render_games() {
-      let keyword = $("#search").val();
-      const filterExists = language === 'none' && voted_up === 'none' ? false : true
-      const data = {
-        'keyword': keyword,
-        'slice_start': '0'
+      // 넣은 키워드가 있는지 검사
+      function check() {
+        var search = document.querySelector("#inputBox").value;
+
+        if (search == "") {
+          alert("검색어를 입력해주세요");
+          event.preventDefault();
+        } else {
+          render_games();
+        }
       }
-      localStorage.setItem("data", JSON.stringify(data));
-      location.href = '/search'
-    }
 
-    // 리뷰 페이지네이션
-    function show_reviews_appid(appid) {
-      $("#bundle").empty()
-      $("#spinner").append(spinner)
-      let count = document.querySelectorAll('#game').length
-      // console.log(appid, count)
-      $.ajax({
-        type: "GET",
-        url: `/search/appid?appid=${appid}&slice_start=${count}`,
-        data: {},
-        success: function (response) {
-          response = response.data
-          if (!response.length) {
-            let temp_html = `
+      // 검색 페이지로 이동
+      function render_games() {
+        let keyword = $("#inputBox").val();
+        const filterExists = language === 'none' && voted_up === 'none' ? false : true
+        const data = {
+          'keyword': keyword,
+          'slice_start': '0'
+        }
+        localStorage.setItem("data", JSON.stringify(data));
+        location.href = '/search'
+      }
+
+      // 리뷰 페이지네이션
+      function show_reviews_appid(appid) {
+        $("#bundle").empty()
+        $("#spinner").append(spinner)
+        let count = document.querySelectorAll('#game').length
+        // console.log(appid, count)
+        $.ajax({
+          type: "GET",
+          url: `/search/appid?appid=${appid}&slice_start=${count}`,
+          data: {},
+          success: function (response) {
+            response = response.data
+            if (!response.length) {
+              let temp_html = `
             <div class="name">
               <h3>~검색결과 없음~</h3>
             </div>`
-            $("#game-list").append(temp_html);
-            $("#spinner").empty();
-            return;
-          }
-          appending(response)
-          // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
-          if (response.length >= 30) {
-            $("#bundle").append(
-              `<div class="d-grid gap-2">
+              $("#game-list").append(temp_html);
+              $("#spinner").empty();
+              return;
+            }
+            appending(response)
+            // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
+            if (response.length >= 30) {
+              $("#bundle").append(
+                `<div class="d-grid gap-2">
                 <button class="btn btn-dark" type="button" onclick="show_reviews_appid(${response[0]._source.appid})" style="margin-bottom: 20px">30개 더보기</button>
               </div>`)
+            }
           }
-        }
-      });
-    }
+        });
+      }
 
-    function show_with_Filter(appid, isfirst) {
-      // 30개 버튼 없애준다? 스피너랑 다른 div 쓰면 되지않나
-      $("#bundle").empty()
-      if (isfirst == true) $("#game-list").empty();
-      $("#spinner").append(spinner)
-      let language = $("#language").val();
-      let voted_up = $("#voted_up").val();
-      let count = document.querySelectorAll('#game').length
-      $.ajax({
-        type: "POST",
-        url: `/search/appid`,
-        data: {
-          'appid': `${appid}`,
-          'filterExists': language === 'none' && voted_up === 'none' ? false : true,
-          'filter': {
-            'language': `${language}`,
-            'voted_up': voted_up,
+      function show_with_Filter(appid, isfirst) {
+        // 30개 버튼 없애준다? 스피너랑 다른 div 쓰면 되지않나
+        $("#bundle").empty()
+        if (isfirst == true) $("#game-list").empty();
+        $("#spinner").append(spinner)
+        let language = $("#language").val();
+        let voted_up = $("#voted_up").val();
+        let count = document.querySelectorAll('#game').length
+        $.ajax({
+          type: "POST",
+          url: `/search/appid`,
+          data: {
+            'appid': `${appid}`,
+            'filterExists': language === 'none' && voted_up === 'none' ? false : true,
+            'filter': {
+              'language': `${language}`,
+              'voted_up': voted_up,
+            },
+            'slice_start': `${count}`
           },
-          'slice_start': `${count}`
-        },
-        success: function (response) {
-          response = response.data
-          if (!response.length) {
-            let temp_html = `
+          success: function (response) {
+            response = response.data
+            if (!response.length) {
+              let temp_html = `
             <div class="name">
               <h3>~검색결과 없음~</h3>
             </div>`
-            $("#game-list").append(temp_html);
-            $("#spinner").empty();
-            return;
-          }
-          appending(response)
-          // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
-          if (response.length >= 30) {
-            $("#bundle").append(
-              `<div class="d-grid gap-2">
+              $("#game-list").append(temp_html);
+              $("#spinner").empty();
+              return;
+            }
+            appending(response)
+            // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
+            if (response.length >= 30) {
+              $("#bundle").append(
+                `<div class="d-grid gap-2">
                 <button class="btn btn-dark" type="button" onclick="show_with_Filter(${response[0]._source.appid}, false)" style="margin-bottom: 20px">30개 더보기</button>
               </div>`)
+            }
           }
-        }
-      });
-    }
-    function appending(response) {
-      $("#spinner").empty();
-      for (let i = 0; i < response.length; i++) {
-        let temp_html = `<div class="review-card" id="game">
+        });
+      }
+      function appending(response) {
+        $("#spinner").empty();
+        for (let i = 0; i < response.length; i++) {
+          let temp_html = `<div class="review-card" id="game">
             <blockquote class="blockquote mb-0">
               <div class="name">
                 <h1 style="cursor:pointer;" onclick='location.href="https://store.steampowered.com/app/${response[i]._source.appid}/"'>
@@ -315,14 +226,14 @@
               </div>
             </blockquote>
           </div>`;
-        $(`#game-list`).append(temp_html);
+          $(`#game-list`).append(temp_html);
+        }
+        // 30개버튼은 안없애다가 오는 양이 적어지면 없애는걸로
+        // 아 근데 그러면 갯수를 못세내...가 아니라 그냥 여기와서 세면 안되나?
       }
-      // 30개버튼은 안없애다가 오는 양이 적어지면 없애는걸로
-      // 아 근데 그러면 갯수를 못세내...가 아니라 그냥 여기와서 세면 안되나?
-    }
   // 추천배너 없음
 
-  </script>
+    </script>
 </head>
 
 <body>
@@ -334,25 +245,26 @@
     <!--웹페이지 안에 스팀포유 띄움. 그리고 css 파일에 red함수를 가져와서 쓴다.-->
 
     <!-- <form method="get" action="search"> -->
-    <div class="name">
-      <input type="text" placeholder="검색어를 입력하세요.." id="search" onkeyup="enterkey();" style="width: 500px;"
-        value="<%= result? name : '' %>" />
+    <div class="name ">
+      <input type="text" placeholder=" 검색어를 입력하세요" id="inputBox" onkeyup="enterkey();" class="back_color"
+        style="width: 500px;" value="<%= result? name : '' %>" />
       <input id="submit" type="submit" value="검색" onclick="render_games()" />
     </div>
 
     <div class="name">
-      <select name="language" id="language">
+      <select name="language" id="language" class="back_color">
         <option value="none">언어: ALL</option>
         <option value="koreana">korean</option>
         <option value="english">english</option>
       </select>
-      <select name="voted_up" id="voted_up">
+      <select name="voted_up" id="voted_up" class="back_color">
         <option value="none">추천여부: ALL</option>
         <option value=true>추천</option>
         <option value=false>비추천</option>
       </select>
       <% if (data.length) { %>
-        <button id="submit_filter" type="submit" onclick="show_with_Filter('<%= data[0]._source.appid %>', true)">
+        <button id="submit_filter" class="back_color" type="submit"
+          onclick="show_with_Filter('<%= data[0]._source.appid %>', true)">
           필터로 보기
         </button>
         <% } %>
