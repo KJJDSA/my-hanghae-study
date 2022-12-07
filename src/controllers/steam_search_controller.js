@@ -80,7 +80,6 @@ module.exports = class SteamSearchController {
       const id = res.locals.id;
 
       const { appid, name } = req.query;
-      console.log(appid,)
       // keyword is appid
       const slice_start = 0
       const list = await this.steamSearchService.steamAppidSearch({ appid, slice_start });
