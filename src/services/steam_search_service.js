@@ -15,7 +15,14 @@ module.exports = class SteamSearchController {
                     query: {
                         bool: {
                             must: [
-                                { match: { "name.ngrams": keywords } },
+                                {
+                                    match: {
+                                        "name.ngrams": {
+                                            "query": keywords,
+                                            "fuzziness": 2 // 오타 검색이 가능해짐 
+                                        }
+                                    }
+                                },
                                 { exists: { field: "img_url" } },
                                 { exists: { field: "review_score_desc" } },
                             ],
@@ -41,7 +48,16 @@ module.exports = class SteamSearchController {
 
     steamAppidSearch = async ({ appid, slice_start, filter, filterExists }) => {
         try {
-            const option_appid = {
+            const game_option = {
+                size: 1,
+                index: "games_data",
+                body: {
+                    query: {
+                        match: { appid }
+                    }
+                }
+            }
+            const review_option = {
                 from: slice_start, size: 30,
                 index: "review_data",
                 body: {
@@ -67,10 +83,10 @@ module.exports = class SteamSearchController {
                         array.push(obj1)
                     }
                 }
-                option_appid.body.query.bool["filter"] = array
+                review_option.body.query.bool["filter"] = array
             }
 
-            const review_list = await this.gamesRepository.findWithES(option_appid);
+            const review_list = await this.gamesRepository.findWithES(review_option);
             // console.log(review_list.hits.hits)
             return review_list.hits.hits
         } catch (error) {
@@ -108,13 +124,18 @@ module.exports = class SteamSearchController {
                     "query": {
                         "bool": {
                             "must": [
-                                { "match": { "name.edge_ngrams": value } },
-                                { "exists": { "field": "img_url" } },
-                                { "exists": { "field": "review_score_desc" } },
+                                {
+                                    "match": {
+                                        "name.autocomplete": {
+                                            "query": value,
+                                            "fuzziness": 2 // 오타 검색이 가능해짐 -- 그럼 ngram아니어도 이거면 되는거 아냐? 어?
+                                        }
+                                    }
+                                },
+                                { "exists": { "field": "img_url" } }, // 이미지가 있어야함
+                                { "exists": { "field": "review_score_desc" } }, // 리뷰가 존재해야함
                             ],
                             "should": [
-                                // { "match_phrase": { "name.standard": value } }, // 구문 검색 up
-                                // { "term": { "name": value } }, // 정확한 결과를 위해
                                 { "prefix": { "name.standard": { "value": value } } },
                                 { "match": { "name.standard": value } }, // 노말 검색 up
                                 { "match": { "type": 'game' } }, // type이 game이면 + 

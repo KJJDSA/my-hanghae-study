@@ -5,16 +5,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!--index.css 내용을 가져와서 내용을 꾸며준다.-->
-  <title>The search service</title>
+  <!-- 부트스트랩 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- ajax 및 jquery -->
+  <script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+  <!-- jquery-ui -->
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <!-- jquery-ui css -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+  <!-- 구글폰트 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 
   <%- include('./style'); %>
 
@@ -32,36 +36,8 @@
         isLogin();
         // 추천배너
         // showRecommendedGames();
-        $('#inputBox').autocomplete({
-          // source: inputSource,
-          // minLength: 2
-          source: function (request, response) {
-            $.ajax({
-              type: 'post',
-              url: `/search/autocomplete`,
-              dataType: 'json',
-              data: { value: request.term },
-              success: function (data) {
-                // 서버에서 json 데이터 response 후 목록 추가
-                response(
-                  $.map(data, function (item) {
-                    return {
-                      label: item._source.name,
-                      appid: item._source.appid,
-                      img_url: item._source.img_url,
-                    }
-                  })
-                );
-              }
-            });
-          },
-          minLength: 2,
-          delay: 350,
-          select: function (event, ui) {
-            // 만약 검색리스트에서 선택하였을때 선택한 데이터에 의한 이벤트발생
-            movePage(ui.item.appid, ui.item.label)
-          }
-        })
+
+        autocompletaion();
       });
 
       // 검색 엔터키로 가능하게 하기
@@ -88,6 +64,50 @@
           temp_html = `<input type="submit" value="로그인" onclick="location.href='/user/login'" class="login_button">`;
         }
         $("#isLogin").append(temp_html);
+      }
+
+      function autocompletaion() {
+        $('#inputBox').autocomplete({
+          source: function (request, response) {
+            $.ajax({
+              type: 'post',
+              url: `/search/autocomplete`,
+              dataType: 'json',
+              data: { value: request.term },
+              success: function (data) {
+                // 서버에서 json 데이터 response 후 목록 추가
+                response(
+                  $.map(data, function (item) {
+                    return {
+                      label: item._source.name,
+                      appid: item._source.appid,
+                      img_url: item._source.img_url,
+                    }
+                  })
+                );
+              }
+            });
+          },
+          minLength: 2,
+          delay: 350,
+          select: function (event, ui) {
+            // 만약 검색리스트에서 선택하였을때 선택한 데이터에 의한 이벤트발생
+            $('#inputBox').val(`${ui.item.label}`);
+            render_games()
+          }
+        }) // style: hover-events: none;
+          .autocomplete("instance")._renderItem = function (ul, item) {
+            return $("<li class='match_li'>").append(
+              `<a class="match">
+            <div class="match_name">
+                ${item.label}
+            </div>
+            <div class="match_img">
+              <img src="${item.img_url}" style="width: 120px; height: 52px;">
+            </div>
+            <div></div>
+          </a>`).appendTo(ul);
+          };
       }
 
       // 넣은 키워드가 있는지 검사
@@ -129,13 +149,13 @@
             if (!response.length) {
               let temp_html = `
             <div class="name">
-              <h3>~검색결과 없음~</h3>
+              <h3 style="color: #eeecea;">~검색결과 없음~</h3>
             </div>`
               $("#game-list").append(temp_html);
               $("#spinner").empty();
               return;
             }
-            appending(response)
+            appendingSearch(response)
             // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
             if (response.length >= 30) {
               $("#bundle").append(
@@ -172,13 +192,13 @@
             if (!response.length) {
               let temp_html = `
             <div class="name">
-              <h3>~검색결과 없음~</h3>
+              <h3 style="color: #eeecea;">~검색결과 없음~</h3>
             </div>`
               $("#game-list").append(temp_html);
               $("#spinner").empty();
               return;
             }
-            appending(response)
+            appendingSearch(response)
             // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
             if (response.length >= 30) {
               $("#bundle").append(
@@ -189,7 +209,7 @@
           }
         });
       }
-      function appending(response) {
+      function appendingSearch(response) {
         $("#spinner").empty();
         for (let i = 0; i < response.length; i++) {
           let temp_html = `<div class="review-card" id="game">
