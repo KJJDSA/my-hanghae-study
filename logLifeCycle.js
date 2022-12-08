@@ -43,7 +43,7 @@ const  work= async()=>{
 const schedule=async()=>{
     let plan=new Date().toISOString();
     do {
-        await setTimeoutPromise(10000);
+        await setTimeoutPromise(60000);
         const now = new Date();
         let year = now.getFullYear(); // 년
         let month = now.getMonth();   // 월
