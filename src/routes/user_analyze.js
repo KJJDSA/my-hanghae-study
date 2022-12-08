@@ -13,4 +13,6 @@ router.get('/',authmiddleware,userAnalyzeController.userLikeGame)
 
 router.get('/like',authmiddleware,userAnalyzeController.UserBestList)
 
+router.get('/new',userAnalyzeController.newGame)
+
 module.exports = router;
