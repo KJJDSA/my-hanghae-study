@@ -1,6 +1,5 @@
 const GamesRepository = require("../repositories/games_repository");
 const UserRepository = require("../repositories/user_repository");
-const date = new Date();
 require("dotenv").config();
 const env = process.env;
 // 임시 코드 repository 
@@ -28,13 +27,13 @@ module.exports = class UserAnalyzeService {
         try {
 
             let gameList = new Object();
-            
-            const year = date.getFullYear(); // 년
-            const month = date.getMonth();   // 월
-            const day = date.getDate();      // 일
-            const hours = date.getHours(); // 시
-            const minutes = date.getMinutes();  // 분
-            const seconds = date.getSeconds();  // 초
+            const now = new Date();
+            const year = now.getFullYear(); // 년
+            const month = now.getMonth();   // 월
+            const day = now.getDate();      // 일
+            const hours = now.getHours(); // 시
+            const minutes = now.getMinutes();  // 분
+            const seconds = now.getSeconds();  // 초
             const week= new Date(year, month, day-7 ,hours,minutes,seconds).toISOString();
             const option = {
                 index: env.LOG,
@@ -121,11 +120,11 @@ module.exports = class UserAnalyzeService {
             }            
             //분석된 데이터 가지고오기
             const user=await this.userRepository.findWithES(option_user);
-            
-            const year = date.getFullYear(); // 년
-            const month = date.getMonth();   // 월
-            const day = date.getDate();      // 일
-            const hours = date.getHours(); // 시
+            const now = new Date();
+            const year = now.getFullYear(); // 년
+            const month = now.getMonth();   // 월
+            const day = now.getDate();      // 일
+            const hours = now.getHours(); // 시
             const today= new Date(year, month, day ,hours).toISOString();
             let updatedAt='2022-11-01T15:00:00.000Z'
             if(user.hits.hits.length!==0){
@@ -158,6 +157,7 @@ module.exports = class UserAnalyzeService {
             const list=await this.userRepository.findWithES(option);
             if(list.hits.hits.length===0){
                 //log를 이용해서 유저의 검색기록을 찾아올때 검색된 로그가 없을경우
+                //시간 업데이트 필요
                 return  {status:400,message:"faild"}
             }
             const game_list=[];
@@ -206,7 +206,6 @@ module.exports = class UserAnalyzeService {
                     }
                 }
             }
-            console.log(game_vector)
             // game_vector : 선호하는 게임의 카테고리 벡터
 
             //userAnalyze : 유저가 가지고 있는 합벡터, 단위 벡터
