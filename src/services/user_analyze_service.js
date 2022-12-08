@@ -32,7 +32,10 @@ module.exports = class UserAnalyzeService {
             const year = date.getFullYear(); // 년
             const month = date.getMonth();   // 월
             const day = date.getDate();      // 일
-            const week= new Date(year, month, day - 7).toISOString();
+            const hours = date.getHours(); // 시
+            const minutes = date.getMinutes();  // 분
+            const seconds = date.getSeconds();  // 초
+            const week= new Date(year, month, day-7 ,hours,minutes,seconds).toISOString();
             const option = {
                 index: env.LOG,
                 body: {
@@ -122,7 +125,8 @@ module.exports = class UserAnalyzeService {
             const year = date.getFullYear(); // 년
             const month = date.getMonth();   // 월
             const day = date.getDate();      // 일
-            const today= new Date(year, month, day - 1).toISOString();
+            const hours = date.getHours(); // 시
+            const today= new Date(year, month, day ,hours).toISOString();
             let updatedAt='2022-11-01T15:00:00.000Z'
             if(user.hits.hits.length!==0){
                 updatedAt=user.hits.hits[0]._source.updatedAt;
