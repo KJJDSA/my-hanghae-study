@@ -133,7 +133,7 @@ module.exports = class UserAnalyzeService {
 
             if(today<=updatedAt){
                 //업데이트를 이미 실행하여 데이터가 업데이트됨
-                return  {status:400,message:"faild"}
+                return  {status:200,message:"not_update"}
             }
             const option = {
                 index: env.LOG,
@@ -158,7 +158,7 @@ module.exports = class UserAnalyzeService {
             if(list.hits.hits.length===0){
                 //log를 이용해서 유저의 검색기록을 찾아올때 검색된 로그가 없을경우
                 //시간 업데이트 필요
-                return  {status:400,message:"faild"}
+                return  {status:200,message:"not_update"}
             }
             const game_list=[];
             const appid_list=[];
@@ -284,8 +284,10 @@ module.exports = class UserAnalyzeService {
                 success=await this.userRepository.insertWithES(option_vector)
             }
 
-            return success===true ? {status:200,message:"success"} : {status:400,message:"faild"}
+            return success===true ? {status:200,message:"success"} :   {status:200,message:"not_update"}
         } catch (error) {
+            error.status=400
+            error.message="faild"
             throw(error)
         }
     }
