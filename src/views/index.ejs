@@ -47,20 +47,21 @@
 
         autocompletaion()
       })
-      function enterkey() {
+
+      const enterkey = () => {
         if (window.event.keyCode == 13) {
           check();
         }
       }
 
-      function sign_out() {
+      const sign_out = () => {
         $.removeCookie("Bearer", { path: "/" });
         alert("로그아웃");
         window.location.href = "/";
       }
 
       // login or logout button
-      function isLogin() {
+      const isLogin = () => {
         const cookie = $.cookie("Bearer");
         let temp_html;
         if (cookie) {
@@ -71,7 +72,7 @@
         $("#isLogin").append(temp_html);
       }
 
-      function autocompletaion() {
+      const autocompletaion = () => {
         $('#inputBox').autocomplete({
           source: function (request, response) {
             $.ajax({
@@ -117,7 +118,7 @@
       }
 
       // check input
-      function check() {
+      const check = () => {
         var search = document.querySelector("#inputBox").value;
         if (search.length < 2) {
           alert("두글자 이상 입력해주세요");
@@ -128,14 +129,14 @@
       }
 
       // search -> index
-      function movePage(appid, name) {
+      const movePage = (appid, name) => {
         // 홀따옴표를 다시 바꿔줌
         name = name.replace("#quote#", "'")
         location.href = `/search/render/appid?appid=${appid}&name=${name}`;
       }
 
       // search -> index
-      function render_games() {
+      const render_games = () => {
         const Data = JSON.parse(localStorage.getItem('data'))
         if (Data) $('#inputBox').val(`${Data.keyword}`);
         console.log(Data)
@@ -165,7 +166,7 @@
         });
       }
       // search
-      function show_games(count) {
+      const show_games = (count) => {
         // console.time('for');
         if (!count) $("#game-list").empty();
         $("#bundle").empty();
@@ -193,12 +194,18 @@
               return;
             }
             appendingIndex(response)
+            if (response.length >= 30) {
+              let count = document.querySelectorAll('#game').length
+              $("#bundle").append(
+                `<div class="d-grid gap-2">
+                <button class="btn btn-dark" type="button" onclick="show_games(${count})" style="margin-bottom: 20px">30개 더보기</button>
+              </div>`)
+            }
           },
         });
       }
 
-
-      function appendingIndex(response) {
+      const appendingIndex = (response) => {
         for (let i = 0; i < response.length; i++) {
           let name = response[i]["_source"]["name"].replace("'", "#quote#") // 홀따옴표 문제
           let temp_html = `
@@ -235,16 +242,9 @@
                     </div>`
           $("#game-list").append(temp_html)
         }
-        if (response.length >= 30) {
-          let count = document.querySelectorAll('#game').length
-          $("#bundle").append(
-            `<div class="d-grid gap-2">
-                <button class="btn btn-dark" type="button" onclick="show_games(${count})" style="margin-bottom: 20px">30개 더보기</button>
-              </div>`)
-        }
       }
 
-      function findGenresOrCategories(element) {
+      const findGenresOrCategories = (element) => {
         let arr = [];
         for (let i = 0; i < element.length; i++) {
           arr.push(element[i].description)
@@ -252,7 +252,7 @@
         return arr.join(", ")
       }
 
-      function findPlatform(platforms) {
+      const findPlatform = (platforms) => {
         let arr = [];
         for (const platform in platforms) {
           const check = platforms[platform] ? platform : ""
@@ -262,7 +262,7 @@
       }
 
       // 추천게임 배너
-      let showRecommendedGames = () => {
+      const showRecommendedGames = () => {
         $.ajax({
           type: "GET",
           url: `/analyze/best`,
@@ -327,7 +327,44 @@
         });
       }
 
+      const recommendUpdateCheck = () => {
+        const cookie = $.cookie("Bearer");
+        if (!cookie) {
+          alert("로그인 후 이용 가능합니다.")
+          location.href = "/user/login"
+          return;
+        }
+        $("#bundle").append(spinner)
+        $.ajax({
+          type: "get",
+          url: `/analyze`,
+          data: {},
+          success: function (response) {
+            $("#game-list").empty();
+            $("#bundle").empty();
+            if (response.result.status === 200) {
+              if (response.result.message === "success") {
+                alert("추천 게임이 갱신되었습니다.");
+              }
+              $("#carouselExampleFade").empty();
+              showUserRecommendedGames()
+            } else {
+              alert("충분한 데이터가 쌓이지 않아 사용할 수 없습니다.");
+            }
+          }
+        })
+      }
 
+      const showUserRecommendedGames = () => {
+        $.ajax({
+          type: "get",
+          url: `/analyze/like`,
+          data: {},
+          success: function (response) {
+            appendingIndex(response.game_list)
+          }
+        })
+      }
 
     </script>
 </head>
@@ -344,11 +381,17 @@
       <input type="text" placeholder=" 검색어를 입력하세요" class="back_color" id="inputBox" name="keyword" onkeyup="enterkey();"
         style="width: 500px;" />
       <input id="submit" class="back_color" type="submit" value="검색" onclick="check()" />
+      <button type="button" class="btn btn-outline-light" style="margin-left:10px;" onclick="recommendUpdateCheck()">나를
+        위한
+        추천</button>
   </section>
   <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;">
     <div style="width: 1010px" id="game-list">
     </div>
-    <div id="bundle" style="width: 1010px"></div>
+
+    <div id="bundle" style="width: 1010px; ">
+    </div>
+
     <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel"
       style="margin-bottom: 20px;"></div>
   </section>
