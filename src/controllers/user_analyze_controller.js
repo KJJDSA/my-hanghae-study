@@ -11,10 +11,10 @@ module.exports = class UserAnalyzeController {
         }
     }
 
-    userLikeGame=async(req, res,next)=>{
+    userLikeGame = async (req, res, next) => {
         try {
             const id = res.locals.id;
-            const result=await this.userAnalyzeService.userLikeGame({user_id:id})
+            const result = await this.userAnalyzeService.userLikeGame({ user_id: id })
             return res.status(200).json({ result })
         } catch (error) {
             next(error)
@@ -22,13 +22,22 @@ module.exports = class UserAnalyzeController {
 
     }
 
-    UserBestList=async(req,res,next)=>{
+    UserBestList = async (req, res, next) => {
         try {
             const id = res.locals.id;
-            const game_list=await this.userAnalyzeService.UserBestList({user_id:id})
-            return res.status(200).json({game_list})
+            const game_list = await this.userAnalyzeService.UserBestList({ user_id: id })
+            return res.status(200).json({ game_list })
         } catch (error) {
             next(error)
+        }
+    }
+
+    newGame=async(req,res,next)=>{
+        try {
+            const new_game=await this.userAnalyzeService.newGame();
+            return new_game
+        } catch (error) {
+            next(error);
         }
     }
 };
