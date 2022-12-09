@@ -46,7 +46,7 @@ module.exports = class SteamSearchController {
         }
     }
 
-    steamAppidSearch = async ({ appid, slice_start, filter, filterExists }) => {
+    steamAppidSearch = async ({ appid, slice_start, filter, filterExists, sort }) => {
         try {
             const game_option = {
                 index: "games_data",
@@ -55,8 +55,9 @@ module.exports = class SteamSearchController {
             const game_doc = await this.gamesRepository.getWithES(game_option);
             const review_option = {
                 from: slice_start, size: 30,
-                index: "review_data",
+                index: "reviews_datas",
                 body: {
+                    sort,
                     query: {
                         bool: {
                             must: [
@@ -66,6 +67,7 @@ module.exports = class SteamSearchController {
                     }
                 }
             }
+            // console.log(review_option.body.sort)
             // 필터 넣어주기
             if (filterExists) {
                 let array = []
