@@ -53,14 +53,14 @@ module.exports = class SteamSearchController {
       let request;
       if (req.query.appid) request = req.query;
       else request = req.body;
-      const { appid, slice_start, filterExists, filter } = request;
+      const { appid, slice_start, filterExists, filter, sort } = request;
 
       if (filterExists === undefined) {
-        const { reviews, game_doc } = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filterExists });
+        const { reviews, game_doc } = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filterExists, sort });
 
         res.json({ game_doc, data: reviews });
       } else {
-        const { reviews, game_doc } = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filter, filterExists });
+        const { reviews, game_doc } = await this.steamSearchService.steamAppidSearch({ appid, slice_start, filter, filterExists, sort });
         res.json({ game_doc, data: reviews });
       }
 
@@ -84,7 +84,8 @@ module.exports = class SteamSearchController {
       const { appid, name } = req.query;
       // keyword is appid
       const slice_start = 0
-      const { reviews, game_doc } = await this.steamSearchService.steamAppidSearch({ appid, slice_start });
+      const sort = [{ "weighted_vote_score": "desc" }]
+      const { reviews, game_doc } = await this.steamSearchService.steamAppidSearch({ appid, slice_start, sort });
       let keywords = { type: 'onething', value: appid }
       // appid로 검색하는 경우라 키워드를 저장하지 못함.
       if (id !== undefined) {

@@ -1,10 +1,7 @@
 const GamesRepository = require("../repositories/games_repository");
 const UserRepository = require("../repositories/user_repository");
-const fs = require('fs').promises;
-const path = require("path");
-const { Games, Reviews, Metascores } = require("../../models");
-const { Op, col } = require("sequelize");
-const date = new Date();
+require("dotenv").config();
+const env = process.env;
 // 임시 코드 repository 
 
 class VectorSimilarity {
@@ -30,13 +27,16 @@ module.exports = class UserAnalyzeService {
         try {
 
             let gameList = new Object();
-
-            const year = date.getFullYear(); // 년
-            const month = date.getMonth();   // 월
-            const day = date.getDate();      // 일
-            const week = new Date(year, month, day - 7).toISOString();
+            const now = new Date();
+            const year = now.getFullYear(); // 년
+            const month = now.getMonth();   // 월
+            const day = now.getDate();      // 일
+            const hours = now.getHours(); // 시
+            const minutes = now.getMinutes();  // 분
+            const seconds = now.getSeconds();  // 초
+            const week = new Date(year, month, day - 7, hours, minutes, seconds).toISOString();
             const option = {
-                index: "users_logs",
+                index: env.LOG,
                 body: {
                     query: {
                         bool: {
@@ -87,7 +87,7 @@ module.exports = class UserAnalyzeService {
             let result_game = [];
             for (let appid of result) {
                 const option_appid = {
-                    index: "game_data",
+                    index: env.GAME,
                     body: {
                         query: {
                             bool: {
@@ -111,7 +111,7 @@ module.exports = class UserAnalyzeService {
     userLikeGame = async ({ user_id }) => {
         try {
             const option_user = {
-                index: "user_info",
+                index: env.USER_INFO,
                 body: {
                     query: {
                         bool: {
@@ -124,11 +124,12 @@ module.exports = class UserAnalyzeService {
             }
             //분석된 데이터 가지고오기
             const user = await this.userRepository.findWithES(option_user);
-
-            const year = date.getFullYear(); // 년
-            const month = date.getMonth();   // 월
-            const day = date.getDate();      // 일
-            const today = new Date(year, month, day - 1).toISOString();
+            const now = new Date();
+            const year = now.getFullYear(); // 년
+            const month = now.getMonth();   // 월
+            const day = now.getDate();      // 일
+            const hours = now.getHours(); // 시
+            const today = new Date(year, month, day, hours).toISOString();
             let updatedAt = '2022-11-01T15:00:00.000Z'
             if (user.hits.hits.length !== 0) {
                 updatedAt = user.hits.hits[0]._source.updatedAt;
@@ -136,10 +137,10 @@ module.exports = class UserAnalyzeService {
 
             if (today <= updatedAt) {
                 //업데이트를 이미 실행하여 데이터가 업데이트됨
-                return { status: 400, message: "faild" }
+                return { status: 200, message: "not_update" }
             }
             const option = {
-                index: "users_logs",
+                index: env.LOG,
                 body: {
                     query: {
                         bool: {
@@ -164,7 +165,8 @@ module.exports = class UserAnalyzeService {
             const list = await this.userRepository.findWithES(option);
             if (list.hits.hits.length === 0) {
                 //log를 이용해서 유저의 검색기록을 찾아올때 검색된 로그가 없을경우
-                return { status: 400, message: "faild" }
+                //시간 업데이트 필요
+                return { status: 200, message: "not_update" }
             }
             const game_list = [];
             const appid_list = [];
@@ -181,7 +183,7 @@ module.exports = class UserAnalyzeService {
                     appid_list.push(appid)
                 }
                 const option_appid = {
-                    index: "game_data",
+                    index: env.GAME,
                     body: {
                         query: {
                             bool: {
@@ -212,7 +214,6 @@ module.exports = class UserAnalyzeService {
                     }
                 }
             }
-            console.log(game_vector)
             // game_vector : 선호하는 게임의 카테고리 벡터
 
             //userAnalyze : 유저가 가지고 있는 합벡터, 단위 벡터
@@ -265,7 +266,7 @@ module.exports = class UserAnalyzeService {
             let success = true;
             if (user.hits.hits.length !== 0) {
                 const option_vector = {
-                    index: 'user_info',
+                    index: env.USER_INFO,
                     id: user.hits.hits[0]._id,
                     body: {
                         doc: {
@@ -279,7 +280,7 @@ module.exports = class UserAnalyzeService {
                 success = await this.userRepository.updateWintES(option_vector)
             } else {
                 const option_vector = {
-                    index: 'user_info',
+                    index: env.USER_INFO,
                     body: {
                         userid: user_id,
                         vector: result_vector,
@@ -290,9 +291,11 @@ module.exports = class UserAnalyzeService {
                 }
                 success = await this.userRepository.insertWithES(option_vector)
             }
-            return success === true ? { status: 200, message: "success" } : { status: 400, message: "faild" }
+
+            return success === true ? { status: 200, message: "success" } : { status: 200, message: "not_update" }
         } catch (error) {
-            console.log(error)
+            error.status = 400
+            error.message = "faild"
             throw (error)
         }
     }
@@ -300,7 +303,7 @@ module.exports = class UserAnalyzeService {
     UserBestList = async ({ user_id }) => {
         try {
             let option_userid = {
-                index: "user_info",
+                index: env.USER_INFO,
                 body: {
                     query: {
                         bool: {
@@ -321,7 +324,7 @@ module.exports = class UserAnalyzeService {
             }
             //자신을 뺀 유저 리스트(범위 축소)
             option_userid = {
-                index: "user_info",
+                index: env.USER_INFO,
                 body: {
                     query: {
                         bool: {
@@ -377,7 +380,7 @@ module.exports = class UserAnalyzeService {
             let game_list = [];
             for (let appid of result) {
                 const option_appid = {
-                    index: "game_data",
+                    index: env.GAME,
                     body: {
                         query: {
                             bool: {
@@ -395,5 +398,59 @@ module.exports = class UserAnalyzeService {
             console.log(error)
             throw (error)
         }
+    }
+
+    newGame = async () => {
+
+        // 다른 곳에 저장되어있던 appid 리스트 받는다.
+        let option = {
+            index: "new_game",
+            // 임시 인덱스(존재안함)
+            body: {
+                query: {
+                    bool: {
+                    }
+                }
+            }
+        }
+
+        let get_new_game_list = await this.gamesRepository.findWithES(option)
+
+        // 리스트가 없으면 바로 종료
+        if (get_new_game_list.hits.hits.length === 0) {
+            return [];
+        }
+
+        let game_info_list = [];
+        for (let appid of get_new_game_list.hits.hits[0]._source.appid_list) {
+            const option_appid = {
+                index: env.GAME,
+                body: {
+                    query: {
+                        bool: {
+                            must: [
+                                { match: { appid: appid } }
+                            ],
+                        }
+                    }
+                }
+            }
+            const game_info = await this.gamesRepository.findWithES(option_appid);
+            game_info_list.push(game_info.hits.hits[0]._source);
+        }
+        game_info_list.sort((a, b) => {
+            if (b.total_positive === a.total_positive) {
+                return a.total_negative - b.total_negative
+            } else {
+                return b.total_positive - a.total_positive
+            }
+        })
+
+        game_info_list.filter((ele, index) => {
+            return index <= 10;
+        })
+
+
+        return game_info_list;
     }
 };

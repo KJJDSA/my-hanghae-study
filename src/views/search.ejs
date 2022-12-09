@@ -24,11 +24,9 @@
 
     <script type="text/javascript">
       const spinner = `
-      <div class="d-flex justify-content-center">
-        <div class="spinner-border" role="status">
+        <div class="spinner-border text-light" style="display : block;margin : 0 auto;" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
-      </div>
       `
       // 페이지 로딩하자마자 실행할 함수
       $(document).ready(function () {
@@ -157,6 +155,7 @@
             appendingReviews(response)
             // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
             if (response.data.length >= 30) {
+              $("#spinner").empty();
               $("#bundle").append(
                 `<div class="d-grid gap-2">
                 <button class="btn btn-dark" type="button" onclick="show_reviews_appid(${response.data[0]._source.appid})" style="margin-bottom: 20px">30개 더보기</button>
@@ -172,6 +171,8 @@
         if (isfirst == true) $("#game-list").empty();
         let language = $("#language").val();
         let voted_up = $("#voted_up").val();
+        let sort = {};
+        sort[$("#sort").val()] = "desc";
         let count = document.querySelectorAll('#game').length
         $.ajax({
           type: "POST",
@@ -183,6 +184,7 @@
               'language': `${language}`,
               'voted_up': voted_up,
             },
+            'sort': [sort],
             'slice_start': `${count}`
           },
           success: function (response) {
@@ -198,6 +200,7 @@
             if (isfirst == true) appendingGameDoc(response)
             appendingReviews(response)
             // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
+            $("#spinner").empty();
             if (response.data.length >= 30) {
               $("#bundle").append(
                 `<div class="d-grid gap-2">
@@ -255,12 +258,13 @@
 
         let reviews = response.data;
         for (let i = 0; i < reviews.length; i++) {
-          let temp_html = `<div class="review-card" id="game">
+          let color = reviews[i]._source.voted_up == true ? 'review-card-blue' : 'review-card-red'
+          let temp_html = `<div class="review-card ${color}"  id="game">
             <blockquote class="blockquote mb-0">
               <div class="name">
                 <br>
-                playtime: ${reviews[i]._source.playtime_at_review} 시간
-                  / ${reviews[i]._source.voted_up == true ? '추천' : '추천안함'}
+                playtime: 평가 당시 ${Math.floor(reviews[i]._source.playtime_at_review / 60)} 시간
+                  & ${reviews[i]._source.voted_up == true ? '추천' : '비추천'}
                     <div class="playtime">${timestampToDate(reviews[i]._source.timestamp_updated)}
                     </div>
                     <div class="votes_up">
@@ -314,30 +318,49 @@
       const timestampToDate = (timestamp) => {
         let date = new Date(timestamp * 1000)
         let today = new Date()
-        let time = (today - date) / 1000 / 60  // 분
+        let time = (today - date) / 1000 / 60 / 60 / 24 // 일
         let YMD = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
 
-        if (time < 60) {
-          return parseInt(time) + "분 전"
-          //parseInt는 파라미터 안을 정수로 바꿔주는 파이썬 함수같은 거구나.
-        }
-        time = time / 60  // 시간
-        if (time < 24) {
-          return parseInt(time) + "시간 전"
-        }
-        time = time / 24
         if (time < 7) {
           return parseInt(time) + "일 전"
         }
         time = time / 7
-        if (time < 30) {
+        if (time < 5) {
           return parseInt(time) + "주 전"
         }
-        time = time / 30
+        time = time / 5
         if (time < 12) {
           return parseInt(time) + "개월 전"
         }
         return YMD
+      }
+      const recommendUpdateCheck = () => {
+        const cookie = $.cookie("Bearer");
+        if (!cookie) {
+          alert("로그인 후 이용 가능합니다.")
+          location.href = "/user/login"
+          return;
+        }
+        $("#bundle").append(spinner)
+        $.ajax({
+          type: "get",
+          url: `/analyze`,
+          data: {},
+          success: function (response) {
+            $("#game-list").empty();
+            $("#bundle").empty();
+            if (response.result.status === 200) {
+              if (response.result.message === "success") {
+                alert("추천 게임이 갱신되었습니다.");
+              }
+              alert("홈으로 이동합니다");
+              $("#carouselExampleFade").empty();
+              location.href = "/"
+            } else {
+              alert("충분한 데이터가 쌓이지 않아 사용할 수 없습니다.");
+            }
+          }
+        })
       }
     </script>
 </head>
@@ -355,6 +378,9 @@
       <input type="text" placeholder=" 검색어를 입력하세요" id="inputBox" onkeyup="enterkey();" class="back_color"
         style="width: 500px;" value="<%= result? name : '' %>" />
       <input id="submit" type="submit" value="검색" onclick="render_games()" />
+      <button type="button" class="btn btn-outline-light" style="margin-left:10px;" onclick="recommendUpdateCheck()">나를
+        위한
+        추천</button>
     </div>
 
     <div class="name">
@@ -367,6 +393,12 @@
         <option value="none">추천여부: ALL</option>
         <option value=true>추천</option>
         <option value=false>비추천</option>
+      </select>
+      <select name="sort" id="sort" class="back_color">
+        <option value="weighted_vote_score">유용함</option>
+        <option value=timestamp_updated>최신</option>
+        <option value=votes_funny>재미있음</option>
+        <option value=playtime_at_review>플레이타임</option>
       </select>
       <% if (data.length) { %>
         <button id="submit_filter" class="back_color" type="submit"
@@ -425,12 +457,14 @@
 
         </div>
         <% for (let i=0; i < data.length; i++) { %>
-          <div class="review-card" id="game">
+          <div
+            class="review-card <% if (data[i]._source.voted_up==true) {%> review-card-blue <% } else { %> review-card-red <% } %>"
+            id="game">
             <blockquote class="blockquote mb-0">
               <div class="name">
                 <br>
-                playtime: <%= data[i]._source.playtime_at_review %> 시간
-                  / <%= data[i]._source.voted_up==true ? '추천' : '추천안함' %>
+                playtime: 평가 당시 <%= Math.floor(data[i]._source.playtime_at_review / 60) %> 시간
+                  - <%= data[i]._source.voted_up==true ? '추천' : '비추천' %>
                     <div class="playtime">
                       <%= func.timestampToDate(data[i]._source.timestamp_updated) %>
                     </div>
@@ -462,7 +496,7 @@
               <h1>결과없음</h1>
               <% } %>
     </div>
-    <div id="bundle" style="width: 1010px">
+    <div id="bundle" style="width: 1010px; margin-bottom: 100px;">
       <% if (data.length>= 30) { %>
         <div class="d-grid gap-2">
           <button class="btn btn-dark" type="button" onclick="show_reviews_appid('<%= data[0]._source.appid %>')"
@@ -472,7 +506,8 @@
         </div>
         <% } %>
     </div>
-    <div id="spinner" style="width: 1010px">
+
+    <div id="spinner" style="width: 1010px; margin-bottom: 100px;">
     </div>
   </section>
   <!-- </form> -->
