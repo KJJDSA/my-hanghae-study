@@ -18,7 +18,7 @@ module.exports = class SteamSearchController {
                             must: [
                                 {
                                     match: {
-                                        "name.ngrams": {
+                                        "name.ngram_analyzer": {
                                             "query": keywords,
                                             "fuzziness": 2 // 오타 검색이 가능해짐 
                                         }
