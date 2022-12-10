@@ -1,0 +1,36 @@
+config:
+  target: "http://hi-prac.shop:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: Warm up
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 50
+      name: Ramp up load
+    - duration: 600
+      arrivalRate: 50
+      name: Sustained load
+  payload:
+    path: "search_keyword.csv"
+    fields:
+      - "search_keyword"
+
+
+scenarios:
+  - name: "Search and show review"
+    flow:
+      - post:
+          url: "/search"
+          json:
+            keyword: "{{ search_keyword }}"
+            slice_start: 0
+          capture:
+            - json: "$.data[0]._source.appid"
+              as: "appid"
+            - json: "$.data[0]._source.name"
+              as: "name"
+      - think: 5
+      - get:
+          url: "/search/appid?appid={{ appid }}&name={{ name }}"
+      - think: 5
