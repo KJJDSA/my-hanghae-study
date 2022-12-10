@@ -114,7 +114,7 @@ module.exports = class SteamSearchController {
     searchAutocomplete = async ({ value }) => {
         try {
             let option_keywords = {
-                "from": 0, "size": 10,
+                "from": 0, "size": 5,
                 "_source": ['appid', 'name', 'img_url'],
                 "index": "games_data",
                 "body": {
