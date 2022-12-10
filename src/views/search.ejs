@@ -215,7 +215,6 @@
 
         $("#spinner").empty();
         let game_doc = response.game_doc;
-
         let temp_html_game =
           `<div style="width: 1010px" id="game-list">
             <div class="card mb-3 game_card" style="max-width: 1010px; " id="game">
@@ -233,17 +232,17 @@
                       Metacritic: ${game_doc["metacritic"] ? game_doc["metacritic"]["score"] + "점" : "없음"}
                     </p>
                     <p class="card-text"><small class="text-muted">
-                      ${game_doc["short_description"] ? game_doc["short_description"] : "미공개"}
+                      ${game_doc["short_description"] ? game_doc["short_description"] : "-"}
                       <br><br>
-                      <b>플랫폼</b>: ${game_doc["platforms"] ? findPlatform(game_doc["platforms"]) : "미공개"}
+                      <b>플랫폼</b>: ${game_doc["platforms"] ? findPlatform(game_doc["platforms"]) : "-"}
                       <br>
-                      <b>출시일</b>: ${game_doc["release_date"] ? game_doc["release_date"]["date"] : "미공개"}
+                      <b>출시일</b>: ${game_doc["release_date"] ? game_doc["release_date"]["date"] : "-"}
                       <br>
-                      <b>장르</b>: ${game_doc["genres"] ? findGenresOrCategories(game_doc["genres"]) : "미공개"}
+                      <b>장르</b>: ${game_doc["genres"] ? findGenresOrCategories(game_doc["genres"]) : "-"}
                       <br>
-                      <b>카테고리</b>: ${game_doc["categories"] ? findGenresOrCategories(game_doc["categories"]) : "미공개"}
+                      <b>카테고리</b>: ${game_doc["categories"] ? findGenresOrCategories(game_doc["categories"]) : "-"}
                       <br>
-                      <b>언어</b>: ${game_doc["supported_languages"] ? game_doc["supported_languages"] : "미공개"}
+                      <b>언어</b>: ${game_doc["supported_languages"] ? game_doc["supported_languages"] : "-"}
                       </small></p>
                   </div>
                 </div>
@@ -370,7 +369,7 @@
   <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;" id="isLogin">
   </section>
   <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;">
-    <h1 class="title"><a href="/">Steam Search Service</a></h1>
+    <h1 class="title"><a href="/">Steam For U</a></h1>
     <!--웹페이지 안에 스팀포유 띄움. 그리고 css 파일에 red함수를 가져와서 쓴다.-->
 
     <!-- <form method="get" action="search"> -->
@@ -431,20 +430,18 @@
                       Metacritic: <%= game_doc["metacritic"] ? game_doc["metacritic"]["score"] + "점" : "없음" %>
                   </p>
                   <p class="card-text"><small class="text-muted">
-                      <%= game_doc["short_description"] ? game_doc["short_description"] :"미공개" %>
+                      <%= game_doc["short_description"] ? game_doc["short_description"] :"-" %>
                         <br><br>
-                        <b>플랫폼</b>: <%= game_doc["platforms"] ?func.findPlatform(game_doc["platforms"]) : "미공개" %>
+                        <b>플랫폼</b>: <%= game_doc["platforms"] ?func.findPlatform(game_doc["platforms"]) : "-" %>
                           <br>
-                          <b>출시일</b>: <%= game_doc["release_date"] ?game_doc["release_date"]["date"] : "미공개" %>
+                          <b>출시일</b>: <%= game_doc["release_date"] ?game_doc["release_date"]["date"] : "-" %>
                             <br>
-                            <b>장르</b>: <%= game_doc["genres"] ? func.findGenresOrCategories(game_doc["genres"]) : "미공개"
-                              %>
+                            <b>장르</b>: <%= game_doc["genres"] ? func.findGenresOrCategories(game_doc["genres"]) : "-" %>
                               <br>
                               <b>카테고리</b>: <%= game_doc["categories"]
-                                ?func.findGenresOrCategories(game_doc["categories"]): "미공개" %>
+                                ?func.findGenresOrCategories(game_doc["categories"]): "-" %>
                                 <br>
-                                <b>언어</b>: <%= game_doc["supported_languages"] ? game_doc["supported_languages"]: "미공개"
-                                  %>
+                                <b>언어</b>: <%= game_doc["supported_languages"] ? game_doc["supported_languages"]: "-" %>
                                   <h5 style="cursor:pointer;"
                                     onclick='location.href="https://store.steampowered.com/app/<%= game_doc.appid %>/"'>
                                     스팀 바로가기

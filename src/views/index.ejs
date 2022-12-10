@@ -80,6 +80,7 @@
               dataType: 'json',
               data: { value: request.term },
               success: function (data) {
+                console.log(data)
                 // 서버에서 json 데이터 response 후 목록 추가
                 response(
                   $.map(data, function (item) {
@@ -206,6 +207,7 @@
 
       const appendingIndex = (response) => {
         for (let i = 0; i < response.length; i++) {
+          console.log(response[i]["_source"])
           let name = response[i]["_source"]["name"].replace("'", "#quote#") // 홀따옴표 문제
           let temp_html = `
                     <div class="card mb-3 game_card" style="max-width: 1010px; " id="game">
@@ -223,17 +225,17 @@
                               Metacritic: ${response[i]["_source"]["metacritic"] ? response[i]["_source"]["metacritic"]["score"] + "점" : "없음"}
                             </p>
                             <p class="card-text"><small class="text-muted">
-                              ${response[i]["_source"]["short_description"] ? response[i]["_source"]["short_description"] : "미공개"}
+                              ${response[i]["_source"]["short_description"] ? response[i]["_source"]["short_description"] : "-"}
                               <br><br>
-                              <b>플랫폼</b>: ${response[i]["_source"]["platforms"] ? findPlatform(response[i]["_source"]["platforms"]) : "미공개"}
+                              <b>플랫폼</b>: ${response[i]["_source"]["platforms"] ? findPlatform(response[i]["_source"]["platforms"]) : "-"}
                               <br>
-                              <b>출시일</b>: ${response[i]["_source"]["release_date"] ? response[i]["_source"]["release_date"]["date"] : "미공개"}
+                              <b>출시일</b>: ${response[i]["_source"]["release_date"] ? response[i]["_source"]["release_date"]["date"] : "-"}
                               <br>
-                              <b>장르</b>: ${response[i]["_source"]["genres"] ? findGenresOrCategories(response[i]["_source"]["genres"]) : "미공개"}
+                              <b>장르</b>: ${response[i]["_source"]["genres"] ? findGenresOrCategories(response[i]["_source"]["genres"]) : "-"}
                               <br>
-                              <b>카테고리</b>: ${response[i]["_source"]["categories"] ? findGenresOrCategories(response[i]["_source"]["categories"]) : "미공개"}
+                              <b>카테고리</b>: ${response[i]["_source"]["categories"] ? findGenresOrCategories(response[i]["_source"]["categories"]) : "-"}
                               <br>
-                              <b>언어</b>: ${response[i]["_source"]["supported_languages"] ? response[i]["_source"]["supported_languages"] : "미공개"}
+                              <b>언어</b>: ${response[i]["_source"]["supported_languages"] ? response[i]["_source"]["supported_languages"] : "-"}
                               </small></p>
                           </div>
                         </div>

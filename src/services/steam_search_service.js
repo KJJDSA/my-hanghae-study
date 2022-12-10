@@ -10,7 +10,7 @@ module.exports = class SteamSearchController {
         try {
             let option_keywords = {
                 from: slice_start, size: 30,
-                index: "games_data",
+                index: "games_data_copy",
                 body: {
                     query: {
                         bool: {
