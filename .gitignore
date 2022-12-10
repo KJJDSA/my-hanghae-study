@@ -1,5 +1,5 @@
 /node_modules
-
+stress_test
 # 환경변수
 .env
 
