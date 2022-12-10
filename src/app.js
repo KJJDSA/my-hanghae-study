@@ -4,6 +4,7 @@ const routes = require("./routes");
 const ejs = require("ejs");
 const path = require("path");
 const { error, error404 } = require("./middlewares/error/error");
+require('events').EventEmitter.prototype._maxListeners = 15;
 require("dotenv").config();
 const env = process.env;
 app.use(express.json());
