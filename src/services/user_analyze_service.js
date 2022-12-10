@@ -46,11 +46,11 @@ module.exports = class UserAnalyzeService {
                     }
                 }
             }
-            const check = await this.gamesRepository.findWithES(option_analyze);
+            let check = await this.gamesRepository.findWithES(option_analyze);
             // console.log(check.hits.hits[0])
             if (check.hits.hits.length !== 0) {
                 let updatedAt = check.hits.hits[0]._source.updatedAt;
-                if (today >= updatedAt) {
+                if (today <= updatedAt) {
                     let game_list = [];
                     for (let i of check.hits.hits[0]._source.appid) {
                         const option_appid = {
@@ -67,6 +67,7 @@ module.exports = class UserAnalyzeService {
                         }
                         game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]._source);
                     }
+                    check=null
                     return game_list
                 }
             }
@@ -91,7 +92,7 @@ module.exports = class UserAnalyzeService {
                     }
                 }
             }
-            const filelist = await this.userRepository.findWithES(option);
+            let filelist = await this.userRepository.findWithES(option);
             if (filelist.hits.hits.length === 0) {
                 return [];
             }
@@ -165,7 +166,11 @@ module.exports = class UserAnalyzeService {
                     }
                 }
                 await this.userRepository.updateWintES(option_analyze)
+                
             }
+            check=null
+            save_analyze=null
+            filelist=null
             return result_game
         } catch (error) {
             console.log(error)
@@ -386,10 +391,10 @@ module.exports = class UserAnalyzeService {
                     }
                 }
             }
-            const check = await this.gamesRepository.findWithES(option_analyze);
+            let check = await this.gamesRepository.findWithES(option_analyze);
             if (check.hits.hits.length !== 0) {
                 let updatedAt = check.hits.hits[0]._source.updatedAt;
-                if (today >= updatedAt) {
+                if (today <= updatedAt) {
                     let game_list = [];
                     for (let i of check.hits.hits[0]._source.appid) {
                         const option_appid = {
@@ -406,6 +411,7 @@ module.exports = class UserAnalyzeService {
                         }
                         game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]);
                     }
+                    check=null
                     return game_list
                 }
             }
@@ -528,7 +534,10 @@ module.exports = class UserAnalyzeService {
                 }
                 await this.userRepository.updateWintES(option_analyze)
             }
-
+            target_list=null
+            result=null
+            check=null
+            save_analyze=null
             return game_list;
         } catch (error) {
             console.log(error)
