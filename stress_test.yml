@@ -15,8 +15,6 @@ config:
     path: "search_keyword.csv"
     fields:
       - "search_keyword"
-
-
 scenarios:
   - name: "Search and show review"
     flow:
