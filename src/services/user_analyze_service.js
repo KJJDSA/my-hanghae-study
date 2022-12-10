@@ -34,7 +34,7 @@ module.exports = class UserAnalyzeService {
             const minutes = now.getMinutes();  // 분
             const seconds = now.getSeconds();  // 초
             const today = new Date(year, month, day, hours,).toISOString();
-            let option_analyze={
+            let option_analyze = {
                 index: env.ANALYZE,
                 body: {
                     query: {
@@ -46,12 +46,12 @@ module.exports = class UserAnalyzeService {
                     }
                 }
             }
-            const check=await this.gamesRepository.findWithES(option_analyze);
-            console.log(check.hits.hits[0])
-            if(check.hits.hits.length!==0){
-                updatedAt = check.hits.hits[0]._source.updatedAt;
-                if(today>=updatedAt){
-                    let game_list=[];
+            const check = await this.gamesRepository.findWithES(option_analyze);
+            // console.log(check.hits.hits[0])
+            if (check.hits.hits.length !== 0) {
+                let updatedAt = check.hits.hits[0]._source.updatedAt;
+                if (today >= updatedAt) {
+                    let game_list = [];
                     for (let i of check.hits.hits[0]._source.appid) {
                         const option_appid = {
                             index: env.GAME,
@@ -122,7 +122,7 @@ module.exports = class UserAnalyzeService {
                 })
             }
             let result_game = [];
-            let save_analyze=[];
+            let save_analyze = [];
             for (let appid of result) {
                 const option_appid = {
                     index: env.GAME,
@@ -142,29 +142,29 @@ module.exports = class UserAnalyzeService {
                 result_game.push(game_info)
             }
             //저장 check
-            if(check.hits.hits.length===0){
-                let option_analyze={
+            if (check.hits.hits.length === 0) {
+                let option_analyze = {
                     index: env.ANALYZE,
                     body: {
                         label: "all",
-                        userid:0,
+                        userid: 0,
                         appid: save_analyze,
-                        updatedAt:new Date().toISOString()
+                        updatedAt: new Date().toISOString()
                     }
                 }
                 await this.userRepository.insertWithES(option_analyze)
-            }else{
-                let option_analyze={
+            } else {
+                let option_analyze = {
                     index: env.ANALYZE,
-                    id:check.hits.hits[0]._id,
+                    id: check.hits.hits[0]._id,
                     body: {
-                        doc:{
+                        doc: {
                             appid: save_analyze,
-                            updatedAt:new Date().toISOString()
+                            updatedAt: new Date().toISOString()
                         }
                     }
-                 }
-                 await this.userRepository.updateWintES(option_analyze)
+                }
+                await this.userRepository.updateWintES(option_analyze)
             }
             return result_game
         } catch (error) {
@@ -374,7 +374,7 @@ module.exports = class UserAnalyzeService {
             const day = now.getDate();      // 일
             const hours = now.getHours(); // 시
             const today = new Date(year, month, day, hours,).toISOString();
-            let option_analyze={
+            let option_analyze = {
                 index: env.ANALYZE,
                 body: {
                     query: {
@@ -386,11 +386,11 @@ module.exports = class UserAnalyzeService {
                     }
                 }
             }
-            const check=await this.gamesRepository.findWithES(option_analyze);
-            if(check.hits.hits.length!==0){
-                updatedAt = check.hits.hits[0]._source.updatedAt;
-                if(today>=updatedAt){
-                    let game_list=[];
+            const check = await this.gamesRepository.findWithES(option_analyze);
+            if (check.hits.hits.length !== 0) {
+                let updatedAt = check.hits.hits[0]._source.updatedAt;
+                if (today >= updatedAt) {
+                    let game_list = [];
                     for (let i of check.hits.hits[0]._source.appid) {
                         const option_appid = {
                             index: env.GAME,
@@ -485,8 +485,8 @@ module.exports = class UserAnalyzeService {
                 })
             }
             let game_list = [];
-            
-            let save_analyze=[];
+
+            let save_analyze = [];
             for (let appid of result) {
                 const option_appid = {
                     index: env.GAME,
@@ -504,29 +504,29 @@ module.exports = class UserAnalyzeService {
                 game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]);
             }
             //저장 check
-            if(check.hits.hits.length===0){
-                let option_analyze={
+            if (check.hits.hits.length === 0) {
+                let option_analyze = {
                     index: env.ANALYZE,
                     body: {
                         label: "user",
-                        userid:user_id,
+                        userid: user_id,
                         appid: save_analyze,
-                        updatedAt:new Date().toISOString()
+                        updatedAt: new Date().toISOString()
                     }
                 }
                 await this.userRepository.insertWithES(option_analyze)
-            }else{
-                let option_analyze={
+            } else {
+                let option_analyze = {
                     index: env.ANALYZE,
-                    id:check.hits.hits[0]._id,
+                    id: check.hits.hits[0]._id,
                     body: {
-                        doc:{
+                        doc: {
                             appid: save_analyze,
-                            updatedAt:new Date().toISOString()
+                            updatedAt: new Date().toISOString()
                         }
                     }
-                 }
-                 await this.userRepository.updateWintES(option_analyze)
+                }
+                await this.userRepository.updateWintES(option_analyze)
             }
 
             return game_list;
