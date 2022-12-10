@@ -354,6 +354,7 @@ module.exports = class UserAnalyzeService {
                         updatedAt: today
                     }
                 }
+                console.log(option_vector.body)
                 success = await this.userRepository.insertWithES(option_vector)
             }
 
