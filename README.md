@@ -53,7 +53,6 @@
   <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
 <div align=left> 
   프레임워크 
-  <img src="https://img.shields.io/badge/Node.js-#339933?style=for-the-badge&logo=Node.js&logoColor=white">
   <img src="https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white">
 </div>
 <div align=left> 
@@ -67,9 +66,10 @@
 </div> 
 <div align=left> 
   배포 
-  <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
   <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
+  <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
   <img src="https://img.shields.io/badge/elasticcloud-005571?style=for-the-badge&logo=elasticcloud&logoColor=white">
+  <img src="https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white">
 </div>
 <div align=left> 
   데이터 수집 
