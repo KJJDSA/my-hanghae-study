@@ -58,7 +58,7 @@
 <div align=left> 
 DB
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-<img src="https://img.shields.io/badge/Elasticsearch-#005571?style=for-the-badge&logo=Elasticsearch&logoColor=white">
+<img src="https://img.shields.io/badge/elasticsearch-#005571?style=for-the-badge&logo=elasticsearch&logoColor=white">
 
 
 </div> 
@@ -66,6 +66,6 @@ DB
 배포
 <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
 <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
-<img src="https://img.shields.io/badge/Elastic Cloud-#005571?style=for-the-badge&logo=Elastic Cloud&logoColor=white">
+<img src="https://img.shields.io/badge/elasticcloud-#005571?style=for-the-badge&logo=elasticcloud&logoColor=white">
 </div>
 
