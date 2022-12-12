@@ -121,7 +121,7 @@ module.exports = class SteamSearchController {
           list: appid,
         });
       }
-      console.time('review');
+      console.timeEnd('review');
     }
     catch (error) {
       console.log(error);
@@ -153,7 +153,7 @@ module.exports = class SteamSearchController {
           list: appid,
         });
       }
-      console.time('review');
+      console.timeEnd('review');
       return res.render("search", {
         result: true,
         data: reviews,
