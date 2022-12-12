@@ -225,17 +225,17 @@
                               Metacritic: ${response[i]["_source"]["metacritic"] ? response[i]["_source"]["metacritic"]["score"] + "점" : "없음"}
                             </p>
                             <p class="card-text"><small class="text-muted">
-                              ${response[i]["_source"]["short_description"] ? response[i]["_source"]["short_description"] : "-"}
+                              ${response[i]["_source"]["short_description"] ? response[i]["_source"]["short_description"] : ""}
                               <br><br>
-                              <b>플랫폼</b>: ${response[i]["_source"]["platforms"] ? findPlatform(response[i]["_source"]["platforms"]) : "-"}
-                              <br>
-                              <b>출시일</b>: ${response[i]["_source"]["release_date"] ? response[i]["_source"]["release_date"]["date"] : "-"}
-                              <br>
-                              <b>장르</b>: ${response[i]["_source"]["genres"] ? findGenresOrCategories(response[i]["_source"]["genres"]) : "-"}
-                              <br>
-                              <b>카테고리</b>: ${response[i]["_source"]["categories"] ? findGenresOrCategories(response[i]["_source"]["categories"]) : "-"}
-                              <br>
-                              <b>언어</b>: ${response[i]["_source"]["supported_languages"] ? response[i]["_source"]["supported_languages"] : "-"}
+                              ${response[i]["_source"]["platforms"] ? '<b>플랫폼</b>: ' + findPlatform(response[i]["_source"]["platforms"]) + '<br>' : ""}
+                              
+                              ${response[i]["_source"]["release_date"] ? '<b>출시일</b>: ' + response[i]["_source"]["release_date"]["date"] + '<br>' : ""}
+                              
+                              ${response[i]["_source"]["genres"] ? '<b>장르</b>: ' + findGenresOrCategories(response[i]["_source"]["genres"]) + '<br>' : ""}
+                              
+                              ${response[i]["_source"]["categories"] ? '<b>카테고리</b>: ' + findGenresOrCategories(response[i]["_source"]["categories"]) + '<br>' : ""}
+                              
+                              ${response[i]["_source"]["supported_languages"] ? '<b>언어</b>: ' + response[i]["_source"]["supported_languages"] : ""}
                               </small></p>
                           </div>
                         </div>

@@ -10,7 +10,7 @@ module.exports = class SteamSearchController {
       // 시작
       const id = res.locals.id;
       const { keyword, slice_start } = req.body;
-      // console.time(`${keyword} 의 검색결과`);
+      console.time(`${keyword} 의 검색결과`);
       let keywords = keyword;
 
       let key = `${keyword}+${slice_start}`;
@@ -33,9 +33,9 @@ module.exports = class SteamSearchController {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
 
+      console.timeEnd(`${keyword} 의 검색결과`);
       return res.json({ data: list });
 
-      // console.timeEnd(`${keyword} 의 검색결과`);
     } catch (error) {
       console.log(error);
       next(error);
