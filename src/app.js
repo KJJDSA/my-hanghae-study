@@ -27,10 +27,10 @@ app.use(error);
 
 app.listen(Number(env.PORT), () => {
   console.log(Number(env.PORT), "Welcome Steam Search Service");
+})
+app.listen(Number(env.PORT) + 1, () => {
+  console.log(Number(env.PORT) + 1, "Welcome Steam Search Service");
 });
-// app.listen(Number(env.PORT) + 1, () => {
-//   console.log(Number(env.PORT) + 1, "Welcome Steam Search Service");
-// });
-// app.listen(Number(env.PORT) + 2, () => {
-//   console.log(Number(env.PORT) + 2, "Welcome Steam Search Service");
-// });
+app.listen(Number(env.PORT) + 2, () => {
+  console.log(Number(env.PORT) + 2, "Welcome Steam Search Service");
+});
