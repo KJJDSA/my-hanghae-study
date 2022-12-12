@@ -50,7 +50,7 @@
 ### Framwork: <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white">
 ### Database: <img src="https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white"> <img src="https://img.shields.io/badge/Elasticcloud-005571?style=for-the-badge&logo=elasticcloud&logoColor=white">
 ### Cashing: <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white">
-### Logging: <img src="https://img.shields.io/badge/Logstash-DC382D?style=for-the-badge&logo=Logstash&logoColor=white">
+### Logging: <img src="https://img.shields.io/badge/Logstash-005571?style=for-the-badge&logo=Logstash&logoColor=white">
 ### Publish: <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/AmazonEC2-232F3E?style=for-the-badge&logo=AmazonEC2&logoColor=white">
 ### Data Collection: <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white"> <img src="https://img.shields.io/badge/Lodash-3492FF?style=for-the-badge&logo=Lodash&logoColor=white">
 
