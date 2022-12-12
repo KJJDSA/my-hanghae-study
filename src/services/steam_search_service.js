@@ -2,6 +2,7 @@ const GamesRepository = require("../repositories/games_repository");
 const ReviewsRepository = require("../repositories/reviews_repository");
 let { search } = require('../middlewares/log/search_logger');
 let { search_result } = require('../middlewares/log/search_result_logger');
+require("dotenv").config();
 module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
     reviewsRepository = new ReviewsRepository();
@@ -10,14 +11,14 @@ module.exports = class SteamSearchController {
         try {
             let option_keywords = {
                 from: slice_start, size: 30,
-                index: "games_data_copy",
+                index: process.env.GAME,
                 body: {
                     query: {
                         bool: {
                             must: [
                                 {
                                     match: {
-                                        "name.ngrams": {
+                                        "name": {
                                             "query": keywords,
                                             "fuzziness": 2 // 오타 검색이 가능해짐 
                                         }
@@ -26,13 +27,13 @@ module.exports = class SteamSearchController {
                                 { exists: { field: "img_url" } },
                                 { exists: { field: "review_score_desc" } },
                             ],
-                            should: [
-                                { match_phrase: { "name.standard": keywords } }, // 구문 검색 up
-                                // { match_phrase_prefix: { "name.standard": keywords } }, // 구문검색을 하지만 마지막 요소는 접두사 
-                                { match: { "name.standard": keywords } }, // 노말 검색 up
-                                // { match: { "name.ngrams": keywords } }, // ngram 은 점수에는 아닌듯
-                                { match: { type: 'game' } }, // type이 game이면 + 
-                            ]
+                            // should: [
+                            //     { match_phrase: { "name.standard": keywords } }, // 구문 검색 up
+                            //     // { match_phrase_prefix: { "name.standard": keywords } }, // 구문검색을 하지만 마지막 요소는 접두사 
+                            //     { match: { "name.standard": keywords } }, // 노말 검색 up
+                            //     // { match: { "name.ngrams": keywords } }, // ngram 은 점수에는 아닌듯
+                            //     { match: { type: 'game' } }, // type이 game이면 + 
+                            // ]
                         }
                     }
                 }
@@ -49,13 +50,13 @@ module.exports = class SteamSearchController {
     steamAppidSearch = async ({ appid, slice_start, filter, filterExists, sort }) => {
         try {
             const game_option = {
-                index: "games_data",
+                index: process.env.GAME,
                 id: appid,
             }
             const game_doc = await this.gamesRepository.getWithES(game_option);
             const review_option = {
                 from: slice_start, size: 30,
-                index: "reviews_datas",
+                index: process.env.REVIEW,
                 body: {
                     sort,
                     query: {
@@ -116,7 +117,7 @@ module.exports = class SteamSearchController {
             let option_keywords = {
                 "from": 0, "size": 5,
                 "_source": ['appid', 'name', 'img_url'],
-                "index": "games_data",
+                "index": process.env.GAME,
                 "body": {
                     "query": {
                         "bool": {
