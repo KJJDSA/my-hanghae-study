@@ -57,8 +57,8 @@
 </div>
 <div align=left> 
   DB 
-  <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-  <img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">
+  <img src="https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white">
+  <img src="https://img.shields.io/badge/elasticcloud-005571?style=for-the-badge&logo=elasticcloud&logoColor=white">
 <div align=left>
   캐싱 
   <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white">
@@ -67,9 +67,7 @@
 <div align=left> 
   배포 
   <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
-  <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
-  <img src="https://img.shields.io/badge/elasticcloud-005571?style=for-the-badge&logo=elasticcloud&logoColor=white">
-  <img src="https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white">
+  <img src="https://img.shields.io/badge/AmazonEC2-232F3E?style=for-the-badge&logo=AmazonEC2&logoColor=white">
 </div>
 <div align=left> 
   데이터 수집 
