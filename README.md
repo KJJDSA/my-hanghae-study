@@ -58,7 +58,7 @@
 <div align=left> 
 DB
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-  <img src="https://img.shields.io/badge/Elasticsearch-#005571?style=for-the-badge&logo=&logoColor=white">
+  <img src="https://img.shields.io/badge/Elasticsearch-#005571?style=for-the-badge&logo=Elasticsearch&logoColor=white">
 </div> 
 <div align=left> 
 배포
