@@ -46,11 +46,9 @@
   ![ERD-2week](https://user-images.githubusercontent.com/113815932/202711210-9fe5c64a-2743-4816-a245-766565578b79.png)
 
 ## 기술 스택 
-### frontend
-<img src="https://img.shields.io/badge/jquery-0769AD?style=for-the-badge&logo=jquery&logoColor=white"> <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
+#### frontend <img src="https://img.shields.io/badge/jquery-0769AD?style=for-the-badge&logo=jquery&logoColor=white"> <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
 
-### backend
-#### Was <img src="https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white"> <img src="https://img.shields.io/badge/.env-ECD53F?style=for-the-badge&logo=dotenv&logoColor=white"> 
+#### Framwork <img src="https://img.shields.io/badge/express-000000?style=for-the-badge&logo=express&logoColor=white">
 #### Database <img src="https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white"> <img src="https://img.shields.io/badge/elasticcloud-005571?style=for-the-badge&logo=elasticcloud&logoColor=white">
 #### Cashing <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white">
 #### Publish <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/AmazonEC2-232F3E?style=for-the-badge&logo=AmazonEC2&logoColor=white">
