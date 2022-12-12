@@ -1,6 +1,6 @@
 const SteamSearchService = require("../services/steam_search_service");
 const Func = require("../routes/func");
-// const redisClient = require("../../redis_connection");
+const redisClient = require("../../redis_connection");
 
 module.exports = class SteamSearchController {
   steamSearchService = new SteamSearchService();
@@ -10,35 +10,32 @@ module.exports = class SteamSearchController {
       // 시작
       const id = res.locals.id;
       const { keyword, slice_start } = req.body;
-      console.time(`${keyword} 의 검색결과`);
+      // console.time(`${keyword} 의 검색결과`);
       let keywords = keyword;
 
       let key = `${keyword}+${slice_start}`;
-      console.log(key);
-
-      // // 레디스에 데이터가 있는지 확인
-      // await redisClient.hGet("gamename", key, (error, data) => {
-      //   if (error) res.status(400).send(error);
-      //   if (data !== null) {
-      //     console.log("have Data in redis");
-      //     return res.json(data);
-      //   } else next();
-      // });
-
-      const list = await this.steamSearchService.steamSearch({
+      // 레디스에 데이터가 있는지 확인
+      let result = await redisClient.hGet("gamename", key);
+      if (result !== null) {
+        console.log("have Data in redis");
+        let data = JSON.parse(result);
+        return res.json(data);
+      }
+      let list = await this.steamSearchService.steamSearch({
         keywords,
         slice_start,
       });
 
-      // // 레디스에 저장하기
-      // await redisClient.hSet("gamename", key, JSON.stringify({ data: list }));
-      // // await redisClient.expire(key, 10, "LT");
+      // 레디스에 저장하기
+      await redisClient.hSet("gamename", key, JSONstringify({ data: list }));
 
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
-      console.timeEnd(`${keyword} 의 검색결과`);
+
       return res.json({ data: list });
+
+      // console.timeEnd(`${keyword} 의 검색결과`);
     } catch (error) {
       console.log(error);
       next(error);
@@ -54,15 +51,14 @@ module.exports = class SteamSearchController {
       let keywords = keyword;
       let key = `${keyword}+${slice_start}`;
 
-      // await redisClient.hGet("gamename", key, (error, data) => {
-      //   if (error) res.status(400).send(error);
-      //   if (data !== null) {
-      //     console.log("have Data in redis");
-      //     return res.json(data);
-      //   } else next();
-      // });
+      let result = await redisClient.hGet("gamename", key);
+      if (result !== null) {
+        console.log("have Data in redis");
+        let data = JSON.parse(result);
+        return res.json(data);
+      }
 
-      const list = await this.steamSearchService.steamSearch({
+      let list = await this.steamSearchService.steamSearch({
         keywords,
         // filter_whether,
         slice_start,
