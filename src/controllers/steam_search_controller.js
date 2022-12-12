@@ -10,7 +10,7 @@ module.exports = class SteamSearchController {
       // 시작
       const id = res.locals.id;
       const { keyword, slice_start } = req.body;
-      console.time(`${keyword} 의 검색결과`);
+      console.time('search keyword');
       let keywords = keyword;
 
       let key = `${keyword}+${slice_start}`;
@@ -33,7 +33,8 @@ module.exports = class SteamSearchController {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
 
-      console.timeEnd(`${keyword} 의 검색결과`);
+      console.timeEnd('search keyword');
+      console._times.clear('search keyword')
       return res.json({ data: list });
 
     } catch (error) {
@@ -45,9 +46,9 @@ module.exports = class SteamSearchController {
   steamSearchRender = async (req, res, next) => {
     try {
       // 시작
+      console.time('render search');
       const id = res.locals.id;
       const { keyword, slice_start } = req.body;
-      // console.time(`${keyword} 의 검색결과`);
       let keywords = keyword;
       let key = `${keyword}+${slice_start}`;
 
@@ -70,7 +71,8 @@ module.exports = class SteamSearchController {
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
-      // console.timeEnd(`${keyword} 의 검색결과`);
+      console.timeEnd('render search');
+      console._times.clear('render search')
       res.render("index", { data: list });
     } catch (error) {
       console.log(error);
@@ -80,7 +82,7 @@ module.exports = class SteamSearchController {
 
   steamAppidSearch = async (req, res, next) => {
     try {
-      // console.time('리뷰 페이지네이션');   // 시작
+      console.time('appid pagenation');
       const id = res.locals.id;
 
       // GET과 POST 둘 다 받을 수 있도록 분기 작성
@@ -121,8 +123,10 @@ module.exports = class SteamSearchController {
           list: appid,
         });
       }
-      // console.timeEnd('리뷰 페이지네이션');
-    } catch (error) {
+      console.timeEnd('appid pagenation');
+      console._times.clear('appid pagenation')
+    }
+    catch (error) {
       console.log(error);
       next(error);
     }
@@ -130,7 +134,7 @@ module.exports = class SteamSearchController {
 
   steamAppidSearchRender = async (req, res, next) => {
     try {
-      // console.time('리뷰 페이지 랜더');
+      console.time('appid render');
       const id = res.locals.id;
 
       const { appid, name } = req.query;
@@ -152,7 +156,8 @@ module.exports = class SteamSearchController {
           list: appid,
         });
       }
-      // console.timeEnd('리뷰 페이지 랜더');
+      console.timeEnd('appid render');
+      console._times.clear('appid render')
       return res.render("search", {
         result: true,
         data: reviews,
