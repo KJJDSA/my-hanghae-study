@@ -9,7 +9,7 @@ const redisClient = redis.createClient({
   ],
 });
 
-// const redisClient = redis.createClient(6379);
+// const redisClient = redis.createClient(3000);
 
 redisClient.on("connect", () => {
   console.info("Redis connected!");

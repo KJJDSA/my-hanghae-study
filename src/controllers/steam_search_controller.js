@@ -10,10 +10,11 @@ module.exports = class SteamSearchController {
       // 시작
       const id = res.locals.id;
       const { keyword, slice_start } = req.body;
-      // console.time(`${keyword} 의 검색결과`);
+      console.time("keyword");
       let keywords = keyword;
 
       let key = `${keyword}+${slice_start}`;
+
       // 레디스에 데이터가 있는지 확인
       let result = await redisClient.hGet("gamename", key);
       if (result !== null) {
@@ -28,15 +29,14 @@ module.exports = class SteamSearchController {
       });
 
       // 레디스에 저장하기
-      await redisClient.hSet("gamename", key, JSONstringify({ data: list }));
+      await redisClient.hSet("gamename", key, JSON.stringify({ data: list }));
 
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
-      // console.log({ data: list });
-      return res.json({ data: list });
 
-      // console.timeEnd(`${keyword} 의 검색결과`);
+      console.timeEnd("keyword");
+      return res.json({ data: list });
     } catch (error) {
       console.log(error);
       next(error);
@@ -45,10 +45,9 @@ module.exports = class SteamSearchController {
 
   steamSearchRender = async (req, res, next) => {
     try {
-      // 시작
+      console.time("keyword");
       const id = res.locals.id;
       const { keyword, slice_start } = req.body;
-      // console.time(`${keyword} 의 검색결과`);
       let keywords = keyword;
       let key = `${keyword}+${slice_start}`;
 
@@ -65,12 +64,12 @@ module.exports = class SteamSearchController {
       });
 
       // 레디스에 저장하기
-      // await redisClient.hSet("gamename", key, JSON.stringify({ data: list }));
+      await redisClient.hSet("gamename", key, JSON.stringify({ data: list }));
 
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
-      // console.timeEnd(`${keyword} 의 검색결과`);
+      console.timeEnd("keyword");
       res.render("index", { data: list });
     } catch (error) {
       console.log(error);
@@ -80,7 +79,7 @@ module.exports = class SteamSearchController {
 
   steamAppidSearch = async (req, res, next) => {
     try {
-      // console.time('리뷰 페이지네이션');   // 시작
+      console.time("review");
       const id = res.locals.id;
 
       // GET과 POST 둘 다 받을 수 있도록 분기 작성
@@ -141,7 +140,7 @@ module.exports = class SteamSearchController {
           list: appid,
         });
       }
-      // console.timeEnd('리뷰 페이지네이션');
+      console.timeEnd("review");
     } catch (error) {
       console.log(error);
       next(error);
@@ -150,6 +149,7 @@ module.exports = class SteamSearchController {
 
   steamAppidSearchRender = async (req, res, next) => {
     try {
+      console.time("review");
       const id = res.locals.id;
 
       const { appid, name } = req.query;
@@ -194,7 +194,7 @@ module.exports = class SteamSearchController {
         JSON.stringify({ game_doc, data: reviews })
       );
 
-      // console.timeEnd('리뷰 페이지 랜더');
+      console.timeEnd("review");
       return res.render("search", {
         result: true,
         data: reviews,

@@ -35,7 +35,7 @@ module.exports = class UserAnalyzeController {
     newGame=async(req,res,next)=>{
         try {
             const new_game=await this.userAnalyzeService.newGame();
-            return new_game
+            return res.status(200).json({ new_game })
         } catch (error) {
             next(error);
         }

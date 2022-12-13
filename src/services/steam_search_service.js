@@ -9,6 +9,8 @@ module.exports = class SteamSearchController {
 
     steamSearch = async ({ keywords, slice_start }) => {
         try {
+
+
             let option_keywords = {
                 from: slice_start, size: 30,
                 index: process.env.GAME,
@@ -17,11 +19,25 @@ module.exports = class SteamSearchController {
                         bool: {
                             must: [
                                 {
-                                    match: {
-                                        "name.ngram_analyzer": {
-                                            "query": keywords,
-                                            "fuzziness": 2 // 오타 검색이 가능해짐 
-                                        }
+                                    bool: {
+                                        should: [
+                                            {
+                                                match: {
+                                                    "name.ngram_filter": {
+                                                        "query": keywords,
+                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
+                                                    }
+                                                },
+                                            },
+                                            {
+                                                match: {
+                                                    "name_eng.ngram_filter": {
+                                                        "query": keywords,
+                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
+                                                    }
+                                                }
+                                            }
+                                        ]
                                     }
                                 },
                                 { exists: { field: "img_url" } },
@@ -29,9 +45,7 @@ module.exports = class SteamSearchController {
                             ],
                             should: [
                                 { match_phrase: { "name.standard": keywords } }, // 구문 검색 up
-                                // { match_phrase_prefix: { "name.standard": keywords } }, // 구문검색을 하지만 마지막 요소는 접두사 
                                 { match: { "name.standard": keywords } }, // 노말 검색 up
-                                // { match: { "name.ngrams": keywords } }, // ngram 은 점수에는 아닌듯
                                 { match: { type: 'game' } }, // type이 game이면 + 
                             ]
                         }
@@ -123,15 +137,29 @@ module.exports = class SteamSearchController {
                         "bool": {
                             "must": [
                                 {
-                                    "match": {
-                                        "name.autocomplete": {
-                                            "query": value,
-                                            "fuzziness": 2 // 오타 검색이 가능해짐 -- 그럼 ngram아니어도 이거면 되는거 아냐? 어?
-                                        }
+                                    bool: {
+                                        should: [
+                                            {
+                                                match: {
+                                                    "name.ngram_filter": {
+                                                        "query": value,
+                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
+                                                    }
+                                                },
+                                            },
+                                            {
+                                                match: {
+                                                    "name_eng.ngram_filter": {
+                                                        "query": value,
+                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
+                                                    }
+                                                }
+                                            }
+                                        ]
                                     }
                                 },
-                                { "exists": { "field": "img_url" } }, // 이미지가 있어야함
-                                { "exists": { "field": "review_score_desc" } }, // 리뷰가 존재해야함
+                                { exists: { field: "img_url" } },
+                                { exists: { field: "review_score_desc" } },
                             ],
                             "should": [
                                 { "prefix": { "name.standard": { "value": value } } },

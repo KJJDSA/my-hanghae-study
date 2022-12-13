@@ -1,10 +1,8 @@
-const { Games } = require("../../models");
-const { Op } = require("sequelize");
+
 const Sequelize = require('sequelize')
 const client = require("../../ELK_connection");
 
 module.exports = class SteamSearchRepository {
-
 
   findWithES = async (options) => {
     try {
