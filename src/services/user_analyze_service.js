@@ -38,10 +38,8 @@ module.exports = class UserAnalyzeService {
                 index: env.ANALYZE,
                 body: {
                     query: {
-                        bool: {
-                            must: [
-                                { match: { label: "all" } },
-                            ],
+                        "term": {
+                            label: "all"
                         }
                     }
                 }
@@ -57,10 +55,8 @@ module.exports = class UserAnalyzeService {
                             index: env.GAME,
                             body: {
                                 query: {
-                                    bool: {
-                                        must: [
-                                            { match: { appid: i } }
-                                        ],
+                                    "term": {
+                                        appid: i
                                     }
                                 }
                             }
@@ -129,10 +125,8 @@ module.exports = class UserAnalyzeService {
                     index: env.GAME,
                     body: {
                         query: {
-                            bool: {
-                                must: [
-                                    { match: { appid: appid[0] } }
-                                ],
+                            "term": {
+                                appid: appid[0]
                             }
                         }
                     }
@@ -184,10 +178,8 @@ module.exports = class UserAnalyzeService {
                 index: env.USER_INFO,
                 body: {
                     query: {
-                        bool: {
-                            must: [
-                                { match: { userid: user_id } },
-                            ]
+                        "term": {
+                            userid: user_id
                         }
                     }
                 }
@@ -384,10 +376,8 @@ module.exports = class UserAnalyzeService {
                 index: env.ANALYZE,
                 body: {
                     query: {
-                        bool: {
-                            must: [
-                                { match: { userid: user_id } },
-                            ],
+                        "term": {
+                            userid: user_id
                         }
                     }
                 }
@@ -402,10 +392,8 @@ module.exports = class UserAnalyzeService {
                             index: env.GAME,
                             body: {
                                 query: {
-                                    bool: {
-                                        must: [
-                                            { match: { appid: i } }
-                                        ],
+                                    "term": {
+                                        appid: i
                                     }
                                 }
                             }
@@ -420,10 +408,8 @@ module.exports = class UserAnalyzeService {
                 index: env.USER_INFO,
                 body: {
                     query: {
-                        bool: {
-                            must: [
-                                { match: { userid: user_id } },
-                            ],
+                        "term": {
+                            userid: user_id
                         }
                     }
                 }
@@ -499,13 +485,12 @@ module.exports = class UserAnalyzeService {
                     index: env.GAME,
                     body: {
                         query: {
-                            bool: {
-                                must: [
-                                    { match: { appid: appid[0] } }
-                                ],
+                            "term": {
+                                appid: appid[0]
                             }
                         }
                     }
+                    
                 }
                 save_analyze.push(appid[0]);
                 game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]);
@@ -547,7 +532,6 @@ module.exports = class UserAnalyzeService {
     }
 
     newGame = async () => {
-        
         //일주일이전의 날
         const now = new Date();
         const year = now.getFullYear(); // 년
@@ -563,16 +547,13 @@ module.exports = class UserAnalyzeService {
             index: env.ANALYZE,
             body: {
                 query: {
-                    bool: {
-                        must: [
-                            { match: { label: "new" } },
-                        ],
+                    "term": {
+                        "label": "new"
                     }
                 }
             }
         }
         let check = await this.gamesRepository.findWithES(option_analyze);
-        // console.log(check.hits.hits[0])
         if (check.hits.hits.length !== 0) {
             let updatedAt = check.hits.hits[0]._source.updatedAt;
             if (today <= updatedAt) {
@@ -582,10 +563,8 @@ module.exports = class UserAnalyzeService {
                         index: env.GAME,
                         body: {
                             query: {
-                                bool: {
-                                    must: [
-                                        { match: { appid: i } }
-                                    ],
+                                "term": {
+                                    appid: i 
                                 }
                             }
                         }
@@ -615,7 +594,10 @@ module.exports = class UserAnalyzeService {
                         ],
                     }
                 }
+                        
             }
+                
+            
         }
         let get_new_game_list = await this.gamesRepository.findWithES(option)
 
@@ -626,7 +608,7 @@ module.exports = class UserAnalyzeService {
             week = new Date(year, month, day-7*(n+2)).toISOString();
         // 다른 곳에 저장되어있던 appid 리스트 받는다.
             option = {
-                index: "env.GAME",
+                index: env.GAME,
                 // 임시 인덱스(존재안함)
                 body: {
                     query: {
