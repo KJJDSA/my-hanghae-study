@@ -64,8 +64,8 @@ module.exports = class SteamSearchController {
         slice_start,
       });
 
-      // 레디스에 저장하기
-      // await redisClient.hSet("gamename", key, JSON.stringify({ data: list }));
+      // // 레디스에 저장하기
+      await redisClient.hSet("gamename", key, JSON.stringify({ data: list }));
 
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });

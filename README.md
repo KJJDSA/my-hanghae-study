@@ -13,36 +13,52 @@
 - 게임 리스트: 스팀에서 판매하는 15만여개의 게임 리스트
 - 게임 리뷰 리스트: 각 appid를 가진 리뷰 리스트 3만여개. 추후 최대 1000만개까지 수집 예정
   - 언어: 한국어, 영어
-- +메타스코어 점수 리스트: 리뷰하는 게임이 메타스코어 점수가 존재한다면 끌어오기 위해 수집.  
+  
+## 기술 스택 
+### Frontend: <img src="https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white"> <img src="https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
+### Framwork: <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white">
+### Database: <img src="https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white"> <img src="https://img.shields.io/badge/Elastic cloud-005571?style=for-the-badge&logo=elasticcloud&logoColor=white">
+### Cashing: <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white"> <img src="https://img.shields.io/badge/Amazon ElasticCash-232F3E?style=for-the-badge&logo=Amazonaws&logoColor=white">
+### Logging: <img src="https://img.shields.io/badge/Logstash-005571?style=for-the-badge&logo=Logstash&logoColor=white"> <img src="https://img.shields.io/badge/Winston-231F20?style=for-the-badge&logo=winston&logoColor=white">
+### Publish: <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/AmazonEC2-FF9900?style=for-the-badge&logo=AmazonEC2&logoColor=black">
+### Data Collection: <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white"> <img src="https://img.shields.io/badge/Lodash-3492FF?style=for-the-badge&logo=Lodash&logoColor=white">
 
-### 구현된 기능 
-로그인, 회원가입: 유저별 게임추천 기능 제작을 위해 기획
 
-검색 기능 
-  - 필터검색 기능: 언어, 추천여부
-  - 틀리지 않다는 전제 하에 키워드 검색 가능 
-    - 키워드가 부족하거나 중간에 빼먹더라도 검색 가능
-  - 검색 순서: 
-    - 게임 리스트 테이블에서 게임 검색 
-    - 관계형 데이터베이스 사용, appid를 외래키로 리뷰 리스트 및 메타스코어 JOIN
+## 서비스 아키텍처
+<img src='https://github.com/SteamReviewSearch/.github/blob/main/image/diagram.drawio%20(1).png'>
 
-로그 수집 및 추천 기능
-  - 유저 검색결과 수집
-  - 검색결과 분석, 가장 많은 검색결과를 가진 appid 리스트를 뽑아 3개 랜덤으로 출력
-
-프론트엔드 뼈대
-  - ajax, ejs를 활용, 한 페이지 내에서 추천과 검색 모두 이용 가능하도록 설계
-  - 새로고침시 추천배너가 새로 로딩되며, 검색결과를 append할 때면 아래로 밀려나 사라진것처럼 연출
-  - 가능한 가지고 있는 모든 field를 넣어보려 했으나 공간상, 또 유저사용경험상의 이유로 데이터의 80%만 출력중
-
-### 구현되지 않은 기능
-
-1. Elastic Search: 현재 데이터를 RDS에 저장, 사용중이나 추후 ES로 데이터 마이그레이션 예정
-2. 로드밸런서: 데이터 수집 - 완료 후 대량 요청건에 관한 솔루션 또한 추구할 예정
-3. 자동완성
-4. 유저별 게임추천 기능
 
 ## ERD
   ![ERD-2week](https://user-images.githubusercontent.com/113815932/202711210-9fe5c64a-2743-4816-a245-766565578b79.png)
 
 
+## Project Setting
+
+###  <img src="https://img.shields.io/badge/.ENV-ECD53F?style=flat-square&logo=.ENV&logoColor=000000"/>
+```
+MYSQL_USERNAME: mysql 아이디
+MYSQL_PASSWORD: mysql 비밀번호
+MYSQL_DATABASE: mysql 데이터베이스 이름
+MYSQL_HOST: mysql 계정
+PORT: 서버 포트
+SECRETKEY: jwt 암호키
+NODE_ENV: 개발/배포
+CLOUD_ID: elastic 클라우드
+USER_NAME: elastic 아이디
+PASSWORD: elastic 비밀번호
+LOG: elastic 인덱스
+GAME: elastic 인덱스
+USER_INFO: elastic 인덱스
+ANALYZE: elastic 인덱스
+```
+
+### <img src="https://img.shields.io/badge/Convention-D8352A?style=flat-square&logo=The Conversation&logoColor=000000"/>
+- 모델 이름 = 첫 글자 대문자, 무조건 복수형
+    - 컬럼명
+        - id: 소문*자 붙이기: id, userid, appid, steamid*
+        - *steam API 크롤링한 컬럼명은 그대로 사용*
+            - review_score, total_positive 등
+- 파일 이름 = 소문자 표기, 문자 구분자는 _
+- 함수, 메서드명 = 카멜식 작명(앞부분 소문자, _ 없이 대문자로 이어붙이기)
+- 클래스 명 = 파스칼식 작명(모든 단어 앞 대문자)
+- 변수명 = 스네이크식 작명( 모두 소문자, ‘_’ 사용 )
