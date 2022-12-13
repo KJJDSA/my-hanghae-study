@@ -280,9 +280,9 @@
               ` <div class="carousel-inner">
                 <div class="carousel-item active">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick='movePage("${array[0].appid}", "${array[0].name}")' src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick='movePage("${array[0].appid}", "${array[0].name.replace("'", "#quote#")}")' src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick='movePage("${array[0].appid}", "${array[0].name}")' style="cursor:pointer;">${array[0].name}</h3>
+                    <h3 onclick='movePage("${array[0].appid}", "${array[0].name.replace("'", "#quote#")}")' style="cursor:pointer;">${array[0].name}</h3>
                     <p>
                       장르: ${array[0].genre} /
                       리뷰 총점: ${array[0].review_score} /
@@ -292,9 +292,9 @@
                     </div>
                 <div class="carousel-item">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick='movePage("${array[1].appid}", "${array[1].name}")' src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick='movePage("${array[1].appid}", "${array[1].name.replace("'", "#quote#")}")' src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick='movePage("${array[1].appid}", "${array[1].name}")' style="cursor:pointer;">${array[1].name}</h3>
+                    <h3 onclick='movePage("${array[1].appid}", "${array[1].name.replace("'", "#quote#")}")' style="cursor:pointer;">${array[1].name}</h3>
                     <p>
                       장르: ${array[1].genre} /
                       리뷰 총점: ${array[1].review_score} /
@@ -304,9 +304,9 @@
                     </div>
                 <div class="carousel-item">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick='movePage("${array[2].appid}", "${array[2].name}")' src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick='movePage("${array[2].appid}", "${array[2].name.replace("'", "#quote#")}")' src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick='movePage("${array[2].appid}", "${array[2].name}")' style="cursor:pointer;">${array[2].name}</h3>
+                    <h3 onclick='movePage("${array[2].appid}", "${array[2].name.replace("'", "#quote#")}")' style="cursor:pointer;">${array[2].name}</h3>
                     <p>
                       장르: ${array[2].genre} /
                       리뷰 총점: ${array[2].review_score} /
