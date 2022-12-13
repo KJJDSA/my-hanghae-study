@@ -1,6 +1,6 @@
 const SteamSearchService = require("../services/steam_search_service");
 const Func = require("../routes/func");
-const redisClient = require("../../redis_connection");
+// const redisClient = require("../../redis_connection");
 
 module.exports = class SteamSearchController {
   steamSearchService = new SteamSearchService();
@@ -14,6 +14,8 @@ module.exports = class SteamSearchController {
       let keywords = keyword;
 
       let key = `${keyword}+${slice_start}`;
+
+
       // 레디스에 데이터가 있는지 확인
       let result = await redisClient.hGet("gamename", key);
       if (result !== null) {
@@ -21,6 +23,8 @@ module.exports = class SteamSearchController {
         console.timeEnd('keyword');
         return res.json(data);
       }
+
+
       let list = await this.steamSearchService.steamSearch({
         keywords,
         slice_start,
