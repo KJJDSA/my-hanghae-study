@@ -1,6 +1,6 @@
 const SteamSearchService = require("../services/steam_search_service");
 const Func = require("../routes/func");
-// const redisClient = require("../../redis_connection");
+const redisClient = require("../../redis_connection");
 
 module.exports = class SteamSearchController {
   steamSearchService = new SteamSearchService();
