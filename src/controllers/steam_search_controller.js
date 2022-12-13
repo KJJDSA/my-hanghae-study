@@ -10,20 +10,18 @@ module.exports = class SteamSearchController {
       // 시작
       const id = res.locals.id;
       const { keyword, slice_start } = req.body;
-      console.time('keyword');
+      console.time("keyword");
       let keywords = keyword;
 
       let key = `${keyword}+${slice_start}`;
 
-
       // 레디스에 데이터가 있는지 확인
       let result = await redisClient.hGet("gamename", key);
       if (result !== null) {
-        let data = JSON.parse(result);
-        console.timeEnd('keyword');
+        console.log("have Data in redis");
+        const data = JSON.parse(result);
         return res.json(data);
       }
-
 
       let list = await this.steamSearchService.steamSearch({
         keywords,
@@ -37,9 +35,8 @@ module.exports = class SteamSearchController {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
 
-      console.timeEnd('keyword');
+      console.timeEnd("keyword");
       return res.json({ data: list });
-
     } catch (error) {
       console.log(error);
       next(error);
@@ -48,20 +45,18 @@ module.exports = class SteamSearchController {
 
   steamSearchRender = async (req, res, next) => {
     try {
-      console.time('keyword');
+      console.time("keyword");
       const id = res.locals.id;
       const { keyword, slice_start } = req.body;
       let keywords = keyword;
       let key = `${keyword}+${slice_start}`;
 
-      let result = await redisClient.hGet("gamename", key);
+      const result = await redisClient.hGet("gamename", key);
       if (result !== null) {
         console.log("have Data in redis");
-        let data = JSON.parse(result);
-        console.timeEnd('keyword');
-        return res.json(data);
+        const data = JSON.parse(result);
+        return res.render("index", data);
       }
-
       let list = await this.steamSearchService.steamSearch({
         keywords,
         // filter_whether,
@@ -74,7 +69,7 @@ module.exports = class SteamSearchController {
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
-      console.timeEnd('keyword');
+      console.timeEnd("keyword");
       res.render("index", { data: list });
     } catch (error) {
       console.log(error);
@@ -84,7 +79,7 @@ module.exports = class SteamSearchController {
 
   steamAppidSearch = async (req, res, next) => {
     try {
-      console.time('review');
+      console.time("review");
       const id = res.locals.id;
 
       // GET과 POST 둘 다 받을 수 있도록 분기 작성
@@ -94,6 +89,15 @@ module.exports = class SteamSearchController {
       else request = req.body;
       const { appid, slice_start, filterExists, filter, sort } = request;
 
+      let key = `${appid}+${slice_start}+${filterExists}+${filter}+${sort}`;
+      console.log(key.split("+"));
+      const result = await redisClient.hGet("appid", key);
+      if (result !== null) {
+        console.log("have Data in redis");
+        const data = JSON.parse(result);
+        return res.json({ data });
+      }
+
       if (filterExists === undefined) {
         const { reviews, game_doc } =
           await this.steamSearchService.steamAppidSearch({
@@ -102,6 +106,11 @@ module.exports = class SteamSearchController {
             filterExists,
             sort,
           });
+        await redisClient.hSet(
+          "appid",
+          key,
+          JSON.stringify({ game_doc, data: reviews })
+        );
 
         res.json({ game_doc, data: reviews });
       } else {
@@ -113,6 +122,12 @@ module.exports = class SteamSearchController {
             filterExists,
             sort,
           });
+
+        await redisClient.hSet(
+          "appid",
+          key,
+          JSON.stringify({ game_doc, data: reviews })
+        );
         res.json({ game_doc, data: reviews });
       }
 
@@ -125,9 +140,8 @@ module.exports = class SteamSearchController {
           list: appid,
         });
       }
-      console.timeEnd('review');
-    }
-    catch (error) {
+      console.timeEnd("review");
+    } catch (error) {
       console.log(error);
       next(error);
     }
@@ -135,13 +149,29 @@ module.exports = class SteamSearchController {
 
   steamAppidSearchRender = async (req, res, next) => {
     try {
-      console.time('review');
+      console.time("review");
       const id = res.locals.id;
 
       const { appid, name } = req.query;
       // keyword is appid
       const slice_start = 0;
       const sort = [{ weighted_vote_score: "desc" }];
+      let key = `${appid}+${slice_start}+${undefined}+${undefined}+${sort}`;
+      // console.log(key);
+
+      //레디스에 있는지 확인
+      const result = await redisClient.hGet("appid", key);
+      if (result !== null) {
+        console.log("have Data in redis");
+        const data = JSON.parse(result);
+        return res.render("search", {
+          result: true,
+          data: data.data,
+          game_doc: data.game_doc,
+          name,
+          func: this.func,
+        });
+      }
       const { reviews, game_doc } =
         await this.steamSearchService.steamAppidSearch({
           appid,
@@ -157,7 +187,14 @@ module.exports = class SteamSearchController {
           list: appid,
         });
       }
-      console.timeEnd('review');
+
+      await redisClient.hSet(
+        "appid",
+        key,
+        JSON.stringify({ game_doc, data: reviews })
+      );
+
+      console.timeEnd("review");
       return res.render("search", {
         result: true,
         data: reviews,
@@ -176,8 +213,15 @@ module.exports = class SteamSearchController {
 
   searchAutocomplete = async (req, res) => {
     const { value } = req.body;
-    // console.log(value)
+    const key = value;
+    const result = await redisClient.hGet("auto-complete", key);
+    if (result !== null) {
+      console.log("have Data in redis");
+      const data = JSON.parse(result);
+      return res.json(data);
+    }
     const list = await this.steamSearchService.searchAutocomplete({ value });
+    await redisClient.hSet("auto-complete", key, JSON.stringify(list));
     res.json(list);
   };
 };
