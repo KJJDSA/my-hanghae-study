@@ -183,6 +183,7 @@ module.exports = class SteamSearchController {
 
   steamAppidSearchRender = async (req, res, next) => {
     try {
+      const id = res.locals.id;
       console.time("review");
 
       const { appid, name } = req.query;
