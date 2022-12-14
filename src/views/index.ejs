@@ -209,7 +209,7 @@
       const appendingIndex = (response) => {
         for (let i = 0; i < response.length; i++) {
           console.log(response[i]["_source"])
-          let name = response[i]["_source"]["name"].replaceAll("'", "#quote#") // 홀따옴표 문제
+          let name = response[i]["_source"]["name"].replace("'", "#quote#") // 홀따옴표 문제
           let temp_html = `
                     <div class="card mb-3 game_card" style="max-width: 1010px; " id="game">
                       <div class="row g-0">

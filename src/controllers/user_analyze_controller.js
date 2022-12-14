@@ -19,7 +19,6 @@ module.exports = class UserAnalyzeController {
         } catch (error) {
             next(error)
         }
-
     }
 
     UserBestList = async (req, res, next) => {
@@ -32,9 +31,9 @@ module.exports = class UserAnalyzeController {
         }
     }
 
-    newGame=async(req,res,next)=>{
+    newGame = async (req, res, next) => {
         try {
-            const new_game=await this.userAnalyzeService.newGame();
+            const new_game = await this.userAnalyzeService.newGame();
             return res.status(200).json({ new_game })
         } catch (error) {
             next(error);
