@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>The search service</title>
+  <link rel="icon" href="https://steamforyou.site/images/logo.png">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>Steam For U</title>
 
   <!-- 부트스트랩 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -94,7 +95,7 @@
               }
             });
           },
-          minLength: 2,
+          minLength: 3,
           delay: 350,
           select: function (event, ui) {
             // 리뷰검색 이벤트
@@ -215,7 +216,7 @@
                         <div class="col-md-4" 
                         onclick="movePage('${response[i]._source.appid}', '${name}')" 
                         style="cursor:pointer;display:flex;justify-content: center;align-items: center">
-                          <img style="height: 156px" src="${response[i]["_source"]['img_url'] || "http://localhost:3000/images/ready.jpg"}" class="img-fluid rounded-start" alt="..." >
+                          <img style="height: 156px" src="${response[i]["_source"]['img_url'] || "https://steamforyou.site/images/ready.jpg"}" class="img-fluid rounded-start" alt="..." >
                         </div>
                         <div class="col-md-8">
                           <div class="card-body">
@@ -279,9 +280,9 @@
               ` <div class="carousel-inner">
                 <div class="carousel-item active">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick='movePage("${array[0].appid}", "${array[0].name}")' src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick='movePage("${array[0].appid}", "${array[0].name.replace("'", "#quote#")}")' src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick='movePage("${array[0].appid}", "${array[0].name}")' style="cursor:pointer;">${array[0].name}</h3>
+                    <h3 onclick='movePage("${array[0].appid}", "${array[0].name.replace("'", "#quote#")}")' style="cursor:pointer;">${array[0].name}</h3>
                     <p>
                       장르: ${array[0].genre} /
                       리뷰 총점: ${array[0].review_score} /
@@ -291,9 +292,9 @@
                     </div>
                 <div class="carousel-item">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick='movePage("${array[1].appid}", "${array[1].name}")' src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick='movePage("${array[1].appid}", "${array[1].name.replace("'", "#quote#")}")' src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick='movePage("${array[1].appid}", "${array[1].name}")' style="cursor:pointer;">${array[1].name}</h3>
+                    <h3 onclick='movePage("${array[1].appid}", "${array[1].name.replace("'", "#quote#")}")' style="cursor:pointer;">${array[1].name}</h3>
                     <p>
                       장르: ${array[1].genre} /
                       리뷰 총점: ${array[1].review_score} /
@@ -303,9 +304,9 @@
                     </div>
                 <div class="carousel-item">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick='movePage("${array[2].appid}", "${array[2].name}")' src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick='movePage("${array[2].appid}", "${array[2].name.replace("'", "#quote#")}")' src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick='movePage("${array[2].appid}", "${array[2].name}")' style="cursor:pointer;">${array[2].name}</h3>
+                    <h3 onclick='movePage("${array[2].appid}", "${array[2].name.replace("'", "#quote#")}")' style="cursor:pointer;">${array[2].name}</h3>
                     <p>
                       장르: ${array[2].genre} /
                       리뷰 총점: ${array[2].review_score} /
@@ -371,7 +372,8 @@
 </head>
 
 <body>
-  <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;" id="isLogin">
+  <section class="banner" style="display: flex;flex-direction: column;justify-content: center; align-items: center;"
+    id="isLogin">
   </section>
   <section style="display: flex;flex-direction: column;justify-content: center; align-items: center;">
     <h1 class="title"><a href="/">Steam For U</a></h1>

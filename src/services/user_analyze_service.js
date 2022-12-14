@@ -1,5 +1,6 @@
 const GamesRepository = require("../repositories/games_repository");
 const UserRepository = require("../repositories/user_repository");
+const redisClient = require("../../redis_connection");
 require("dotenv").config();
 const env = process.env;
 // 임시 코드 repository 
@@ -34,14 +35,22 @@ module.exports = class UserAnalyzeService {
             const minutes = now.getMinutes();  // 분
             const seconds = now.getSeconds();  // 초
             const today = new Date(year, month, day, hours,).toISOString();
+
+            let time = year + month + day + hours + minutes
+            let set_time = time + 5
+            // 레디스에 있는지 확인
+            const check_result = await redisClient.hGet("bestGame", "list");
+            if (check_result !== null) {
+                const data = JSON.parse(check_result).data;
+                if (data.time > time) return data.data;
+            }
+
             let option_analyze = {
                 index: env.ANALYZE,
                 body: {
                     query: {
-                        bool: {
-                            must: [
-                                { match: { label: "all" } },
-                            ],
+                        "term": {
+                            label: "all"
                         }
                     }
                 }
@@ -57,17 +66,21 @@ module.exports = class UserAnalyzeService {
                             index: env.GAME,
                             body: {
                                 query: {
-                                    bool: {
-                                        must: [
-                                            { match: { appid: i } }
-                                        ],
+                                    "term": {
+                                        appid: i
                                     }
                                 }
                             }
                         }
                         game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]._source);
                     }
-                    check=null
+                    check = null
+                    // 레디스에 저장하기
+                    let cash = {
+                        data: game_list,
+                        time: set_time
+                    }
+                    await redisClient.hSet("bestGame", "list", JSON.stringify({ data: cash }));
                     return game_list
                 }
             }
@@ -129,10 +142,8 @@ module.exports = class UserAnalyzeService {
                     index: env.GAME,
                     body: {
                         query: {
-                            bool: {
-                                must: [
-                                    { match: { appid: appid[0] } }
-                                ],
+                            "term": {
+                                appid: appid[0]
                             }
                         }
                     }
@@ -166,11 +177,18 @@ module.exports = class UserAnalyzeService {
                     }
                 }
                 await this.userRepository.updateWintES(option_analyze)
-                
             }
-            check=null
-            save_analyze=null
-            filelist=null
+
+            // 레디스에 저장하기
+            let cash = {
+                data: result_game,
+                time: set_time
+            }
+            await redisClient.hSet("bestGame", "list", JSON.stringify({ data: cash }));
+
+            check = null
+            save_analyze = null
+            filelist = null
             return result_game
         } catch (error) {
             console.log(error)
@@ -184,10 +202,8 @@ module.exports = class UserAnalyzeService {
                 index: env.USER_INFO,
                 body: {
                     query: {
-                        bool: {
-                            must: [
-                                { match: { userid: user_id } },
-                            ]
+                        "term": {
+                            userid: user_id
                         }
                     }
                 }
@@ -384,10 +400,8 @@ module.exports = class UserAnalyzeService {
                 index: env.ANALYZE,
                 body: {
                     query: {
-                        bool: {
-                            must: [
-                                { match: { userid: user_id } },
-                            ],
+                        "term": {
+                            userid: user_id
                         }
                     }
                 }
@@ -402,17 +416,15 @@ module.exports = class UserAnalyzeService {
                             index: env.GAME,
                             body: {
                                 query: {
-                                    bool: {
-                                        must: [
-                                            { match: { appid: i } }
-                                        ],
+                                    "term": {
+                                        appid: i
                                     }
                                 }
                             }
                         }
                         game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]);
                     }
-                    check=null
+                    check = null
                     return game_list
                 }
             }
@@ -420,10 +432,8 @@ module.exports = class UserAnalyzeService {
                 index: env.USER_INFO,
                 body: {
                     query: {
-                        bool: {
-                            must: [
-                                { match: { userid: user_id } },
-                            ],
+                        "term": {
+                            userid: user_id
                         }
                     }
                 }
@@ -499,13 +509,12 @@ module.exports = class UserAnalyzeService {
                     index: env.GAME,
                     body: {
                         query: {
-                            bool: {
-                                must: [
-                                    { match: { appid: appid[0] } }
-                                ],
+                            "term": {
+                                appid: appid[0]
                             }
                         }
                     }
+
                 }
                 save_analyze.push(appid[0]);
                 game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]);
@@ -535,10 +544,10 @@ module.exports = class UserAnalyzeService {
                 }
                 await this.userRepository.updateWintES(option_analyze)
             }
-            target_list=null
-            result=null
-            check=null
-            save_analyze=null
+            target_list = null
+            result = null
+            check = null
+            save_analyze = null
             return game_list;
         } catch (error) {
             console.log(error)
@@ -547,44 +556,117 @@ module.exports = class UserAnalyzeService {
     }
 
     newGame = async () => {
-
+        //일주일이전의 날
+        const now = new Date();
+        const year = now.getFullYear(); // 년
+        const month = now.getMonth();   // 월
+        const day = now.getDate();      // 일
+        const hours = now.getHours(); // 시
+        const minutes = now.getMinutes();  // 분
+        const seconds = now.getSeconds();  // 초
+        const today = new Date(year, month, day, hours,).toISOString();
         // 다른 곳에 저장되어있던 appid 리스트 받는다.
-        let option = {
-            index: "new_game",
-            // 임시 인덱스(존재안함)
+
+        let option_analyze = {
+            index: env.ANALYZE,
             body: {
                 query: {
-                    bool: {
+                    "term": {
+                        "label": "new"
                     }
                 }
             }
         }
-
-        let get_new_game_list = await this.gamesRepository.findWithES(option)
-
-        // 리스트가 없으면 바로 종료
-        if (get_new_game_list.hits.hits.length === 0) {
-            return [];
+        let check = await this.gamesRepository.findWithES(option_analyze);
+        if (check.hits.hits.length !== 0) {
+            let updatedAt = check.hits.hits[0]._source.updatedAt;
+            if (today <= updatedAt) {
+                let game_list = [];
+                for (let i of check.hits.hits[0]._source.appid) {
+                    const option_appid = {
+                        index: env.GAME,
+                        body: {
+                            query: {
+                                "term": {
+                                    appid: i
+                                }
+                            }
+                        }
+                    }
+                    game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]._source);
+                }
+                check = null
+                return game_list
+            }
         }
 
-        let game_info_list = [];
-        for (let appid of get_new_game_list.hits.hits[0]._source.appid_list) {
-            const option_appid = {
+
+        let week = new Date(year, month, day - 7).toISOString();
+        let option = {
+            index: env.GAME,
+            body: {
+                query: {
+                    bool: {
+                        must: [
+                            {
+                                range: {
+                                    'relase_date': {
+                                        gt: week
+                                    }
+                                }
+                            }
+                        ],
+                    }
+                }
+
+            }
+
+
+        }
+        let get_new_game_list = await this.gamesRepository.findWithES(option)
+
+        // 리스트가 없으면 그 다음주로 이동 그렇게 한달이내의 게임 없으면 빈배열 반환
+        let n = 0;
+        let game_count = 10;
+        while (get_new_game_list.hits.hits.length < game_count && n <= 4) {
+            week = new Date(year, month, day - 7 * (n + 2)).toISOString();
+            // 다른 곳에 저장되어있던 appid 리스트 받는다.
+            option = {
                 index: env.GAME,
+                // 임시 인덱스(존재안함)
                 body: {
                     query: {
                         bool: {
                             must: [
-                                { match: { appid: appid } }
+                                {
+                                    range: {
+                                        'relase_date': {
+                                            gt: week
+                                        }
+                                    }
+                                }
                             ],
                         }
                     }
                 }
             }
-            const game_info = await this.gamesRepository.findWithES(option_appid);
-            game_info_list.push(game_info.hits.hits[0]._source);
+            let add_list = await this.gamesRepository.findWithES(option)
+            for (let ele of add_list.hits.hits) {
+                get_new_game_list.hits.hits.push(ele.hits.hits);
+            }
+            get_new_game_list.hits.hits.length;
+            n++;
         }
-        game_info_list.sort((a, b) => {
+        if (get_new_game_list.length === 0) {
+            return [];
+        }
+
+
+        let game_info_list = [];
+        for (let ele of get_new_game_list.hits.hits) {
+            game_info_list.push(ele._source);
+        }
+        game_info_list = game_info_list.sort((a, b) => {
             if (b.total_positive === a.total_positive) {
                 return a.total_negative - b.total_negative
             } else {
@@ -592,10 +674,42 @@ module.exports = class UserAnalyzeService {
             }
         })
 
-        game_info_list.filter((ele, index) => {
-            return index <= 10;
+        let save_analyze = [];
+        game_info_list = game_info_list.filter((ele, index) => {
+            if (index <= 10) {
+                save_analyze.push(ele.appid);
+                return true
+            } else {
+                return false
+            }
         })
 
+        //저장 check
+        if (check.hits.hits.length === 0) {
+            let option_analyze = {
+                index: env.ANALYZE,
+                body: {
+                    label: "new",
+                    userid: 0,
+                    appid: save_analyze,
+                    updatedAt: new Date().toISOString()
+                }
+            }
+            await this.userRepository.insertWithES(option_analyze)
+        } else {
+            let option_analyze = {
+                index: env.ANALYZE,
+                id: check.hits.hits[0]._id,
+                body: {
+                    doc: {
+                        appid: save_analyze,
+                        updatedAt: new Date().toISOString()
+                    }
+                }
+            }
+            await this.userRepository.updateWintES(option_analyze)
+
+        }
 
         return game_info_list;
     }
