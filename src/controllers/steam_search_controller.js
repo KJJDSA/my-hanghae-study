@@ -16,16 +16,16 @@ module.exports = class SteamSearchController {
       let key = `${keyword}+${slice_start}`;
 
       // 레디스에 데이터가 있는지 확인
-      // let result = await redisClient.hGet("gamename", key);
-      // if (result !== null) {
-      //   const data = JSON.parse(result);
-      //   if (id !== undefined && data.length) {
-      //     await this.steamSearchService.searchLogger({ id, keywords, list: data });
-      //   }
-      //   // console.log("have Data in redis"); 
-      //   console.timeEnd("keyword");
-      //   return res.json(data);
-      // }
+      let result = await redisClient.hGet("gamename", key);
+      if (result !== null) {
+        const data = JSON.parse(result);
+        if (id !== undefined && data.length) {
+          await this.steamSearchService.searchLogger({ id, keywords, list: data });
+        }
+        // console.log("have Data in redis"); 
+        console.timeEnd("keyword");
+        return res.json(data);
+      }
 
       let list = await this.steamSearchService.steamSearch({
         keywords,
@@ -262,13 +262,13 @@ module.exports = class SteamSearchController {
   searchAutocomplete = async (req, res) => {
     const { value } = req.body;
     const key = value;
-    // const result = await redisClient.hGet("auto-complete", key);
-    // if (result !== null) {
+    const result = await redisClient.hGet("auto-complete", key);
+    if (result !== null) {
 
-    //   // console.log("have Data in redis");
-    //   const data = JSON.parse(result);
-    //   return res.json(data);
-    // }
+      // console.log("have Data in redis");
+      const data = JSON.parse(result);
+      return res.json(data);
+    }
     const list = await this.steamSearchService.searchAutocomplete({ value });
     await redisClient.hSet("auto-complete", key, JSON.stringify(list));
     res.json(list);
