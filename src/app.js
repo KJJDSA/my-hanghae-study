@@ -1,11 +1,19 @@
 const express = require("express");
 const app = express();
+const rateLimit = require("express-rate-limit");
 const routes = require("./routes");
 const ejs = require("ejs");
 const path = require("path");
 const { error, error404 } = require("./middlewares/error/error");
 require("dotenv").config();
 const env = process.env;
+
+app.use(rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 100
+})
+
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
