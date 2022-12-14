@@ -19,26 +19,15 @@ module.exports = class SteamSearchController {
                         bool: {
                             must: [
                                 {
-                                    bool: {
-                                        should: [
-                                            {
-                                                match: {
-                                                    "name.ngram_filter": {
-                                                        "query": keywords,
-                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
-                                                    }
-                                                },
-                                            },
-                                            {
-                                                match: {
-                                                    "name_eng.ngram_filter": {
-                                                        "query": keywords,
-                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
-                                                    }
-                                                }
-                                            }
+                                    multi_match: {
+                                        "query": keywords,
+                                        "fuzziness": 2, // 오타 검색이 가능해짐
+                                        "fields": [
+                                            "name_eng.ngram_filter",
+                                            "name.ngram_filter"
                                         ]
-                                    }
+
+                                    },
                                 },
                                 { exists: { field: "img_url" } },
                                 { exists: { field: "review_score_desc" } },
@@ -46,7 +35,14 @@ module.exports = class SteamSearchController {
                             should: [
                                 { match_phrase: { "name.standard": keywords } }, // 구문 검색 up
                                 { match: { "name.standard": keywords } }, // 노말 검색 up
-                                { match: { type: 'game' } }, // type이 game이면 + 
+                                {
+                                    match: {
+                                        type: {
+                                            query: 'game',
+                                            boost: 2.5
+                                        }
+                                    }
+                                }, // type이 game이면 + 
                             ]
                         }
                     }
@@ -137,34 +133,30 @@ module.exports = class SteamSearchController {
                         "bool": {
                             "must": [
                                 {
-                                    bool: {
-                                        should: [
-                                            {
-                                                match: {
-                                                    "name.ngram_filter": {
-                                                        "query": value,
-                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
-                                                    }
-                                                },
-                                            },
-                                            {
-                                                match: {
-                                                    "name_eng.ngram_filter": {
-                                                        "query": value,
-                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
-                                                    }
-                                                }
-                                            }
+                                    multi_match: {
+                                        "query": value,
+                                        "fuzziness": 2, // 오타 검색이 가능해짐
+                                        "fields": [
+                                            "name_eng.ngram_filter",
+                                            "name.ngram_filter"
                                         ]
-                                    }
+
+                                    },
                                 },
                                 { exists: { field: "img_url" } },
                                 { exists: { field: "review_score_desc" } },
                             ],
-                            "should": [
-                                { "prefix": { "name.standard": { "value": value } } },
-                                { "match": { "name.standard": value } }, // 노말 검색 up
-                                { "match": { "type": 'game' } }, // type이 game이면 + 
+                            should: [
+                                { match_phrase: { "name.standard": value } }, // 구문 검색 up
+                                { match: { "name.standard": value } }, // 노말 검색 up
+                                {
+                                    match: {
+                                        type: {
+                                            query: 'game',
+                                            boost: 2.5
+                                        }
+                                    }
+                                }, // type이 game이면 + 
                             ]
                         }
                     }

@@ -1,4 +1,5 @@
 const redis = require("redis");
+
 require("dotenv").config();
 
 const redisClient = redis.createClient({
@@ -12,9 +13,11 @@ const redisClient = redis.createClient({
 redisClient.on("connect", () => {
   console.info("Redis connected!");
 });
+
 redisClient.on("error", (err) => {
   console.error("Redis Client Error", err);
 });
+
 redisClient.connect();
 
 module.exports = redisClient;
