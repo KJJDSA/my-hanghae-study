@@ -202,6 +202,7 @@
               return;
             }
             if (isfirst == true) appendingGameDoc(response)
+
             appendingReviews(response)
             // 필터넣는 버튼, 안넣는 버튼 구분해야해서 매번 만들어줘야함
             $("#spinner").empty();
@@ -232,8 +233,8 @@
                   <div class="card-body">
                     <h5 class="card-title">${game_doc["name"]}</h5>
                     <p class="card-text">
-                      STEAM 평가: ${game_doc["review_score_desc"]} / 
-                      Metacritic: ${game_doc["metacritic"] ? game_doc["metacritic"]["score"] + "점" : "없음"}
+                      STEAM 평가: ${game_doc["review_score_desc"]} 
+                      ${response["metacritic"] ? "/ Metacritic: " + response["metacritic"]["score"] + "점" : ""}
                     </p>
                     <p class="card-text"><small class="text-muted">
                       ${game_doc["short_description"] ? game_doc["short_description"] : "-"}
@@ -431,8 +432,8 @@
                     <%= game_doc["name"] %>
                   </h5>
                   <p class="card-text">
-                    STEAM 평가: <%= game_doc["review_score_desc"] %> /
-                      Metacritic: <%= game_doc["metacritic"] ? game_doc["metacritic"]["score"] + "점" : "없음" %>
+                    STEAM 평가: <%= game_doc["review_score_desc"] %>
+                      <%= game_doc["metacritic"] ? "/ Metacritic: " + game_doc["metacritic"]["score"] + "점" : "" %>
                   </p>
                   <p class="card-text"><small class="text-muted">
                       <%= game_doc["short_description"] ? game_doc["short_description"] :"-" %>
