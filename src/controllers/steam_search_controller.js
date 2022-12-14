@@ -38,7 +38,6 @@ module.exports = class SteamSearchController {
       if (id !== undefined && list.length) {
         await this.steamSearchService.searchLogger({ id, keywords, list });
       }
-
       console.timeEnd("keyword");
       return res.json({ data: list });
     } catch (error) {
@@ -57,7 +56,6 @@ module.exports = class SteamSearchController {
 
       const result = await redisClient.hGet("gamename", key);
       if (result !== null) {
-
         const data = JSON.parse(result);
 
         if (id !== undefined && data.length) {
@@ -68,7 +66,6 @@ module.exports = class SteamSearchController {
         console.timeEnd("keyword");
         return res.render("index", data);
       }
-
       let list = await this.steamSearchService.steamSearch({
         keywords,
         // filter_whether,
@@ -104,7 +101,6 @@ module.exports = class SteamSearchController {
 
       let key = `${appid}+${slice_start}+${filterExists}+${filter}+${sort}`;
       console.log(key.split("+"));
-
       const result = await redisClient.hGet("appid", key);
       if (result !== null) { // 캐싱된 데이터 있음
         const data = JSON.parse(result);
@@ -188,7 +184,6 @@ module.exports = class SteamSearchController {
   steamAppidSearchRender = async (req, res, next) => {
     try {
       console.time("review");
-      const id = res.locals.id;
 
       const { appid, name } = req.query;
       // keyword is appid
@@ -222,7 +217,6 @@ module.exports = class SteamSearchController {
         });
       }
 
-
       const { reviews, game_doc } =
         await this.steamSearchService.steamAppidSearch({
           appid,
@@ -244,6 +238,7 @@ module.exports = class SteamSearchController {
         key,
         JSON.stringify({ game_doc, data: reviews })
       );
+
 
       console.timeEnd("review");
       return res.render("search", {
@@ -267,6 +262,7 @@ module.exports = class SteamSearchController {
     const key = value;
     const result = await redisClient.hGet("auto-complete", key);
     if (result !== null) {
+
       // console.log("have Data in redis");
       const data = JSON.parse(result);
       return res.json(data);
