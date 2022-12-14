@@ -2,6 +2,7 @@ const GamesRepository = require("../repositories/games_repository");
 const ReviewsRepository = require("../repositories/reviews_repository");
 let { search } = require('../middlewares/log/search_logger');
 let { search_result } = require('../middlewares/log/search_result_logger');
+let { explain } = require('../middlewares/log/search_result_logger');
 require("dotenv").config();
 module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
@@ -14,14 +15,15 @@ module.exports = class SteamSearchController {
             let option_keywords = {
                 from: slice_start, size: 30,
                 index: process.env.GAME,
+                explain: true,
                 body: {
                     query: {
                         bool: {
-                            must: [
+                            filter: [
                                 {
                                     multi_match: {
                                         "query": keywords,
-                                        "fuzziness": 2, // 오타 검색이 가능해짐
+                                        // "fuzziness": 1, // multi_search 적용시 2~3배 느려짐
                                         "fields": [
                                             "name_eng.ngram_filter",
                                             "name.ngram_filter"
@@ -37,19 +39,19 @@ module.exports = class SteamSearchController {
                                 { match: { "name.standard": keywords } }, // 노말 검색 up
                                 {
                                     match: {
-                                        type: {
-                                            query: 'game',
-                                            boost: 2.5
-                                        }
+                                        type: { query: 'game', boost: 30 }// type이 game이면 + 
                                     }
-                                }, // type이 game이면 + 
+                                },
                             ]
                         }
                     }
                 }
             }
             const game_list = await this.gamesRepository.findWithES(option_keywords);
-            // console.log(game_list)
+
+            // for (let i = 0; i < 5; i++) {
+            //     console.log(game_list.hits.hits[i], "////", game_list.hits.hits[i]._explanation.details[0].details, "////", game_list.hits.hits[i]._explanation)
+            // }
             return game_list.hits.hits
         } catch (error) {
             console.log(error)
@@ -80,7 +82,7 @@ module.exports = class SteamSearchController {
             }
             // console.log(review_option.body.sort)
             // 필터 넣어주기
-            if (filterExists) {
+            if (filterExists === "true") {
                 let array = []
                 for (let key in filter) {
                     // key 는 []로 감싸야 한다.
@@ -131,14 +133,14 @@ module.exports = class SteamSearchController {
                 "body": {
                     "query": {
                         "bool": {
-                            "must": [
+                            filter: [
                                 {
                                     multi_match: {
                                         "query": value,
                                         "fuzziness": 2, // 오타 검색이 가능해짐
                                         "fields": [
-                                            "name_eng.ngram_filter",
-                                            "name.ngram_filter"
+                                            "name_eng.autocomplete",
+                                            "name.autocomplete"
                                         ]
 
                                     },
@@ -153,7 +155,7 @@ module.exports = class SteamSearchController {
                                     match: {
                                         type: {
                                             query: 'game',
-                                            boost: 2.5
+                                            boost: 30
                                         }
                                     }
                                 }, // type이 game이면 + 
