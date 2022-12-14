@@ -4,9 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="http://localhost:3000/images/logo.png">
+  <link rel="icon" href="https://steamforyou.site/images/logo.png">
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
+  <title>Steam For U</title>
   <!-- 부트스트랩 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
@@ -223,9 +224,9 @@
             <div class="card mb-3 game_card" style="max-width: 1010px; " id="game">
               <div class="row g-0">
                 <div class="col-md-4" 
-                onclick="location.href='${game_doc['img_url'] || "http://localhost:3000/images/ready.jpg"}'" 
+                onclick="location.href='${game_doc['img_url'] || "https://steamforyou.site/images/ready.jpg"}'" 
                 style="cursor:pointer;display:flex;justify-content: center;align-items: center">
-                  <img style="height: 156px" src="${game_doc['img_url'] || "http://localhost:3000/images/ready.jpg"}" class="img-fluid rounded-start" alt="..." >
+                  <img style="height: 156px" src="${game_doc['img_url'] || "https://steamforyou.site/images/ready.jpg"}" class="img-fluid rounded-start" alt="..." >
                 </div>
                 <div class="col-md-8">
                   <div class="card-body">
@@ -418,9 +419,10 @@
           <div class="card mb-3 game_card" style="max-width: 1010px; " id="game">
             <div class="row g-0">
               <div class="col-md-4"
-                onclick="location.href='<%= game_doc.img_url || `http://localhost:3000/images/ready.jpg` %>'"
+                onclick="location.href='<%= game_doc.img_url || `https://steamforyou.site/images/ready.jpg` %>'"
                 style="cursor:pointer;display:flex ;justify-content: center; align-items: center">
-                <img style="height: 156px" src="<%= game_doc['img_url'] || 'http://localhost:3000/images/ready.jpg'  %>"
+                <img style="height: 156px"
+                  src="<%= game_doc['img_url'] || 'https://steamforyou.site/images/ready.jpg'  %>"
                   class="img-fluid rounded-start" alt="...">
               </div>
               <div class="col-md-8">
