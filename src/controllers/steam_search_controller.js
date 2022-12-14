@@ -19,10 +19,11 @@ module.exports = class SteamSearchController {
       let result = await redisClient.hGet("gamename", key);
       if (result !== null) {
         const data = JSON.parse(result);
-        if (id !== undefined && list.length) {
+        if (id !== undefined && data.length) {
           await this.steamSearchService.searchLogger({ id, keywords, list: data });
         }
-        console.log("have Data in redis"); console.timeEnd("keyword");
+        // console.log("have Data in redis"); 
+        console.timeEnd("keyword");
         return res.json(data);
       }
 
@@ -59,7 +60,7 @@ module.exports = class SteamSearchController {
 
         const data = JSON.parse(result);
 
-        if (id !== undefined && list.length) {
+        if (id !== undefined && data.length) {
           await this.steamSearchService.searchLogger({ id, keywords, list: data });
         }
 
