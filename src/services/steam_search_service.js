@@ -2,6 +2,7 @@ const GamesRepository = require("../repositories/games_repository");
 const ReviewsRepository = require("../repositories/reviews_repository");
 let { search } = require('../middlewares/log/search_logger');
 let { search_result } = require('../middlewares/log/search_result_logger');
+let { explain } = require('../middlewares/log/search_result_logger');
 require("dotenv").config();
 module.exports = class SteamSearchController {
     gamesRepository = new GamesRepository();
@@ -14,31 +15,21 @@ module.exports = class SteamSearchController {
             let option_keywords = {
                 from: slice_start, size: 30,
                 index: process.env.GAME,
+                explain: true,
                 body: {
                     query: {
                         bool: {
-                            must: [
+                            filter: [
                                 {
-                                    bool: {
-                                        should: [
-                                            {
-                                                match: {
-                                                    "name.ngram_filter": {
-                                                        "query": keywords,
-                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
-                                                    }
-                                                },
-                                            },
-                                            {
-                                                match: {
-                                                    "name_eng.ngram_filter": {
-                                                        "query": keywords,
-                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
-                                                    }
-                                                }
-                                            }
+                                    multi_match: {
+                                        "query": keywords,
+                                        // "fuzziness": 1, // multi_search 적용시 2~3배 느려짐
+                                        "fields": [
+                                            "name_eng.ngram_filter",
+                                            "name.ngram_filter"
                                         ]
-                                    }
+
+                                    },
                                 },
                                 { exists: { field: "img_url" } },
                                 { exists: { field: "review_score_desc" } },
@@ -46,14 +37,21 @@ module.exports = class SteamSearchController {
                             should: [
                                 { match_phrase: { "name.standard": keywords } }, // 구문 검색 up
                                 { match: { "name.standard": keywords } }, // 노말 검색 up
-                                { match: { type: 'game' } }, // type이 game이면 + 
+                                {
+                                    match: {
+                                        type: { query: 'game', boost: 30 }// type이 game이면 + 
+                                    }
+                                },
                             ]
                         }
                     }
                 }
             }
             const game_list = await this.gamesRepository.findWithES(option_keywords);
-            // console.log(game_list)
+
+            // for (let i = 0; i < 5; i++) {
+            //     console.log(game_list.hits.hits[i], "////", game_list.hits.hits[i]._explanation.details[0].details, "////", game_list.hits.hits[i]._explanation)
+            // }
             return game_list.hits.hits
         } catch (error) {
             console.log(error)
@@ -84,7 +82,7 @@ module.exports = class SteamSearchController {
             }
             // console.log(review_option.body.sort)
             // 필터 넣어주기
-            if (filterExists) {
+            if (filterExists === "true") {
                 let array = []
                 for (let key in filter) {
                     // key 는 []로 감싸야 한다.
@@ -135,36 +133,32 @@ module.exports = class SteamSearchController {
                 "body": {
                     "query": {
                         "bool": {
-                            "must": [
+                            filter: [
                                 {
-                                    bool: {
-                                        should: [
-                                            {
-                                                match: {
-                                                    "name.ngram_filter": {
-                                                        "query": value,
-                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
-                                                    }
-                                                },
-                                            },
-                                            {
-                                                match: {
-                                                    "name_eng.ngram_filter": {
-                                                        "query": value,
-                                                        "fuzziness": 2 // 오타 검색이 가능해짐 
-                                                    }
-                                                }
-                                            }
+                                    multi_match: {
+                                        "query": value,
+                                        "fuzziness": 2, // 오타 검색이 가능해짐
+                                        "fields": [
+                                            "name_eng.autocomplete",
+                                            "name.autocomplete"
                                         ]
-                                    }
+
+                                    },
                                 },
                                 { exists: { field: "img_url" } },
                                 { exists: { field: "review_score_desc" } },
                             ],
-                            "should": [
-                                { "prefix": { "name.standard": { "value": value } } },
-                                { "match": { "name.standard": value } }, // 노말 검색 up
-                                { "match": { "type": 'game' } }, // type이 game이면 + 
+                            should: [
+                                { match_phrase: { "name.standard": value } }, // 구문 검색 up
+                                { match: { "name.standard": value } }, // 노말 검색 up
+                                {
+                                    match: {
+                                        type: {
+                                            query: 'game',
+                                            boost: 30
+                                        }
+                                    }
+                                }, // type이 game이면 + 
                             ]
                         }
                     }

@@ -81,7 +81,7 @@
               dataType: 'json',
               data: { value: request.term },
               success: function (data) {
-                console.log(data)
+                // console.log(data)
                 // 서버에서 json 데이터 response 후 목록 추가
                 response(
                   $.map(data, function (item) {
@@ -132,7 +132,6 @@
       // search -> index
       const movePage = (appid, name) => {
         // 홀따옴표를 다시 바꿔줌
-        name = name.replaceAll("#quote#", "'")
         location.href = `/search/render/appid?appid=${appid}&name=${name}`;
       }
 
@@ -140,7 +139,7 @@
       const render_games = () => {
         const Data = JSON.parse(localStorage.getItem('data'))
         if (Data) $('#inputBox').val(`${Data.keyword}`);
-        console.log(Data)
+        // console.log(Data)
         $.ajax({
           type: "POST",
           url: `/search`,
@@ -208,8 +207,8 @@
 
       const appendingIndex = (response) => {
         for (let i = 0; i < response.length; i++) {
-          console.log(response[i]["_source"])
-          let name = response[i]["_source"]["name"].replaceAll("'", "#quote#") // 홀따옴표 문제
+          // console.log(response[i]["_source"])
+          let name = response[i]["_source"]["name"].replace("'", "#quote#") // 홀따옴표 문제
           let temp_html = `
                     <div class="card mb-3 game_card" style="max-width: 1010px; " id="game">
                       <div class="row g-0">
@@ -222,8 +221,8 @@
                           <div class="card-body">
                             <h5 class="card-title">${response[i]["_source"]["name"]}</h5>
                             <p class="card-text">
-                              STEAM 평가: ${response[i]["_source"]["review_score_desc"]} / 
-                              Metacritic: ${response[i]["_source"]["metacritic"] ? response[i]["_source"]["metacritic"]["score"] + "점" : "없음"}
+                              STEAM 평가: ${response[i]["_source"]["review_score_desc"]} 
+                            ${response[i]["_source"]["metacritic"] ? "/ Metacritic: " + response[i]["_source"]["metacritic"]["score"] + "점" : ""}
                             </p>
                             <p class="card-text"><small class="text-muted">
                               ${response[i]["_source"]["short_description"] ? response[i]["_source"]["short_description"] : ""}
@@ -273,6 +272,8 @@
             if (!response) return;
             const randomArray = response.best_list.sort(() => 0.5 - Math.random())
             const array = []
+            // console.log(response)
+            var reg = /[\']/gi;
             for (let i = 0; i < 3; i++) {
               array.push(randomArray[i])
             }
@@ -280,9 +281,9 @@
               ` <div class="carousel-inner">
                 <div class="carousel-item active">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick='movePage("${array[0].appid}", "${array[0].name.replace("'", "#quote#")}")' src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick='movePage("${array[0].appid}", "${array[0].name.replace(reg, '')}")' src="${array[0].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick='movePage("${array[0].appid}", "${array[0].name.replace("'", "#quote#")}")' style="cursor:pointer;">${array[0].name}</h3>
+                    <h3 onclick='movePage("${array[0].appid}", "${array[0].name.replace(reg, '')}")' style="cursor:pointer;">${array[0].name}</h3>
                     <p>
                       장르: ${array[0].genre} /
                       리뷰 총점: ${array[0].review_score} /
@@ -292,9 +293,9 @@
                     </div>
                 <div class="carousel-item">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick='movePage("${array[1].appid}", "${array[1].name.replace("'", "#quote#")}")' src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick='movePage("${array[1].appid}", "${array[1].name.replace(reg, '')}")' src="${array[1].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick='movePage("${array[1].appid}", "${array[1].name.replace("'", "#quote#")}")' style="cursor:pointer;">${array[1].name}</h3>
+                    <h3 onclick='movePage("${array[1].appid}", "${array[1].name.replace(reg, '')}")' style="cursor:pointer;">${array[1].name}</h3>
                     <p>
                       장르: ${array[1].genre} /
                       리뷰 총점: ${array[1].review_score} /
@@ -304,9 +305,9 @@
                     </div>
                 <div class="carousel-item">
                   <h2 class="carousel_h2">추천게임</h3>
-                  <img onclick='movePage("${array[2].appid}", "${array[2].name.replace("'", "#quote#")}")' src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
+                  <img onclick='movePage("${array[2].appid}", "${array[2].name.replace(reg, '')}")' src="${array[2].img_url}" class="d-block w-100 imageblock" alt="..." >
                   <div class="carousel_explain">
-                    <h3 onclick='movePage("${array[2].appid}", "${array[2].name.replace("'", "#quote#")}")' style="cursor:pointer;">${array[2].name}</h3>
+                    <h3 onclick='movePage("${array[2].appid}", "${array[2].name.replace(reg, '')}")' style="cursor:pointer;">${array[2].name}</h3>
                     <p>
                       장르: ${array[2].genre} /
                       리뷰 총점: ${array[2].review_score} /
