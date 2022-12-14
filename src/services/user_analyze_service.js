@@ -44,7 +44,6 @@ module.exports = class UserAnalyzeService {
                 const data = JSON.parse(check_result).data;
                 if (data.time > time) return data.data;
             }
-
             let option_analyze = {
                 index: env.ANALYZE,
                 body: {
@@ -375,7 +374,7 @@ module.exports = class UserAnalyzeService {
                         updatedAt: today
                     }
                 }
-                console.log(option_vector.body)
+                // console.log(option_vector.body)
                 success = await this.userRepository.insertWithES(option_vector)
             }
 
