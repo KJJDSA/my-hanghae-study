@@ -1,5 +1,6 @@
 const GamesRepository = require("../repositories/games_repository");
 const UserRepository = require("../repositories/user_repository");
+const redisClient = require("../../redis_connection");
 require("dotenv").config();
 const env = process.env;
 // 임시 코드 repository 
@@ -34,6 +35,16 @@ module.exports = class UserAnalyzeService {
             const minutes = now.getMinutes();  // 분
             const seconds = now.getSeconds();  // 초
             const today = new Date(year, month, day, hours,).toISOString();
+
+            let time = year + month + day + hours + minutes
+            let set_time = time + 5
+            // 레디스에 있는지 확인
+            const check_result = await redisClient.hGet("bestGame", "list");
+            if (check_result !== null) {
+                const data = JSON.parse(check_result).data;
+                if (data.time > time) return data.data;
+            }
+
             let option_analyze = {
                 index: env.ANALYZE,
                 body: {
@@ -63,7 +74,13 @@ module.exports = class UserAnalyzeService {
                         }
                         game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]._source);
                     }
-                    check=null
+                    check = null
+                    // 레디스에 저장하기
+                    let cash = {
+                        data: game_list,
+                        time: set_time
+                    }
+                    await redisClient.hSet("bestGame", "list", JSON.stringify({ data: cash }));
                     return game_list
                 }
             }
@@ -160,11 +177,18 @@ module.exports = class UserAnalyzeService {
                     }
                 }
                 await this.userRepository.updateWintES(option_analyze)
-                
             }
-            check=null
-            save_analyze=null
-            filelist=null
+
+            // 레디스에 저장하기
+            let cash = {
+                data: result_game,
+                time: set_time
+            }
+            await redisClient.hSet("bestGame", "list", JSON.stringify({ data: cash }));
+
+            check = null
+            save_analyze = null
+            filelist = null
             return result_game
         } catch (error) {
             console.log(error)
@@ -400,7 +424,7 @@ module.exports = class UserAnalyzeService {
                         }
                         game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]);
                     }
-                    check=null
+                    check = null
                     return game_list
                 }
             }
@@ -490,7 +514,7 @@ module.exports = class UserAnalyzeService {
                             }
                         }
                     }
-                    
+
                 }
                 save_analyze.push(appid[0]);
                 game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]);
@@ -520,10 +544,10 @@ module.exports = class UserAnalyzeService {
                 }
                 await this.userRepository.updateWintES(option_analyze)
             }
-            target_list=null
-            result=null
-            check=null
-            save_analyze=null
+            target_list = null
+            result = null
+            check = null
+            save_analyze = null
             return game_list;
         } catch (error) {
             console.log(error)
@@ -564,20 +588,20 @@ module.exports = class UserAnalyzeService {
                         body: {
                             query: {
                                 "term": {
-                                    appid: i 
+                                    appid: i
                                 }
                             }
                         }
                     }
                     game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]._source);
                 }
-                check=null
+                check = null
                 return game_list
             }
         }
 
-        
-        let week = new Date(year, month, day-7).toISOString();
+
+        let week = new Date(year, month, day - 7).toISOString();
         let option = {
             index: env.GAME,
             body: {
@@ -594,19 +618,19 @@ module.exports = class UserAnalyzeService {
                         ],
                     }
                 }
-                        
+
             }
-                
-            
+
+
         }
         let get_new_game_list = await this.gamesRepository.findWithES(option)
 
         // 리스트가 없으면 그 다음주로 이동 그렇게 한달이내의 게임 없으면 빈배열 반환
-        let n=0;
-        let game_count=10;
-        while(get_new_game_list.hits.hits.length<game_count && n<=4){
-            week = new Date(year, month, day-7*(n+2)).toISOString();
-        // 다른 곳에 저장되어있던 appid 리스트 받는다.
+        let n = 0;
+        let game_count = 10;
+        while (get_new_game_list.hits.hits.length < game_count && n <= 4) {
+            week = new Date(year, month, day - 7 * (n + 2)).toISOString();
+            // 다른 곳에 저장되어있던 appid 리스트 받는다.
             option = {
                 index: env.GAME,
                 // 임시 인덱스(존재안함)
@@ -625,15 +649,15 @@ module.exports = class UserAnalyzeService {
                         }
                     }
                 }
-            }   
-            let add_list= await this.gamesRepository.findWithES(option)
-            for(let ele of add_list.hits.hits){
+            }
+            let add_list = await this.gamesRepository.findWithES(option)
+            for (let ele of add_list.hits.hits) {
                 get_new_game_list.hits.hits.push(ele.hits.hits);
             }
             get_new_game_list.hits.hits.length;
             n++;
         }
-        if(get_new_game_list.length===0){
+        if (get_new_game_list.length === 0) {
             return [];
         }
 
@@ -642,22 +666,22 @@ module.exports = class UserAnalyzeService {
         for (let ele of get_new_game_list.hits.hits) {
             game_info_list.push(ele._source);
         }
-        game_info_list=game_info_list.sort((a, b) => {
+        game_info_list = game_info_list.sort((a, b) => {
             if (b.total_positive === a.total_positive) {
                 return a.total_negative - b.total_negative
             } else {
                 return b.total_positive - a.total_positive
             }
         })
-        
+
         let save_analyze = [];
-        game_info_list=game_info_list.filter((ele, index) => {
-           if(index <= 10){
+        game_info_list = game_info_list.filter((ele, index) => {
+            if (index <= 10) {
                 save_analyze.push(ele.appid);
                 return true
-           }else{
-            return false
-           }
+            } else {
+                return false
+            }
         })
 
         //저장 check
@@ -684,7 +708,7 @@ module.exports = class UserAnalyzeService {
                 }
             }
             await this.userRepository.updateWintES(option_analyze)
-            
+
         }
 
         return game_info_list;
