@@ -22,7 +22,7 @@ module.exports = class SteamSearchController {
         if (id !== undefined && list.length) {
           await this.steamSearchService.searchLogger({ id, keywords, list: data });
         }
-        // console.log("have Data in redis"); console.timeEnd("keyword");
+        console.log("have Data in redis"); console.timeEnd("keyword");
         return res.json(data);
       }
 
