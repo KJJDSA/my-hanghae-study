@@ -578,27 +578,27 @@ module.exports = class UserAnalyzeService {
             }
         }
         let check = await this.gamesRepository.findWithES(option_analyze);
-        // if (check.hits.hits.length !== 0) {
-        //     let updatedAt = check.hits.hits[0]._source.updatedAt;
-        //     if (today <= updatedAt) {
-        //         let game_list = [];
-        //         for (let i of check.hits.hits[0]._source.appid) {
-        //             const option_appid = {
-        //                 index: env.GAME,
-        //                 body: {
-        //                     query: {
-        //                         "term": {
-        //                             appid: i
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //             game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]._source);
-        //         }
-        //         check = null
-        //         return game_list
-        //     }
-        // }
+        if (check.hits.hits.length !== 0) {
+            let updatedAt = check.hits.hits[0]._source.updatedAt;
+            if (today <= updatedAt) {
+                let game_list = [];
+                for (let i of check.hits.hits[0]._source.appid) {
+                    const option_appid = {
+                        index: env.GAME,
+                        body: {
+                            query: {
+                                "term": {
+                                    appid: i
+                                }
+                            }
+                        }
+                    }
+                    game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]._source);
+                }
+                check = null
+                return game_list
+            }
+        }
 
 
         let week = new Date(year, month, day - 7).toISOString();
