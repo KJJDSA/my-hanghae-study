@@ -440,7 +440,7 @@ module.exports = class UserAnalyzeService {
             let mine_vector = await this.userRepository.findWithES(option_userid)
             if (mine_vector.hits.hits.length === 0) {
                 //분석데이터가 없을때 업데이트
-                if (this.userLikeGame({ user_id }).status !== 200) {
+                if (await this.userLikeGame({ user_id }).status !== 200) {
                     //해당로그 없음으로
                     return false;
                 }
