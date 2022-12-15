@@ -440,7 +440,7 @@ module.exports = class UserAnalyzeService {
             let mine_vector = await this.userRepository.findWithES(option_userid)
             if (mine_vector.hits.hits.length === 0) {
                 //분석데이터가 없을때 업데이트
-                if (userLikeGame({ user_id }).status !== 200) {
+                if (await this.userLikeGame({ user_id }).status !== 200) {
                     //해당로그 없음으로
                     return false;
                 }
@@ -577,27 +577,27 @@ module.exports = class UserAnalyzeService {
             }
         }
         let check = await this.gamesRepository.findWithES(option_analyze);
-        if (check.hits.hits.length !== 0) {
-            let updatedAt = check.hits.hits[0]._source.updatedAt;
-            if (today <= updatedAt) {
-                let game_list = [];
-                for (let i of check.hits.hits[0]._source.appid) {
-                    const option_appid = {
-                        index: env.GAME,
-                        body: {
-                            query: {
-                                "term": {
-                                    appid: i
-                                }
-                            }
-                        }
-                    }
-                    game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]._source);
-                }
-                check = null
-                return game_list
-            }
-        }
+        // if (check.hits.hits.length !== 0) {
+        //     let updatedAt = check.hits.hits[0]._source.updatedAt;
+        //     if (today <= updatedAt) {
+        //         let game_list = [];
+        //         for (let i of check.hits.hits[0]._source.appid) {
+        //             const option_appid = {
+        //                 index: env.GAME,
+        //                 body: {
+        //                     query: {
+        //                         "term": {
+        //                             appid: i
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //             game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]._source);
+        //         }
+        //         check = null
+        //         return game_list
+        //     }
+        // }
 
 
         let week = new Date(year, month, day - 7).toISOString();
@@ -609,8 +609,8 @@ module.exports = class UserAnalyzeService {
                         must: [
                             {
                                 range: {
-                                    'relase_date': {
-                                        gt: week
+                                    'release_date': {
+                                        lt: week
                                     }
                                 }
                             }
@@ -619,11 +619,9 @@ module.exports = class UserAnalyzeService {
                 }
 
             }
-
-
         }
         let get_new_game_list = await this.gamesRepository.findWithES(option)
-
+        console.log(get_new_game_list)
         // 리스트가 없으면 그 다음주로 이동 그렇게 한달이내의 게임 없으면 빈배열 반환
         let n = 0;
         let game_count = 10;
