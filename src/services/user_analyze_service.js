@@ -12,9 +12,9 @@ class VectorSimilarity {
             if (unit_vec2[i] !== undefined) {
                 cosin += unit_vec1[i] * unit_vec2[i];
             }
-            if (cosin > value) {
-                return false;
-            }
+        }
+        if (cosin < value) {
+            return false;
         }
         return cosin;
     }
@@ -406,27 +406,27 @@ module.exports = class UserAnalyzeService {
                 }
             }
             let check = await this.gamesRepository.findWithES(option_analyze);
-            if (check.hits.hits.length !== 0) {
-                let updatedAt = check.hits.hits[0]._source.updatedAt;
-                if (today <= updatedAt) {
-                    let game_list = [];
-                    for (let i of check.hits.hits[0]._source.appid) {
-                        const option_appid = {
-                            index: env.GAME,
-                            body: {
-                                query: {
-                                    "term": {
-                                        appid: i
-                                    }
-                                }
-                            }
-                        }
-                        game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]);
-                    }
-                    check = null
-                    return game_list
-                }
-            }
+            // if (check.hits.hits.length !== 0) {
+            //     let updatedAt = check.hits.hits[0]._source.updatedAt;
+            //     if (today <= updatedAt) {
+            //         let game_list = [];
+            //         for (let i of check.hits.hits[0]._source.appid) {
+            //             const option_appid = {
+            //                 index: env.GAME,
+            //                 body: {
+            //                     query: {
+            //                         "term": {
+            //                             appid: i
+            //                         }
+            //                     }
+            //                 }
+            //             }
+            //             game_list.push((await this.gamesRepository.findWithES(option_appid)).hits.hits[0]);
+            //         }
+            //         check = null
+            //         return game_list
+            //     }
+            // }
             let option_userid = {
                 index: env.USER_INFO,
                 body: {
@@ -471,6 +471,7 @@ module.exports = class UserAnalyzeService {
                 let knn_value = 0.8;
                 //코사인 유사도 계산
                 let cosin = await vectorSimilarity.cosinSimilarity(mine_vector.hits.hits[0]._source.unit_vector, target.unit_vector, knn_value);
+                console.log(cosin)
                 if (cosin === false) {
                     continue;
                 }
