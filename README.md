@@ -29,7 +29,7 @@
 
 
 ## ERD
-  ![ERD-2week](https://user-images.githubusercontent.com/113815932/202711210-9fe5c64a-2743-4816-a245-766565578b79.png)
+ 공사중
 
 
 ## Project Setting
