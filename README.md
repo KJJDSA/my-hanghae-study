@@ -1,4 +1,4 @@
-# Steam For U [코드보기](https://github.com/SteamReviewSearch/search)
+# Steam For U [[]](https://github.com/SteamReviewSearch/search)
 - 본 프로젝트는 상업적 목적성을 가지고 가지고 있지 않습니다.
 - ReadME 는 매번 업데이트 되며 기술된 정보들은 현 시점을 기준으로 작성한 것입니다.
 
