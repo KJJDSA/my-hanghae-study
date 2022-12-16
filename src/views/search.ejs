@@ -150,8 +150,10 @@
             if (!response.data.length) {
               let temp_html = `
             <div class="name">
-              <h3 style="color: #eeecea;">~검색결과 없음~</h3>
-            </div>`
+              <h3 style="color: white;">검색결과가 존재하지 않습니다</h3>
+              <img src="https://steamforyou.site/images/no_search.png" style="width: 100px" alt="..." >
+            </div>
+            `
               $("#game-list").append(temp_html);
               $("#spinner").empty();
               return;
@@ -195,8 +197,10 @@
             if (!response.data.length) {
               let temp_html = `
             <div class="name">
-              <h3 style="color: #eeecea;">~검색결과 없음~</h3>
-            </div>`
+              <h3 style="color: white;">검색결과가 존재하지 않습니다</h3>
+              <img src="https://steamforyou.site/images/no_search.png" style="width: 100px" alt="..." >
+            </div>
+            `
               $("#game-list").append(temp_html);
               $("#spinner").empty();
               return;
