@@ -154,7 +154,8 @@
             if (!response.length) {
               let temp_html = `
             <div class="name">
-              <h3  style="color: #eeecea;">~검색결과 없음~</h3>
+              <h3 style="color: white;">검색결과가 존재하지 않습니다</h3>
+              <img src="https://steamforyou.site/images/no_search.png" style="width: 100px" alt="..." >
             </div>
             `
               $("#game-list").append(temp_html);
@@ -187,7 +188,8 @@
             if (!response.length) {
               let temp_html = `
             <div class="name">
-              <h3  style="color: #eeecea;">~검색결과 없음~</h3>
+              <h3 style="color: white;">검색결과가 존재하지 않습니다</h3>
+              <img src="https://steamforyou.site/images/no_search.png" style="width: 100px" alt="..." >
             </div>
             `
               $("#game-list").append(temp_html);
@@ -364,6 +366,16 @@
           url: `/analyze/like`,
           data: {},
           success: function (response) {
+            if (!response.game_list.length || !response.game_list) {
+              let temp_html = `
+            <div class="name">
+              <h3 style="color: white;">추천 목록이 아직 쌓이지 않았어요...</h3>
+              <img src="https://steamforyou.site/images/no_search.png" style="width: 100px" alt="..." >
+            </div>
+            `
+              $("#game-list").append(temp_html);
+              return;
+            }
             appendingIndex(response.game_list)
           }
         })
