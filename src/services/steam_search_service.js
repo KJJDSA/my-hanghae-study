@@ -28,20 +28,15 @@ module.exports = class SteamSearchController {
                                             "name_eng.ngram_filter",
                                             "name.ngram_filter"
                                         ]
-
                                     },
                                 },
                                 { exists: { field: "img_url" } },
-                                { exists: { field: "review_score_desc" } },
                             ],
                             should: [
                                 { match_phrase: { "name.standard": keywords } }, // 구문 검색 up
                                 { match: { "name.standard": keywords } }, // 노말 검색 up
-                                {
-                                    match: {
-                                        type: { query: 'game', boost: 30 }// type이 game이면 + 
-                                    }
-                                },
+                                { match: { "name_eng.ngram_filter": keywords } }, // ngram 키워드가 맞으면 up
+                                { match: { type: { query: 'game', boost: 50 } } },// type이 game이면 + 
                             ]
                         }
                     }
@@ -49,9 +44,7 @@ module.exports = class SteamSearchController {
             }
             const game_list = await this.gamesRepository.findWithES(option_keywords);
 
-            // for (let i = 0; i < 5; i++) {
-            //     console.log(game_list.hits.hits[i], "////", game_list.hits.hits[i]._explanation.details[0].details, "////", game_list.hits.hits[i]._explanation)
-            // }
+
             return game_list.hits.hits
         } catch (error) {
             console.log(error)
@@ -147,18 +140,11 @@ module.exports = class SteamSearchController {
                                 },
                                 { exists: { field: "img_url" } },
                                 { exists: { field: "review_score_desc" } },
+                                { match: { type: { query: 'game' } } }, // type이 game이면 + 
                             ],
                             should: [
                                 { match_phrase: { "name.standard": value } }, // 구문 검색 up
                                 { match: { "name.standard": value } }, // 노말 검색 up
-                                {
-                                    match: {
-                                        type: {
-                                            query: 'game',
-                                            boost: 30
-                                        }
-                                    }
-                                }, // type이 game이면 + 
                             ]
                         }
                     }

@@ -17,15 +17,15 @@ module.exports = class SteamSearchController {
 
       // 레디스에 데이터가 있는지 확인
       let result = await redisClient.hGet("gamename", key);
-      if (result !== null) {
-        const data = JSON.parse(result);
-        if (id !== undefined && data.length) {
-          await this.steamSearchService.searchLogger({ id, keywords, list: data });
-        }
-        // console.log("have Data in redis"); 
-        console.timeEnd("keyword");
-        return res.json(data);
-      }
+      // if (result !== null) {
+      //   const data = JSON.parse(result);
+      //   if (id !== undefined && data.length) {
+      //     await this.steamSearchService.searchLogger({ id, keywords, list: data });
+      //   }
+      //   // console.log("have Data in redis"); 
+      //   console.timeEnd("keyword");
+      //   return res.json(data);
+      // }
 
       let list = await this.steamSearchService.steamSearch({
         keywords,
@@ -99,24 +99,24 @@ module.exports = class SteamSearchController {
 
       const { appid, slice_start, filterExists, filter, sort } = request;
 
-      // let key = `${appid}+${slice_start}+${filterExists}+${filter}+${sort}`;
-      // console.log(key.split("+"));
-      // const result = await redisClient.hGet("appid", key);
-      // if (result !== null) { // 캐싱된 데이터 있음
-      //   const data = JSON.parse(result);
-      //   let keywords = { type: "onething", value: appid };
-      //   // appid로 검색하는 경우라 키워드를 저장하지 못함.
-      //   if (id !== undefined) {
-      //     await this.steamSearchService.searchLogger({
-      //       id,
-      //       keywords,
-      //       list: appid,
-      //     });
-      //   }
-      //   // console.log("have Data in redis");
-      //   console.timeEnd("review");
-      //   return res.json({ data });
-      // }
+      let key = `${appid}+${slice_start}+${filterExists}+${filter}+${sort}`;
+      console.log(key.split("+"));
+      const result = await redisClient.hGet("appid", key);
+      if (result !== null) { // 캐싱된 데이터 있음
+        const data = JSON.parse(result);
+        let keywords = { type: "onething", value: appid };
+        // appid로 검색하는 경우라 키워드를 저장하지 못함.
+        if (id !== undefined) {
+          await this.steamSearchService.searchLogger({
+            id,
+            keywords,
+            list: appid,
+          });
+        }
+        // console.log("have Data in redis");
+        console.timeEnd("review");
+        return res.json({ data });
+      }
 
 
       // 필터 없는 경우 => 필터를 넣지않는 검색
@@ -128,11 +128,11 @@ module.exports = class SteamSearchController {
             filterExists,
             sort,
           });
-        // await redisClient.hSet(
-        //   "appid",
-        //   key,
-        //   JSON.stringify({ game_doc, data: reviews })
-        // );
+        await redisClient.hSet(
+          "appid",
+          key,
+          JSON.stringify({ game_doc, data: reviews })
+        );
 
         let keywords = { type: "onething", value: appid };
         // appid로 검색하는 경우라 키워드를 저장하지 못함.
@@ -157,11 +157,11 @@ module.exports = class SteamSearchController {
             sort,
           });
 
-        // await redisClient.hSet(
-        //   "appid",
-        //   key,
-        //   JSON.stringify({ game_doc, data: reviews })
-        // );
+        await redisClient.hSet(
+          "appid",
+          key,
+          JSON.stringify({ game_doc, data: reviews })
+        );
 
         let keywords = { type: "onething", value: appid };
         // appid로 검색하는 경우라 키워드를 저장하지 못함.
@@ -263,12 +263,12 @@ module.exports = class SteamSearchController {
     const { value } = req.body;
     const key = value;
     const result = await redisClient.hGet("auto-complete", key);
-    if (result !== null) {
+    // if (result !== null) {
 
-      // console.log("have Data in redis");
-      const data = JSON.parse(result);
-      return res.json(data);
-    }
+    //   // console.log("have Data in redis");
+    //   const data = JSON.parse(result);
+    //   return res.json(data);
+    // }
     const list = await this.steamSearchService.searchAutocomplete({ value });
     await redisClient.hSet("auto-complete", key, JSON.stringify(list));
     res.json(list);
