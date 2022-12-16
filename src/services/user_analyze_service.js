@@ -442,7 +442,7 @@ module.exports = class UserAnalyzeService {
                 //분석데이터가 없을때 업데이트
                 if (await this.userLikeGame({ user_id }).status !== 200) {
                     //해당로그 없음으로
-                    return false;
+                    return game_list=false;
                 }
             }
             //자신을 뺀 유저 리스트(범위 축소)
@@ -464,7 +464,7 @@ module.exports = class UserAnalyzeService {
             let cosin_similarity = [];
             let like_games = {};
             if (target_list.hits.hits.length === 0) {
-                return false;
+                return game_list=false;
             }
             for (let target_info of target_list.hits.hits) {
                 let target = target_info._source
@@ -656,15 +656,15 @@ module.exports = class UserAnalyzeService {
             n++;
         }
         if (get_new_game_list.length === 0) {
-            return [];
+            return game_list=[];
         }
 
 
-        let game_info_list = [];
+        let game_list = [];
         for (let ele of get_new_game_list.hits.hits) {
-            game_info_list.push(ele._source);
+            game_list.push(ele._source);
         }
-        game_info_list = game_info_list.sort((a, b) => {
+        game_list = game_list.sort((a, b) => {
             if (b.total_positive === a.total_positive) {
                 return a.total_negative - b.total_negative
             } else {
@@ -673,7 +673,7 @@ module.exports = class UserAnalyzeService {
         })
 
         let save_analyze = [];
-        game_info_list = game_info_list.filter((ele, index) => {
+        game_list = game_list.filter((ele, index) => {
             if (index <= 10) {
                 save_analyze.push(ele.appid);
                 return true
@@ -709,6 +709,6 @@ module.exports = class UserAnalyzeService {
 
         }
 
-        return game_info_list;
+        return game_list;
     }
 };
