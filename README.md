@@ -33,6 +33,10 @@
 
 
 ## Project Setting
+### Cord_Start
+```
+npm start
+```
 
 ###  <img src="https://img.shields.io/badge/.ENV-ECD53F?style=flat-square&logo=.ENV&logoColor=000000"/>
 ```
