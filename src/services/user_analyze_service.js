@@ -442,7 +442,7 @@ module.exports = class UserAnalyzeService {
                 //분석데이터가 없을때 업데이트
                 if (await this.userLikeGame({ user_id }).status !== 200) {
                     //해당로그 없음으로
-                    return game_list=false;
+                    return false;
                 }
             }
             //자신을 뺀 유저 리스트(범위 축소)
@@ -464,7 +464,7 @@ module.exports = class UserAnalyzeService {
             let cosin_similarity = [];
             let like_games = {};
             if (target_list.hits.hits.length === 0) {
-                return game_list=false;
+                return false;
             }
             for (let target_info of target_list.hits.hits) {
                 let target = target_info._source
@@ -656,7 +656,7 @@ module.exports = class UserAnalyzeService {
             n++;
         }
         if (get_new_game_list.length === 0) {
-            return game_list=[];
+            return game_list = [];
         }
 
 
