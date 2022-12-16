@@ -12,8 +12,5 @@ const client = new Client({
   }
 })
 
-// client.info()
-//   .then(response => console.log(`Elasticsearch success - version ${response.version.number}`))
-//   .catch(error => console.error(error))
 
 module.exports = client;

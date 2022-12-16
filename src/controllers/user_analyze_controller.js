@@ -25,6 +25,7 @@ module.exports = class UserAnalyzeController {
         try {
             const id = res.locals.id;
             const game_list = await this.userAnalyzeService.UserBestList({ user_id: id })
+            console.log(game_list)
             return res.status(200).json({ game_list })
         } catch (error) {
             next(error)
