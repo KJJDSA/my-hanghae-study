@@ -30,6 +30,6 @@
 
 
 ## Architecture 
-![image](https://user-images.githubusercontent.com/112607606/208247902-472cbcce-52f9-4cf8-8ba6-8e4ea5e09008.png)
+![image](https://user-images.githubusercontent.com/112607606/208248241-33a22a58-bd4f-4aec-a722-d318003ac4fb.png)
 
 
