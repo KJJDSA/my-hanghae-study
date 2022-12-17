@@ -16,6 +16,7 @@
 
 
 ## ✨ 사용한 Backend 기술 스택
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/><img src="https://img.shields.io/badge/JSONWebTokens-000000?style=flat-square&logo=JSONWebTokens&logoColor=white"/><img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white"/><img src="https://img.shields.io/badge/Socket.io-010101?style=flat-square&logo=Socket.io&logoColor=white"/><img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=Node.js&logoColor=white"/>
 
 - express 프레임워크를 기반으로 한 Rest API 서버
 - MySQL(sequelize) 관계형 데이터베이스를 활용하여 유저 정보 저장
@@ -25,3 +26,10 @@
 
 ## ERD
 ![image](https://user-images.githubusercontent.com/113815932/208246297-9ddcfc4b-d697-4962-beae-d222c168e665.png)
+
+
+
+## Architecture 
+![image](https://user-images.githubusercontent.com/112607606/208247902-472cbcce-52f9-4cf8-8ba6-8e4ea5e09008.png)
+
+
