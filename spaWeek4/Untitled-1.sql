@@ -1,0 +1,1 @@
+SELECT * FROM `WEEK4`.`SequelizeMeta` LIMIT 1000;
