@@ -1,0 +1,23 @@
+{
+  "name": "steamsearch_loglifecycle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ELK_connection.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SteamReviewSearch/log_Life_Cycle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SteamReviewSearch/log_Life_Cycle/issues"
+  },
+  "homepage": "https://github.com/SteamReviewSearch/log_Life_Cycle#readme",
+  "dependencies": {
+    "@elastic/elasticsearch": "^8.5.0",
+    "dotenv": "^16.0.3"
+  }
+}
