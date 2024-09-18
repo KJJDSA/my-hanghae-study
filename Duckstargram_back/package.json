@@ -1,0 +1,50 @@
+{
+  "name": "node_mini_project",
+  "version": "1.0.0",
+  "description": "항해99 Node.js 미니 프로젝트 입니다.",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "jest",
+    "prettify": "prettier --write *.js **/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/archepro84/Node_Basic_Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/archepro84/Node_Basic_Project/issues"
+  },
+  "homepage": "https://github.com/archepro84/Node_Basic_Project#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1238.0",
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "eslint": "^7.32.0",
+    "express": "^4.18.2",
+    "joi": "^17.6.3",
+    "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.5-lts.1",
+    "multer-s3": "^2.10.0",
+    "mysql2": "^2.3.3",
+    "path": "^0.12.7",
+    "sequelize": "^6.25.3",
+    "socket.io": "^4.5.3",
+    "swagger-autogen": "^2.22.0",
+    "swagger-ui-express": "^4.5.0"
+  },
+  "devDependencies": {
+    "jest": "^29.2.0",
+    "lint": "^1.1.2",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.7.1",
+    "sequelize-cli": "^6.5.1",
+    "supertest": "^6.3.0"
+  },
+  "keywords": []
+}
