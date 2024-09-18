@@ -1,0 +1,14 @@
+/node_modules
+# 환경변수
+.env
+
+# docker
+docker-compose.yml
+/db
+
+# Log
+/logs/error/
+/logs/search/
+/logs/users/
+
+
